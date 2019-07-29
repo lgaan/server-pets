@@ -13,7 +13,7 @@ class Bot(commands.Bot):
         self.db = self.loop.run_until_complete(self.create_pool())
     
     async def create_pool(self):
-        return await asyncpg.create_pool(database="pets", user="postgres", password=os.environ.get("PG_PASSWORD"))
+        return await asyncpg.create_pool(database="pets", user=os.environ.get("PG_NAME"), password=os.environ.get("PG_PASSWORD"))
 
     def startup(self, cogs:list):
         for cog in cogs:
