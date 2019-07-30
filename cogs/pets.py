@@ -6,6 +6,8 @@ import random
 import discord
 from discord.ext import commands
 
+from helpers.paginator import EmbedPaginator
+
 class Pets(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -30,6 +32,16 @@ class Pets(commands.Cog):
             6: "six bowls",
             7: "seven bowls"
         }
+
+        self.pet_info = {
+            "Dog": {"Price": 500, "Earns": 30, "Rarity": "Common"},
+            "Cat": {"Price": 450, "Earns": 30, "Rarity": "Common"},
+            "Mouse": {"Price": 100, "Earns": 15, "Rarity": "Common"},
+            "Snake": {"Price": 750, "Earns": 50, "Rarity": "Uncommon"},
+            "Spider": {"Price": 750, "Earns": 50, "Rarity": "Uncommon"},
+            "Bird": {"Price": 250, "Earns": 30, "Rarity": "Uncommon"},
+            "Horse": {"Price": 1500, "Earns": 100, "Rarity": "Rare"}
+        }
     
     @commands.command(name="create-adoption")
     @commands.has_permissions(administrator=True)
@@ -52,12 +64,20 @@ class Pets(commands.Cog):
             return await ctx.send("It looks like there was an error creating your adoption centre. Please either get an admin to say `p-create-adoption`, or kick me and invite me back.")
         
         if pet is None:
-            embed = discord.Embed(title=f"{ctx.guild}'s adoption centre.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-            for pet in guild_pets[0]["pets"]:
-                embed.add_field(name=pet, value=f"Price: ${self.pet_prices[pet]}", inline=True)
+            embeds = []
+            for key, value in self.pet_info.items():
+                embed = discord.Embed(title=f"{ctx.guild}'s adoption centre. | {key}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
-            embed.set_thumbnail(url=ctx.guild.icon_url)
+                for info_key, info_value in value.items():
+                    embed.add_field(name=info_key, value=f"${info_value}" if info_key in ["Earns","Price"] else info_value, inline=False)
 
+                embed.set_thumbnail(url=ctx.guild.icon_url)
+
+                embeds.append(embed)
+            
+            paginator = EmbedPaginator(ctx=ctx, message=None, entries=embeds)
+
+            return await paginator.paginate()
         else:
             author_account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", ctx.author.id)
 
@@ -80,6 +100,7 @@ class Pets(commands.Cog):
                 if str(reaction.emoji) == "<:greenTick:596576670815879169>":
                     await bot_msg.delete()
                 else:
+                    await bot_msg.delete()
                     return await ctx.send("Canceled.")
             except asyncio.TimeoutError:
                 return await ctx.send("Time ran out.")

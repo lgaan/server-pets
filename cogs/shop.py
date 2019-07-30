@@ -5,7 +5,7 @@ import asyncio
 import discord
 from discord.ext import commands
 
-from helpers.paginator import Paginator
+from helpers.paginator import EmbedPaginator
 
 class Shopping(commands.Cog):
     def __init__(self, bot):
@@ -63,7 +63,7 @@ class Shopping(commands.Cog):
             embed_food.set_thumbnail(url=ctx.guild.icon_url)
             embed_water.set_thumbnail(url=ctx.guild.icon_url)
 
-            embed_paginator = Paginator(ctx, entries=[embed_food, embed_water], embed=True)
+            embed_paginator = EmbedPaginator(ctx=ctx, message=None, entries=[embed_food, embed_water])
 
             return await embed_paginator.paginate()
         

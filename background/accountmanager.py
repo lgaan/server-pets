@@ -16,7 +16,7 @@ class AccountManager(commands.Cog):
             "mouse": 15,
             "snake": 50,
             "spider": 50,
-            "bird": 75,
+            "bird": 30,
             "horse": 100
         }
 
@@ -32,7 +32,7 @@ class AccountManager(commands.Cog):
 
         self.managment.start()
 
-    @tasks.loop(seconds=20.0)
+    @tasks.loop(minutes=1.0)
     async def managment(self):
         """Gives an account certain amounts of money via their pets"""
         try:

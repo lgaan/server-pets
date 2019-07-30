@@ -13,7 +13,8 @@ class Bot(commands.Bot):
         self.db = self.loop.run_until_complete(self.create_pool())
     
     async def create_pool(self):
-        return await asyncpg.create_pool(host=os.environ.get("DATABASE_HOST"), database=os.environ.get("DATABASE"), user=os.environ.get("PG_NAME"), password=os.environ.get("PG_PASSWORD"))
+        return await asyncpg.create_pool(database="pets", user="postgres", password="Theboys3")
+        #return await asyncpg.create_pool(host=os.environ.get("DATABASE_HOST"), database=os.environ.get("DATABASE"), user=os.environ.get("PG_NAME"), password=os.environ.get("PG_PASSWORD"))
 
     def startup(self, cogs:list):
         for cog in cogs:
@@ -28,4 +29,5 @@ class Bot(commands.Bot):
         print("Connected")
 
 if __name__ == "__main__":
-    Bot().run(os.environ.get("TOKEN"), reconnect=True)
+    Bot().run("NTAyMjA1MTYyNjk0MjQ2NDEy.XUA5YQ.zLPeklPqGn6kmEMbKBy7ky9UebQ", reconnect=True)
+    #Bot().run(os.environ.get("TOKEN"), reconnect=True)

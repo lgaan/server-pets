@@ -8,7 +8,7 @@ import discord
 from discord.ext import commands
 
 from helpers.converters import CommandOrCog
-from helpers.paginator import Paginator
+from helpers.paginator import EmbedPaginator
 
 class Misc(commands.Cog):
     def __init__(self, bot):
@@ -107,7 +107,7 @@ class Misc(commands.Cog):
                 
                 embeds.append(embed)
             
-            paginator = Paginator(ctx, entries=embeds, embed=True)
+            paginator = EmbedPaginator(ctx=ctx, message=None, entries=embeds)
 
             return await paginator.paginate()
         
@@ -138,9 +138,9 @@ class Misc(commands.Cog):
             else:
                 embed_other.add_field(name="Checks", value=", ".join(clean_checks))
 
-            paginator = Paginator(ctx, entries=[embed_basic, embed_other], embed=True)
+            paginator = EmbedPaginator(ctx=ctx, message=None, entries=[embed_basic, embed_other])
 
-            return await paginator.paginate() 
+            return await paginator.paginate()
         
         elif isinstance(fetched_command_or_cog, commands.Cog):
             cog = fetched_command_or_cog
