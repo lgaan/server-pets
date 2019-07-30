@@ -199,7 +199,7 @@ class Shopping(commands.Cog):
             if item in self.shop_items_food.keys():
                 desc = f"You bought {amount} bags of {item} for ${amount*self.shop_items_food[item]}"
             else:
-                desc = f"You bought {amount} {item}(s) for ${amount*self.shop_items_water[item]}"
+                desc = f"You bought {amount*self.conversions[item]} bowl(s) of water for ${amount*self.shop_items_water[item]}"
 
             embed = discord.Embed(title="Success!", description=desc, colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed.add_field(name="Old balance", value=f"${account[0]['balance']}")
