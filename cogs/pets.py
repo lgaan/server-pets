@@ -41,28 +41,11 @@ class Pets(commands.Cog):
             "Spider": {"Price": 750, "Earns": 50, "Rarity": "Uncommon"},
             "Bird": {"Price": 250, "Earns": 30, "Rarity": "Uncommon"},
             "Horse": {"Price": 1500, "Earns": 100, "Rarity": "Rare"}
-        }
-    
-    @commands.command(name="create-adoption")
-    @commands.has_permissions(administrator=True)
-    async def create_adoption(self, ctx):
-        """Admin only. This will create an adoption centre if one had not been made."""
-        guild_pets = await self.bot.db.fetch("SELECT * FROM pets WHERE guild_id = $1", ctx.guild.id)
-
-        if not guild_pets:
-            await self.bot.db.execute("INSERT INTO pets (guild_id, pets) VALUES ($1,$2)", ctx.guild.id, self.pets)
-            return await ctx.send("Your adoption centre has been made!")
-        else:
-            return await ctx.send("There is already an adoption centre made for this guild.")
+        }             
 
     @commands.command(name="adopt")
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
-        guild_pets = await self.bot.db.fetch("SELECT * FROM pets WHERE guild_id = $1", ctx.guild.id)
-
-        if not guild_pets:
-            return await ctx.send("It looks like there was an error creating your adoption centre. Please either get an admin to say `p-create-adoption`, or kick me and invite me back.")
-        
         if pet is None:
             embeds = []
             for key, value in self.pet_info.items():
