@@ -163,7 +163,7 @@ class Misc(commands.Cog):
     async def invites_(self, ctx):
         """Gives the support server and the bot's invite"""
         embed = discord.Embed(title="Invite Links", description="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot)", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-        embed.set_thumbnail(url=ctx.guild.me.avatar_url)
+        embed.set_footer(icon_url=ctx.guild.me.avatar_url)
 
         return await ctx.send(embed=embed)
 
