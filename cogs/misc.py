@@ -79,6 +79,8 @@ class Misc(commands.Cog):
 
         embed.add_field(name="Total Registered Users", value=len(accounts) if len(accounts) > 0 and accounts else "None")
         embed.add_field(name="Total Adopted Pets", value=total_pets if total_pets > 0 else "None")
+
+        embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot)")
         return await ctx.send(embed=embed)
 
     @commands.command(name="help")
