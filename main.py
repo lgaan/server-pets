@@ -25,6 +25,8 @@ class Bot(commands.Bot):
     
     async def on_ready(self):
         self.startup(["background.petmanager","background.accountmanager"])
+
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Server Pets"))
         print("Connected")
 
 if __name__ == "__main__":
