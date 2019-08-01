@@ -34,7 +34,7 @@ class PetManager(commands.Cog):
     def cog_unload(self):
         self.managment.cancel()
     
-    @tasks.loop(minutes=30.0)
+    @tasks.loop(hours=1.5)
     async def managment(self):
         """Will decide if a pet gets hungry or thirsty"""
         accounts = await self._bot.db.fetch("SELECT * FROM accounts")
