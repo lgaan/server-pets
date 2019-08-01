@@ -39,7 +39,7 @@ class AccountManager(commands.Cog):
             accounts = await self._bot.db.fetch("SELECT * FROM accounts")
 
             for account in accounts:
-                if account["pets"]:
+                if account["pets"]:                
                     earning = sum(self.earning_rates[pet] for pet in account["pets"])
 
                     await self._bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account["balance"]+earning, account["owner_id"])

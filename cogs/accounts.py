@@ -125,28 +125,27 @@ class Accounts(commands.Cog):
     @commands.command(name="supplies")
     async def supplies_(self, ctx, user:discord.Member=None):
         """Shows the supplies of a user or yourself."""
-        user = ctx.author if user is None else user
-        account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", user.id)
+        try:
+            user = ctx.author if user is None else user
+            account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", user.id)
 
-        if not account:
-            return await ctx.send("The user in question does not have an account.")
-        
-        items = json.loads(account[0]["items"])
+            if not account:
+                return await ctx.send("The user in question does not have an account.")
+            
+            items = json.loads(account[0]["items"])
 
-        embed = discord.Embed(title=f"{user.name}'s supplies", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed = discord.Embed(title=f"{user.name}'s supplies", colour=discord.Colour.blue(), timestamp=ctx.message.created_at
+            
+            for key, value in items.items():
+                if key != "water bowls":
+                    embed.add_field(name=self.conversion[key], value=value, inline=False)
 
-        food = False
-        for key, value in items.items():
-            if key != "water bowls":
-                food = True
-                embed.add_field(name=self.conversion[key], value=value, inline=False)
-        
-        if food:
-            embed.add_field(name="-"*56, value="** **", inline=False)
-        embed.add_field(name="Water Bowls", value=items["water bowls"], inline=False)
- 
-        embed.set_thumbnail(url=user.avatar_url)
-        return await ctx.send(embed=embed)
+            embed.add_field(name="Water Bowls", value=items["water bowls"], inline=False)
+    
+            embed.set_thumbnail(url=user.avatar_url)
+            return await ctx.send(embed=embed)
+        except Exception:
+            traceback.print_exc()
     
     @commands.command(name="leaderboard", aliases=["lb"])
     async def leaderboard_(self, ctx, lb_type=None):
