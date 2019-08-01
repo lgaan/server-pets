@@ -32,7 +32,7 @@ class AccountManager(commands.Cog):
 
         self.managment.start()
 
-    @tasks.loop(minutes=1.0)
+    @tasks.loop(minutes=10.0)
     async def managment(self):
         """Gives an account certain amounts of money via their pets"""
         try:
