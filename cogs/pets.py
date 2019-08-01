@@ -70,6 +70,9 @@ class Pets(commands.Cog):
             if author_account[0]["balance"] < self.pet_prices[pet.lower()]:
                 return await ctx.send("You do not have enough cash to buy this pet. You can earn money by training your pet or competing in contests.")
             
+            if pet.lower() in author_account[0]["pets"]
+                return await ctx.send("You already own a {pet.lower()}.")
+
             confirm_embed = discord.Embed(title="Confirm", description="Are you sure you want to adopt this animal?\nPlease react with <:greenTick:596576670815879169> to confirm, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
