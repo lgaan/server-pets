@@ -111,7 +111,7 @@ class Misc(commands.Cog):
 
                 for command in cog.walk_commands():
                     params = await self.get_paramaters(command.clean_params)
-                    if command.aliases is not None:
+                    if len(command.aliases) > 0:
                         to_add = [command.name]
                         for alias in command.aliases: to_add.append(alias)
                         embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
@@ -129,7 +129,7 @@ class Misc(commands.Cog):
             embed_basic = discord.Embed(title=f"Server Pets Help | {command.name}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed_basic.set_thumbnail(url=ctx.guild.me.avatar_url)
 
-            if command.aliases is not None:
+            if len(command.aliases) > 0:
                 to_add = [command.name]
                 for alias in command.aliases: to_add.append(alias)
                 embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
@@ -167,7 +167,7 @@ class Misc(commands.Cog):
 
             for command in cog.walk_commands():
                 params = await self.get_paramaters(command.clean_params)
-                if command.aliases is not None:
+                if len(command.aliases) > 0:
                     to_add = [command.name]
                     for alias in command.aliases: to_add.append(alias)
                     embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
