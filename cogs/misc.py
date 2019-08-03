@@ -25,7 +25,7 @@ class Misc(commands.Cog):
         for path, _, files in os.walk("."):
             if path.startswith(os.environ.get("env")):
                 continue
-                
+
             for name in files:
                 if name.endswith(".py"):
                     file_amount += 1
@@ -111,7 +111,12 @@ class Misc(commands.Cog):
 
                 for command in cog.walk_commands():
                     params = await self.get_paramaters(command.clean_params)
-                    embed.add_field(name=f"{command.name} {params}", value=command.help)
+                    if command.aliases is not None:
+                        to_add = [command.name]
+                        for alias in command.aliases: to_add.append(alias)
+                        embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
+                    else:
+                        embed.add_field(name=f"{command.name} {params}", value=command.help)
                 
                 embeds.append(embed)
             
@@ -124,7 +129,12 @@ class Misc(commands.Cog):
             embed_basic = discord.Embed(title=f"Server Pets Help | {command.name}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed_basic.set_thumbnail(url=ctx.guild.me.avatar_url)
 
-            embed_basic.add_field(name=f"{command.name} {params}", value=command.help)
+            if command.aliases is not None:
+                to_add = [command.name]
+                for alias in command.aliases: to_add.append(alias)
+                embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
+            else:
+                embed_basic.add_field(name=f"{command.name} {params}", value=command.help)
 
             embed_other = discord.Embed(title=f"Server Pets Help | {command.name}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed_other.set_thumbnail(url=ctx.guild.me.avatar_url)
@@ -157,7 +167,12 @@ class Misc(commands.Cog):
 
             for command in cog.walk_commands():
                 params = await self.get_paramaters(command.clean_params)
-                embed.add_field(name=f"{command.name} {params}", value=command.help)
+                if command.aliases is not None:
+                    to_add = [command.name]
+                    for alias in command.aliases: to_add.append(alias)
+                    embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
+                else:
+                    embed_basic.add_field(name=f"{command.name} {params}", value=command.help)
             
             return await ctx.send(embed=embed)
     
