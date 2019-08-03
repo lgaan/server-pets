@@ -5,13 +5,26 @@ import asyncpg
 import discord
 from discord.ext import commands
 
+class BotContext(commands.Context):
+    async def paginate(self, **kwargs):
+        """Paginate a message"""
+        message = kwargs.get("message")
+        entries = kwargs.get("entries")
+
+        Paginator = EmbedPaginator(ctx=self, message=message, entries=entries)
+
+        return await Paginator.paginate()
+
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix="p-", case_insensitive=True)
         self.remove_command("help")
-        self.startup(["jishaku","cogs.pets","cogs.accounts","cogs.shop","cogs.misc","cogs.handlers"])
+        self.startup(["jishaku","cogs.pets","cogs.accounts","cogs.shop","cogs.misc","cogs.setting","cogs.handlers"])
         self.db = self.loop.run_until_complete(self.create_pool())
     
+    async def get_context(self, message, *, cls=None):
+        return await super().get_context(message, cls=BotContext)
+
     async def create_pool(self):
         return await asyncpg.create_pool(host=os.environ.get("DATABASE_HOST"), database=os.environ.get("DATABASE"), user=os.environ.get("PG_NAME"), password=os.environ.get("PG_PASSWORD"))
 

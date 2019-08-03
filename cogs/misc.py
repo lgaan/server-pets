@@ -25,6 +25,7 @@ class Misc(commands.Cog):
         for path, _, files in os.walk("."):
             if path.startswith(os.environ.get("env")):
                 continue
+                
             for name in files:
                 if name.endswith(".py"):
                     file_amount += 1
@@ -59,31 +60,34 @@ class Misc(commands.Cog):
     @commands.command(name="about")
     async def about(self, ctx):
         """Some info about the bot"""
-        lines = await self.fetch_lines()
-        accounts = await self.bot.db.fetch("SELECT * FROM accounts")
-        pets = await self.bot.db.fetch("SELECT pets FROM accounts")
+        try:
+            lines = await self.fetch_lines()
+            accounts = await self.bot.db.fetch("SELECT * FROM accounts")
+            pets = await self.bot.db.fetch("SELECT pets FROM accounts")
 
-        total_pets = 0
-        for entry in pets:
-            total_pets += len(entry)
-        
-        embed = discord.Embed(title="About Server Pets", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            total_pets = 0
+            for entry in pets:
+                total_pets += len(entry)
+            
+            embed = discord.Embed(title="About Server Pets", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
-        embed.set_thumbnail(url=ctx.guild.me.avatar_url)
+            embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
-        embed.add_field(name="Bot Users", value=len(self.bot.users))
+            embed.add_field(name="Bot Users", value=len(self.bot.users))
 
-        embed.add_field(name="Guilds", value=len(self.bot.guilds))
+            embed.add_field(name="Guilds", value=len(self.bot.guilds))
 
-        embed.add_field(name="Total Line Count", value=lines[0])
-        embed.add_field(name="Total Comment Count", value=lines[1])
-        embed.add_field(name="Total File Count", value=lines[2], inline=False)
+            embed.add_field(name="Total Line Count", value=lines[0])
+            embed.add_field(name="Total Comment Count", value=lines[1])
+            embed.add_field(name="Total File Count", value=lines[2], inline=False)
 
-        embed.add_field(name="Total Registered Users", value=len(accounts) if len(accounts) > 0 and accounts else "None")
-        embed.add_field(name="Total Adopted Pets", value=total_pets if total_pets > 0 else "None")
+            embed.add_field(name="Total Registered Users", value=len(accounts) if len(accounts) > 0 and accounts else "None")
+            embed.add_field(name="Total Adopted Pets", value=total_pets if total_pets > 0 else "None")
 
-        embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets)")
-        return await ctx.send(embed=embed)
+            embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets)")
+            return await ctx.send(embed=embed)
+        except Exception:
+            traceback.print_exc()
 
     @commands.command(name="help")
     async def help_(self, ctx, command_or_cog:CommandOrCog=None):
@@ -111,10 +115,8 @@ class Misc(commands.Cog):
                 
                 embeds.append(embed)
             
-            paginator = EmbedPaginator(ctx=ctx, message=None, entries=embeds)
+            return await ctx.paginate(message=None, entries=embeds)
 
-            return await paginator.paginate()
-        
         if isinstance(fetched_command_or_cog, commands.Command):
             command = fetched_command_or_cog
             params = await self.get_paramaters(command.clean_params)
@@ -142,9 +144,7 @@ class Misc(commands.Cog):
             else:
                 embed_other.add_field(name="Checks", value=", ".join(clean_checks))
 
-            paginator = EmbedPaginator(ctx=ctx, message=None, entries=[embed_basic, embed_other])
-
-            return await paginator.paginate()
+            return await ctx.paginate(message=None, entries=[embed_basic, embed_other])
         
         elif isinstance(fetched_command_or_cog, commands.Cog):
             cog = fetched_command_or_cog
@@ -164,10 +164,15 @@ class Misc(commands.Cog):
     @commands.command(name="invites", aliases=["invite"])
     async def invites_(self, ctx):
         """Gives the support server and the bot's invite"""
-        embed = discord.Embed(title="Invite Links", description="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot)", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-        embed.set_footer(icon_url=ctx.guild.me.avatar_url)
+        try:
+            test = await ctx.fetch("SELECT * FROM accounts")
+            print(test)
+            embed = discord.Embed(title="Invite Links", description="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot)", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed.set_footer(icon_url=ctx.guild.me.avatar_url)
 
-        return await ctx.send(embed=embed)
+            return await ctx.send(embed=embed)
+        except Exception:
+            traceback.print_exc()
 
 def setup(bot):
     bot.add_cog(Misc(bot))

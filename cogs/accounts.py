@@ -31,7 +31,8 @@ class Accounts(commands.Cog):
 
         pet_bars = json.dumps({"thirst":{},"hunger":{}})
         items = json.dumps({"water bowls": 0})
-        await self.bot.db.execute("INSERT INTO accounts (owner_id, balance, pet_bars, items) VALUES ($1,$2,$3,$4)", ctx.author.id, 600, pet_bars, items)
+        settings = json.dumps({"dm_notifications": True, "death_reminder":False})
+        await self.bot.db.execute("INSERT INTO accounts (owner_id, balance, pet_bars, items, settings) VALUES ($1,$2,$3,$4,$5)", ctx.author.id, 600, pet_bars, items, settings)
         
         return await ctx.message.add_reaction(":greenTick:596576670815879169")
     
@@ -67,60 +68,70 @@ class Accounts(commands.Cog):
     @commands.command(name="account")
     async def account_(self, ctx, user:discord.Member=None):
         """Get the account of a user or yourself."""
-        user = ctx.author if user is None else user
-        account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", user.id)
+        try:
+            user = ctx.author if user is None else user
+            account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", user.id)
 
-        if not account:
-            return await ctx.send("The user in question does not have an account. Use `p-create` to make one.")
+            if not account:
+                return await ctx.send("The user in question does not have an account. Use `p-create` to make one.")
 
-        embed = discord.Embed(title=f"{user.name}'s account. ({user.id})", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-        embed.set_thumbnail(url=user.avatar_url)
+            embed = discord.Embed(title=f"{user.name}'s account. ({user.id})", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed.set_thumbnail(url=user.avatar_url)
 
-        if account[0]["pets"]:
-            embed.add_field(name="Pets", value=", ".join(account[0]['pets']))
-        else:
-            embed.add_field(name="Pets", value="None")
-        embed.add_field(name="Balance", value=f"${account[0]['balance']}")
+            if account[0]["pets"]:
+                pets = json.loads(account[0]["pets"])
+                embed.add_field(name="Pets", value=", ".join([f"{len(value)} {key}(s)" for key, value in pets.items()]))
+            else:
+                embed.add_field(name="Pets", value="None")
+            embed.add_field(name="Balance", value=f"${account[0]['balance']}")
 
-        return await ctx.send(embed=embed)
+            return await ctx.send(embed=embed)
+        except Exception:
+            traceback.print_exc()
     
     @commands.command(name="pets")
     async def pets_(self, ctx, user:discord.Member=None):
         """Find out the hunger and thirst of a users or your animals."""
-        user = ctx.author if user is None else user
+        try:
+            user = ctx.author if user is None else user
 
-        account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", user.id)
+            account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", user.id)
 
-        if not account:
-            return await ctx.send("The user in question does not have an account.")
-        
-        bars = json.loads(account[0]["pet_bars"])
+            if not account:
+                return await ctx.send("The user in question does not have an account.")
+            
+            bars = json.loads(account[0]["pet_bars"])
+            if account[0]["pets"]:
+                pets = json.loads(account[0]["pets"])
 
-        embed = discord.Embed(title=f"{user.name}'s animals.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed = discord.Embed(title=f"{user.name}'s animals.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
-        if not account[0]["pets"]:
-            embed.add_field(name="This user has no pets.", value="** **")
-        else: 
-            for pet in account[0]["pets"]:
-                val = ""
+            if not account[0]["pets"] or len(json.loads(account[0]["pets"]).keys()) <= 0:
+                embed.add_field(name="This user has no pets.", value="** **")
+            else: 
+                for pet_type, pet_names in pets.items():
+                    for pet_name in pet_names:
+                        val = ""
 
-                # hunger
-                try:
-                    val += f"Hunger: {str(bars['hunger'][pet])[:4]}/10"
-                except KeyError:
-                    val += f"Hunger: 10/10"
-                
-                # thirst
-                try:
-                    val += f"\nThirst: {str(bars['thirst'][pet])[:4]}/20"
-                except KeyError:
-                    val += f"\nThirst: 20/20"
+                        # hunger
+                        try:
+                            val += f"Hunger: {str(bars['hunger'][pet_name])[:4]}/10"
+                        except KeyError:
+                            val += f"Hunger: 10/10"
+                        
+                        # thirst
+                        try:
+                            val += f"\nThirst: {str(bars['thirst'][pet_name])[:4]}/20"
+                        except KeyError:
+                            val += f"\nThirst: 20/20"
 
-                embed.add_field(name=pet, value=val)
-        
-        embed.set_thumbnail(url=user.avatar_url)
+                        embed.add_field(name=f"{pet_name.replace(pet_name[0], pet_name[0].upper())} ({pet_type})", value=val)
+            
+            embed.set_thumbnail(url=user.avatar_url)
 
-        return await ctx.send(embed=embed)
+            return await ctx.send(embed=embed)
+        except Exception:
+            traceback.print_exc()
     
     @commands.command(name="supplies")
     async def supplies_(self, ctx, user:discord.Member=None):
@@ -134,8 +145,8 @@ class Accounts(commands.Cog):
             
             items = json.loads(account[0]["items"])
 
-            embed = discord.Embed(title=f"{user.name}'s supplies", colour=discord.Colour.blue(), timestamp=ctx.message.created_at
-            
+            embed = discord.Embed(title=f"{user.name}'s supplies", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+
             for key, value in items.items():
                 if key != "water bowls":
                     embed.add_field(name=self.conversion[key], value=value, inline=False)
@@ -171,7 +182,8 @@ class Accounts(commands.Cog):
         else:
             embed.set_thumbnail(url=ctx.guild.me.avatar_url)
         
-        embed.set_footer(text=f"Your rank: {[account['owner_id'] for account in accounts].index(ctx.author.id)+1}")
+        if ctx.author.id in [account["owner_id"] for account in accounts]:
+            embed.set_footer(text=f"Your rank: {[account['owner_id'] for account in accounts].index(ctx.author.id)+1}")
 
         return await ctx.send(embed=embed)
 

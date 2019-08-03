@@ -35,9 +35,7 @@ class Handlers(commands.Cog):
         try:
             reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
             if str(reaction.emoji) == "<:greenTick:596576670815879169>":
-                await bot_msg.delete()
-                
-                return await ctx.author.send("Sorry for the inconvenience.")
+                return await bot_msg.delete()
             else:
                 for reaction in bot_msg.reactions:
                     if ctx.guild.me in reaction.users:
@@ -66,7 +64,7 @@ class Handlers(commands.Cog):
                 return await bot_msg.edit(embed=ticket)
 
         except asyncio.TimeoutError:
-            return await ctx.send("Time ran out.")
+            return
 
 
 def setup(bot):

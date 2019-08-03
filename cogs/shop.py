@@ -20,6 +20,7 @@ class Shopping(commands.Cog):
             "horse food": 60
         }
         self.shop_items_water = {
+            "water": 5,
             "one bowl": 5,
             "two bowls": 10,
             "three bowls": 15,
@@ -29,6 +30,7 @@ class Shopping(commands.Cog):
             "seven bowls": 25,
         }
         self.conversions = {
+            "water": 1,
             "one bowl": 1,
             "two bowls": 2,
             "three bowls": 3,
@@ -63,9 +65,7 @@ class Shopping(commands.Cog):
             embed_food.set_thumbnail(url=ctx.guild.icon_url)
             embed_water.set_thumbnail(url=ctx.guild.icon_url)
 
-            embed_paginator = EmbedPaginator(ctx=ctx, message=None, entries=[embed_food, embed_water])
-
-            return await embed_paginator.paginate()
+            return await ctx.paginate(message=None, entries=[embed_food, embed_water])
         
         try:
             if not account:

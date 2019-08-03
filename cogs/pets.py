@@ -46,66 +46,84 @@ class Pets(commands.Cog):
     @commands.command(name="adopt")
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
-        if pet is None:
-            embeds = []
-            for key, value in self.pet_info.items():
-                embed = discord.Embed(title=f"{ctx.guild}'s adoption centre. | {key}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+        try:
+            if pet is None:
+                embeds = []
+                for key, value in self.pet_info.items():
+                    embed = discord.Embed(title=f"{ctx.guild}'s adoption centre. | {key}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
-                for info_key, info_value in value.items():
-                    embed.add_field(name=info_key, value=f"${info_value}" if info_key in ["Earns","Price"] else info_value, inline=False)
+                    for info_key, info_value in value.items():
+                        embed.add_field(name=info_key, value=f"${info_value}" if info_key in ["Earns","Price"] else info_value, inline=False)
 
-                embed.set_thumbnail(url=ctx.guild.icon_url)
+                    embed.set_thumbnail(url=ctx.guild.icon_url)
 
-                embeds.append(embed)
-            
-            paginator = EmbedPaginator(ctx=ctx, message=None, entries=embeds)
-
-            return await paginator.paginate()
-        else:
-            author_account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", ctx.author.id)
-
-            if not author_account:
-                return await ctx.send("You need an account to adopt an animal, to do so use the `p-create` command.")
-            
-            if author_account[0]["balance"] < self.pet_prices[pet.lower()]:
-                return await ctx.send(f"You do not have enough cash to buy this pet. You can earn money by training your pet or competing in contests.")
-            
-            if pet.lower() in author_account[0]["pets"]:
-                return await ctx.send(f"You already own a {pet.lower()}.")
-
-            confirm_embed = discord.Embed(title="Confirm", description="Are you sure you want to adopt this animal?\nPlease react with <:greenTick:596576670815879169> to confirm, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-            confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
-
-            bot_msg = await ctx.send(embed=confirm_embed)
-
-            await bot_msg.add_reaction(":greenTick:596576670815879169")
-            await bot_msg.add_reaction(":redTick:596576672149667840")
-
-            try:
-                reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
-                if str(reaction.emoji) == "<:greenTick:596576670815879169>":
-                    await bot_msg.delete()
-                else:
-                    await bot_msg.delete()
-                    return await ctx.send("Canceled.")
-            except asyncio.TimeoutError:
-                return await ctx.send("Time ran out.")
-
-            if author_account[0]["pets"]:
-                author_account[0]["pets"].append(pet)
-                pets = author_account[0]["pets"]
+                    embeds.append(embed)
+                
+                return await ctx.paginate(message=None, entries=embeds)
             else:
-                pets = [pet]
-            await self.bot.db.execute("UPDATE accounts SET balance = $1, pets = $2 WHERE owner_id = $3", author_account[0]["balance"]-self.pet_prices[pet], pets, ctx.author.id)
-            
-            embed = discord.Embed(title="Success!", description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-            embed.add_field(name="Old balance", value=f"${author_account[0]['balance']}")
-            embed.add_field(name="New balance", value=f"${author_account[0]['balance']-self.pet_prices[pet]}")
+                author_account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", ctx.author.id)
 
-        return await ctx.send(embed=embed)
+                if not author_account:
+                    return await ctx.send("You need an account to adopt an animal, to do so use the `p-create` command.")
+                
+                if author_account[0]["balance"] < self.pet_prices[pet.lower()]:
+                    return await ctx.send(f"You do not have enough cash to buy this pet. You can earn money by training your pet or competing in contests.")
+                
+                '''if pet.lower() in author_account[0]["pets"]:
+                    return await ctx.send(f"You already own a {pet.lower()}.")
+                '''
+
+                confirm_embed = discord.Embed(title="Confirm", description="Are you sure you want to adopt this animal?\nPlease react with <:greenTick:596576670815879169> to confirm, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
+
+                bot_msg = await ctx.send(embed=confirm_embed)
+
+                await bot_msg.add_reaction(":greenTick:596576670815879169")
+                await bot_msg.add_reaction(":redTick:596576672149667840")
+
+                try:
+                    reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
+                    if str(reaction.emoji) == "<:greenTick:596576670815879169>":
+                        await bot_msg.delete()
+                    else:
+                        await bot_msg.delete()
+                        return await ctx.send("Canceled.")
+                except asyncio.TimeoutError:
+                    return await ctx.send("Time ran out.")
+                
+                name_message = await ctx.send(embed=discord.Embed(title=f"Your {pet.lower()}", description=f"Your {pet.lower()} will need a name! Please reply to this message with the name of your pet.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at))
+                
+                try:
+                    message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
+
+                    if message:
+                        await name_message.delete()
+                except asyncio.TimeoutError:
+                    return await ctx.send("Time ran out.")
+                
+                if author_account[0]["pets"]:
+                    pets_loaded = json.loads(author_account[0]["pets"])
+
+                    try:
+                        pets_loaded[pet.lower()].append(message.content.lower())
+                    except KeyError:
+                        pets_loaded[pet.lower()] = [message.content.lower()]
+                    pets = pets_loaded
+                else:
+                    pets = {pet.lower(): [message.content.lower()]}
+
+                await self.bot.db.execute("UPDATE accounts SET balance = $1, pets = $2 WHERE owner_id = $3", author_account[0]["balance"]-self.pet_prices[pet], json.dumps(pets), ctx.author.id)
+                
+                embed = discord.Embed(title="Success!", description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                embed.add_field(name="Old balance", value=f"${author_account[0]['balance']}")
+                embed.add_field(name="New balance", value=f"${author_account[0]['balance']-self.pet_prices[pet]}")
+
+            return await ctx.send(embed=embed)
+        except Exception:
+            traceback.print_exc()
     
     @commands.command(name="feed")
-    async def feed_(self, ctx, pet):
+    async def feed_(self, ctx, *, pet):
         """Feed a pet a certain amount of food"""
         account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", ctx.author.id)
 
@@ -115,16 +133,18 @@ class Pets(commands.Cog):
         if not account[0]["pets"]:
             return await ctx.send("You do not have any pets to feed. To adopt one please use `p-adopt`")
         
-        if pet not in account[0]["pets"]:
-            return await ctx.send(f"You do not own a {pet}. To buy one please say `p-adopt {pet}`")
+        pets = json.loads(account[0]["pets"])
+        if not any(pet in sublist for sublist in [value for _, value in pets.items()]):
+            return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
         
         data = json.loads(account[0]["pet_bars"])
         items = json.loads(account[0]["items"])
 
+        pet_type = list(pets.keys())[[p for p in pets.values() if pet in p][0].index(pet)]
         try:
-            food = items[f"{pet.lower()} food"]
+            food = items[f"{pet_type} food"]
         except KeyError:
-            return await ctx.send(f"It looks like you do not have any {pet.lower()} food. Please buy some using `p-buy {pet.lower()} food`")
+            return await ctx.send(f"It looks like you do not have any {pet_type.lower()} food. Please buy some using `p-buy {pet_type.lower()} food`")
 
         try:
             pet_hunger = data["hunger"][pet]
@@ -145,16 +165,16 @@ class Pets(commands.Cog):
                 await ctx.send(f"Your pet has gained {str(amount)[:4]} hunger. It's health bar has changed to {str(data['hunger'][pet])[:4]}/10")
 
             if (food - 1) <= 0:
-                del items[f"{pet.lower()} food"]
+                del items[f"{pet_type.lower()} food"]
             else:
-                items[f"{pet.lower()} food"] = items[f"{pet.lower()} food"] - 1
+                items[f"{pet_type.lower()} food"] = items[f"{pet_type.lower()} food"] - 1
 
-            return await self.bot.db.execute("UPDATE accounts SET pet_bars = $1, items = $2 WHERE owner_id = $3", json.dumps(data), json.dumps(items),ctx.author.id)
+            return await self.bot.db.execute("UPDATE accounts SET pet_bars = $1, items = $2 WHERE owner_id = $3", json.dumps(data), json.dumps(items), ctx.author.id)
         except KeyError:
-            return await ctx.send(f"Your {pet} is on full hunger. You can check all of your pets' hunger and thirst bars using `p-pets`")
+            return await ctx.send(f"{pet} is on full hunger. You can check all of your pets' hunger and thirst bars using `p-pets`")
     
     @commands.command(name="water")
-    async def water_(self, ctx, pet, amount:int=1):
+    async def water_(self, ctx, *, pet):
         """Give a pet a certain amount of water. Default amount is 1"""
         account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", ctx.author.id)
 
@@ -164,8 +184,9 @@ class Pets(commands.Cog):
         if not account[0]["pets"]:
             return await ctx.send("You do not have any pets to feed. To adopt one please use `p-adopt`")
         
-        if pet not in account[0]["pets"]:
-            return await ctx.send(f"You do not own a {pet}. To buy one please say `p-adopt {pet}`")
+        pets = json.loads(account[0]["pets"])
+        if not any(pet in sublist for sublist in [value for _, value in pets.items()]):
+            return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
         
         data = json.loads(account[0]["pet_bars"])
         items = json.loads(account[0]["items"])
@@ -199,7 +220,7 @@ class Pets(commands.Cog):
 
             return await self.bot.db.execute("UPDATE accounts SET pet_bars = $1, items = $2 WHERE owner_id = $3", json.dumps(data), json.dumps(items), ctx.author.id)
         except KeyError:
-            return await ctx.send(f"Your {pet} is on full hunger. You can check all of your pets' hunger and thirst bars using `p-pets`")
+            return await ctx.send(f"Your {pet} is on full thirst. You can check all of your pets' hunger and thirst bars using `p-pets`")
         
 
 def setup(bot):
