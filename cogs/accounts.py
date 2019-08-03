@@ -174,7 +174,13 @@ class Accounts(commands.Cog):
             index += 1
 
             user = self.bot.get_user(account["owner_id"])
-            embed.add_field(name=f"{index} | {user}", value=f"{len(account['pets']) if account['pets'] else '0'} pets, has ${account['balance']}", inline=False)
+
+            total_pets = 0
+            if account["pets"]:
+                for _, value in json.loads(account["pets"]).items():
+                    total_pets += len(value)
+
+            embed.add_field(name=f"{index} | {user}", value=f"{total_pets if account['pets'] else '0'} pets, has ${account['balance']}", inline=False)
             embed.add_field(name="** **", value="** **", inline=False)
         
         if lb_type == None:
