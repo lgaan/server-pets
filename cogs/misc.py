@@ -118,6 +118,8 @@ class Misc(commands.Cog):
                     else:
                         embed.add_field(name=f"{command.name} {params}", value=command.help)
                 
+                embed.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
+                
                 embeds.append(embed)
             
             return await ctx.paginate(message=None, entries=embeds)
@@ -154,6 +156,9 @@ class Misc(commands.Cog):
             else:
                 embed_other.add_field(name="Checks", value=", ".join(clean_checks))
 
+            embed_basic.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
+            embed_other.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
+
             return await ctx.paginate(message=None, entries=[embed_basic, embed_other])
         
         elif isinstance(fetched_command_or_cog, commands.Cog):
@@ -174,6 +179,7 @@ class Misc(commands.Cog):
                 else:
                     embed_basic.add_field(name=f"{command.name} {params}", value=command.help)
             
+            embed.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
             return await ctx.send(embed=embed)
     
     @commands.command(name="invites", aliases=["invite"])
