@@ -5,6 +5,8 @@ import asyncpg
 import discord
 from discord.ext import commands
 
+from helpers.paginator import EmbedPaginator
+
 class BotContext(commands.Context):
     async def paginate(self, **kwargs):
         """Paginate a message"""
