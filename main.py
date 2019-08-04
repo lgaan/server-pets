@@ -31,6 +31,25 @@ class Bot(commands.Bot):
     async def get_context(self, message, *, cls=None):
         return await super().get_context(message, cls=BotContext)
 
+    
+    def load_from_folder(self, folder):
+        if not isinstance(folder, Path):
+            folder = Path(folder)
+            
+        for ext in folder.glob("*.py"):
+            if ext.startswith("__"):
+                continue
+            module = ext.as_posix().replace("/", ".").replace(".py", "")
+            try:
+                self.load_extension(module)
+                print(f"Loaded extension: {module}")
+            except commands.ExtensionAlreadyLoaded:
+                self.reload_extension(module)
+
+            except commands.NoEntryPointError:
+                print(f"Extension: {ext.as_posix()} does not have a setup function")
+
+
     async def on_connect(self):
         credentials = dict(
             host=os.environ.get("DATABASE_HOST"),
@@ -39,28 +58,12 @@ class Bot(commands.Bot):
             password=os.environ.get("PG_PASSWORD")
         )
         self.db = await asyncpg.create_pool(**credentials)
-        folders = [
-            Path("cogs"),
-            Path("background")
-        ]
-
-        for i in folders:
-            for ext in i.glob("*.py"):
-                if ext.startswith("__"):
-                    continue
-                module = ext.as_posix().replace("/", ".").replace(".py", "")
-                try:
-                    self.load_extension(module)
-                    print(f"Loaded extension: {module}")
-                except commands.ExtensionAlreadyLoaded:
-                    self.reload_extension(module)
-
-                except commands.NoEntryPointError:
-                    print(f"Extension: {ext.as_posix()} does not have a setup function")
-
+        self.load_from_folder("cogs")
+        
         
 
     async def on_ready(self):
+        self.load_from_folder("background")
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Server Pets"))
         print("Connected")
 
