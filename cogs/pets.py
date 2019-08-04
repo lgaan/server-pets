@@ -66,6 +66,9 @@ class Pets(commands.Cog):
                 if not author_account:
                     return await ctx.send("You need an account to adopt an animal, to do so use the `p-create` command.")
                 
+                if pet.lower() not in self.pets:
+                    return await ctx.send("That pet does not exist. To view a list of pets use `p-adopt`")
+                    
                 if author_account[0]["balance"] < self.pet_prices[pet.lower()]:
                     return await ctx.send(f"You do not have enough cash to buy this pet. You can earn money by training your pet or competing in contests.")
                 
