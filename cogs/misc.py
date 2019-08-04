@@ -135,7 +135,7 @@ class Misc(commands.Cog):
             if len(command.aliases) > 0:
                 to_add = [command.name]
                 for alias in command.aliases: to_add.append(alias)
-                embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
+                embed_basic.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
             else:
                 embed_basic.add_field(name=f"{command.name} {params}", value=command.help)
 
