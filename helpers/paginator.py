@@ -25,7 +25,7 @@ class EmbedPaginator:
             for emote in self.emotes.keys():
                 await self.message.add_reaction(emote)
         else:
-            return awair self.message.add_reaction("\u23f9")
+            return await self.message.add_reaction("\u23f9")
 
     async def page_forward(self):
         try:
