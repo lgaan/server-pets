@@ -126,52 +126,54 @@ class Pets(commands.Cog):
     async def feed_(self, ctx, *, pet):
         """Feed a pet a certain amount of food"""
         account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", ctx.author.id)
-
-        if not account:
-            return await ctx.send("You do not have an account. To create one please use `p-create`")
-        
-        if not account[0]["pets"]:
-            return await ctx.send("You do not have any pets to feed. To adopt one please use `p-adopt`")
-        
-        pets = json.loads(account[0]["pets"])
-        if not any(pet.lower() in sublist for sublist in [value for _, value in pets.items()]):
-            return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
-        
-        data = json.loads(account[0]["pet_bars"])
-        items = json.loads(account[0]["items"])
-
-        pet_type = list(pets.keys())[[p for p in pets.values() if pet in p][0].index(pet)]
         try:
-            food = items[f"{pet_type} food"]
-        except KeyError:
-            return await ctx.send(f"It looks like you do not have any {pet_type.lower()} food. Please buy some using `p-buy {pet_type.lower()} food`")
+            if not account:
+                return await ctx.send("You do not have an account. To create one please use `p-create`")
+        
+            if not account[0]["pets"]:
+                return await ctx.send("You do not have any pets to feed. To adopt one please use `p-adopt`")
+        
+            pets = json.loads(account[0]["pets"])
+            if not any(pet.lower() in sublist for sublist in [value for _, value in pets.items()]):
+                return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
+        
+            data = json.loads(account[0]["pet_bars"])
+            items = json.loads(account[0]["items"])
 
-        try:
-            pet_hunger = data["hunger"][pet]
-            amount_needed = 10 - pet_hunger
+            pet_type = list(pets.keys())[[p for p in pets.values() if pet in p][0].index(pet)]
+            try:
+                food = items[f"{pet_type} food"]
+            except KeyError:
+                return await ctx.send(f"It looks like you do not have any {pet_type.lower()} food. Please buy some using `p-buy {pet_type.lower()} food`")
 
-            if pet_hunger < 3:
-                data["hunger"][pet] = data["hunger"][pet] + amount_needed
+            try:
+                pet_hunger = data["hunger"][pet]
+                amount_needed = 10 - pet_hunger
 
-                await ctx.send(f"Your pet has gained {str(amount_needed)[:4]} hunger. It's health bar has changed to {str(data['hunger'][pet])[:4]}/10")
+                if pet_hunger < 3:
+                    data["hunger"][pet] = data["hunger"][pet] + amount_needed
 
-            else:
-                amount = random.uniform(1.0, amount_needed)
-                data["hunger"][pet] = data["hunger"][pet] + amount
+                    await ctx.send(f"Your pet has gained {str(amount_needed)[:4]} hunger. It's health bar has changed to {str(data['hunger'][pet])[:4]}/10")
 
-                if data["hunger"][pet] > 10:
-                    data["hunger"][pet] = 10
+                else:
+                    amount = random.uniform(1.0, amount_needed)
+                    data["hunger"][pet] = data["hunger"][pet] + amount
 
-                await ctx.send(f"Your pet has gained {str(amount)[:4]} hunger. It's health bar has changed to {str(data['hunger'][pet])[:4]}/10")
+                    if data["hunger"][pet] > 10:
+                        data["hunger"][pet] = 10
 
-            if (food - 1) <= 0:
-                del items[f"{pet_type.lower()} food"]
-            else:
-                items[f"{pet_type.lower()} food"] = items[f"{pet_type.lower()} food"] - 1
+                    await ctx.send(f"Your pet has gained {str(amount)[:4]} hunger. It's health bar has changed to {str(data['hunger'][pet])[:4]}/10")
+ 
+                if (food - 1) <= 0:
+                    del items[f"{pet_type.lower()} food"]
+                else:
+                    items[f"{pet_type.lower()} food"] = items[f"{pet_type.lower()} food"] - 1
 
-            return await self.bot.db.execute("UPDATE accounts SET pet_bars = $1, items = $2 WHERE owner_id = $3", json.dumps(data), json.dumps(items), ctx.author.id)
-        except KeyError:
-            return await ctx.send(f"{pet} is on full hunger. You can check all of your pets' hunger and thirst bars using `p-pets`")
+                return await self.bot.db.execute("UPDATE accounts SET pet_bars = $1, items = $2 WHERE owner_id = $3", json.dumps(data), json.dumps(items), ctx.author.id)
+            except KeyError:
+                return await ctx.send(f"{pet} is on full hunger. You can check all of your pets' hunger and thirst bars using `p-pets`")
+        except Exception:
+            traceback.print_exc()
     
     @commands.command(name="water")
     async def water_(self, ctx, *, pet):
