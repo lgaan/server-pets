@@ -46,6 +46,8 @@ class Bot(commands.Bot):
 
         for i in folders:
             for ext in i.glob("*.py"):
+                if ext.startswith("__"):
+                    continue
                 module = ext.as_posix().replace("/", ".").replace(".py", "")
                 try:
                     self.load_extension(module)
