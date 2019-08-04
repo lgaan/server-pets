@@ -52,10 +52,11 @@ class PetManager(commands.Cog):
                                 hunger_rate = self.pet_hunger_rates[pet_type]
                                 amount_to_take = random.uniform(hunger_rate[0],hunger_rate[1])
 
-                                if pet_name in data["hunger"].keys() and (data["hunger"][pet_name] - amount_to_take) <= 0 and settings["death_reminder"]:
-                                    owner = self._bot.get_user(account["owner_id"])
+                                if pet_name in data["hunger"].keys() and (data["hunger"][pet_name] - amount_to_take) <= 0:
+                                    if settings["death_reminder"]:
+                                        owner = self._bot.get_user(account["owner_id"])
 
-                                    await owner.send(f"{pet_name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
+                                        await owner.send(f"{pet_name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
 
                                     del data["hunger"][pet_name]
                                     pets[pet_type].remove(pet_name)
@@ -78,10 +79,11 @@ class PetManager(commands.Cog):
                                 thirst_rate = self.pet_thirst_rates[pet_type]
                                 amount_to_take = random.uniform(thirst_rate[0],thirst_rate[1])
                                 
-                                if pet_name in data["thirst"].keys() and (data["thirst"][pet_name] - amount_to_take) <= 0 and settings["death_reminder"]:
-                                    owner = self._bot.get_user(account["owner_id"])
+                                if pet_name in data["thirst"].keys() and (data["thirst"][pet_name] - amount_to_take) <= 0:
+                                    if settings["death_reminder"]
+                                        owner = self._bot.get_user(account["owner_id"])
 
-                                    await owner.send(f"{pet_name} was found to have not been watered in a long time. The animal rescue company has had to remove your pet.")
+                                        await owner.send(f"{pet_name} was found to have not been watered in a long time. The animal rescue company has had to remove your pet.")
 
                                     del data["thirst"][pet_name]
                                     pets[pet_type].remove(pet_name)
