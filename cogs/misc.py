@@ -23,9 +23,9 @@ class Misc(commands.Cog):
         comments = 0
 
         for path, _, files in os.walk("."):
-            if path.startswith(os.environ.get("env")):
+            '''if path.startswith(os.environ.get("env")):
                 continue
-
+            '''
             for name in files:
                 if name.endswith(".py"):
                     file_amount += 1
@@ -84,7 +84,8 @@ class Misc(commands.Cog):
             embed.add_field(name="Total Registered Users", value=len(accounts) if len(accounts) > 0 and accounts else "None")
             embed.add_field(name="Total Adopted Pets", value=total_pets if total_pets > 0 else "None")
 
-            embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets)")
+            embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets) | [Discord Bot List](https://discordbots.org/bot/502205162694246412) | [Vote](https://discordbots.org/bot/502205162694246412/vote)")
+            embed.set_image(url="https://discordbots.org/api/widget/502205162694246412.png")
             return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()

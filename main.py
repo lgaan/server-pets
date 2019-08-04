@@ -39,7 +39,7 @@ class Bot(commands.Bot):
                 traceback.print_exc()
     
     async def on_ready(self):
-        self.startup(["background.petmanager","background.accountmanager"])
+        self.startup(["background.petmanager","background.accountmanager","background.dbl"])
 
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Server Pets"))
         print("Connected")
