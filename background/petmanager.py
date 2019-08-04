@@ -42,6 +42,7 @@ class PetManager(commands.Cog):
 
             for account in accounts:
                 data = json.loads(account["pet_bars"])
+                settings = json.loads(account["settings"]
                 if account["pets"] != None:
                     pets = json.loads(account["pets"])
                     for pet_type, pet_names in pets.items():
@@ -51,7 +52,7 @@ class PetManager(commands.Cog):
                                 hunger_rate = self.pet_hunger_rates[pet_type]
                                 amount_to_take = random.uniform(hunger_rate[0],hunger_rate[1])
 
-                                if pet_name in data["hunger"].keys() and (data["hunger"][pet_name] - amount_to_take) <= 0 and account["settings"]["death_reminder"]:
+                                if pet_name in data["hunger"].keys() and (data["hunger"][pet_name] - amount_to_take) <= 0 and settings["death_reminder"]:
                                     owner = self._bot.get_user(account["owner_id"])
 
                                     await owner.send(f"{pet_name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
@@ -64,7 +65,7 @@ class PetManager(commands.Cog):
                                 else:
                                     data["hunger"][pet_name] = (10.0 - amount_to_take)       
 
-                                if data["hunger"][pet_name] < 3.0 and account["settings"]["dm_notifications"]:
+                                if data["hunger"][pet_name] < 3.0 and settings["dm_notifications"]:
                                     owner = self._bot.get_user(account["owner_id"])
 
                                     await owner.send(f"{pet_name} has not been fed for a while, consider feeding it with the `p-feed {pet_name}` command.")
@@ -77,7 +78,7 @@ class PetManager(commands.Cog):
                                 thirst_rate = self.pet_thirst_rates[pet_type]
                                 amount_to_take = random.uniform(thirst_rate[0],thirst_rate[1])
                                 
-                                if pet_name in data["thirst"].keys() and (data["thirst"][pet_name] - amount_to_take) <= 0 and account["settings"]["death_reminder"]:
+                                if pet_name in data["thirst"].keys() and (data["thirst"][pet_name] - amount_to_take) <= 0 and settings["death_reminder"]:
                                     owner = self._bot.get_user(account["owner_id"])
 
                                     await owner.send(f"{pet_name} was found to have not been watered in a long time. The animal rescue company has had to remove your pet.")
@@ -90,7 +91,7 @@ class PetManager(commands.Cog):
                                 else:
                                     data["thirst"][pet_name] = (20.0 - amount_to_take)     
 
-                                if data["thirst"][pet_name] < 3.0 and account["settings"]["dm_notifications"]:
+                                if data["thirst"][pet_name] < 3.0 and settings["dm_notifications"]:
                                     owner = self._bot.get_user(account["owner_id"])
 
                                     await owner.send(f"{pet_name} has not drunk for a while, give it a drink with the `p-water {pet_name}` command.") 
