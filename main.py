@@ -17,7 +17,7 @@ class BotContext(commands.Context):
 
         return await Paginator.paginate()
     
-    asyng def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None):
+    async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None):
         content = content.replace("@everyone","`@everyone`).replace("@here","`@here`")
         return await super().send(content=content, tts=tts, embed=embed, file=file, files=files, delete_after=delete_after, nonce=nonce) 
 
