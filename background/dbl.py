@@ -14,7 +14,7 @@ class Dbl(commands.Cog):
 
         self.update_stats.start()
 
-    async def cog_unload(self):
+    def cog_unload(self):
         self.update_stats.cancel()
 
     @tasks.loop(minutes=30.0)
