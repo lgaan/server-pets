@@ -134,7 +134,7 @@ class Pets(commands.Cog):
             return await ctx.send("You do not have any pets to feed. To adopt one please use `p-adopt`")
         
         pets = json.loads(account[0]["pets"])
-        if not any(pet.lower() in sublist for sublist in [value.lower() for _, value in pets.items()]):
+        if not any(pet.lower() in sublist for sublist in [value for _, value in pets.items()]):
             return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
         
         data = json.loads(account[0]["pet_bars"])
@@ -185,7 +185,7 @@ class Pets(commands.Cog):
             return await ctx.send("You do not have any pets to feed. To adopt one please use `p-adopt`")
         
         pets = json.loads(account[0]["pets"])
-        if not any(pet.lower() in sublist for sublist in [value.lower() for _, value in pets.items()]):
+        if not any(pet.lower() in sublist for sublist in [value for _, value in pets.items()]):
             return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
         
         data = json.loads(account[0]["pet_bars"])
