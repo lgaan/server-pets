@@ -25,7 +25,7 @@ class Settings(commands.Cog):
 
         account_settings = json.loads(account[0]["settings"])
 
-        embed = discord.Embed(title=f"{ctx.author.name}'s settings", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+        embed = discord.Embed(title=f"{ctx.author.name}'s settings", description="Use the arrows to navigate between settings, the one > marked like this is the current slection.\ Use the switch emoji to change the setting.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
         incr = 0
         for key, value in account_settings.items():
