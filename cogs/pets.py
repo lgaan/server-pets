@@ -104,6 +104,9 @@ class Pets(commands.Cog):
                 except asyncio.TimeoutError:
                     return await ctx.send("Time ran out.")
                 
+                if "@everyone" in message.content or "@here" in message.content:
+                    return await ctx.send("That pet name includes a blacklisted word. Please try again with another name.")
+                    
                 if author_account[0]["pets"]:
                     pets_loaded = json.loads(author_account[0]["pets"])
 
