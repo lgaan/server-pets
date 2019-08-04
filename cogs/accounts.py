@@ -125,7 +125,7 @@ class Accounts(commands.Cog):
                         except KeyError:
                             val += f"\nThirst: 20/20"
 
-                        embed.add_field(name=f"{pet_name.replace(pet_name[0], pet_name[0].upper())} ({pet_type})", value=val)
+                        embed.add_field(name=f"{pet_name[0].upper()}{pet_name[1:]} ({pet_type})", value=val)
             
             embed.set_thumbnail(url=user.avatar_url)
 
