@@ -41,7 +41,7 @@ class Handlers(commands.Cog):
                     if ctx.guild.me in reaction.users:
                         await reaction.remove(ctx.guild.me)
 
-                ticket = discord.Embed(title="There was an error.", description="Please visit the [support server](https://discord.gg/kayUTZm) and read <#605755443888783360>.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                ticket = discord.Embed(title="There was an error.", description="Please visit the [support server](https://discord.gg/kayUTZm) and read the information channel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                 ticket.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                 code = await self.create_token()
