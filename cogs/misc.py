@@ -178,7 +178,7 @@ class Misc(commands.Cog):
                     for alias in command.aliases: to_add.append(alias)
                     embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
                 else:
-                    embed_basic.add_field(name=f"{command.name} {params}", value=command.help)
+                    embed.add_field(name=f"{command.name} {params}", value=command.help)
             
             embed.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
             return await ctx.send(embed=embed)
