@@ -80,7 +80,7 @@ class PetManager(commands.Cog):
                                 amount_to_take = random.uniform(thirst_rate[0],thirst_rate[1])
                                 
                                 if pet_name in data["thirst"].keys() and (data["thirst"][pet_name] - amount_to_take) <= 0:
-                                    if settings["death_reminder"]
+                                    if settings["death_reminder"]:
                                         owner = self._bot.get_user(account["owner_id"])
 
                                         await owner.send(f"{pet_name} was found to have not been watered in a long time. The animal rescue company has had to remove your pet.")
