@@ -125,6 +125,7 @@ class Pets(commands.Cog):
     @commands.command(name="feed")
     async def feed_(self, ctx, *, pet):
         """Feed a pet a certain amount of food"""
+        pet = pet.lower()
         account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", ctx.author.id)
         try:
             if not account:
@@ -178,6 +179,7 @@ class Pets(commands.Cog):
     @commands.command(name="water")
     async def water_(self, ctx, *, pet):
         """Give a pet a certain amount of water. Default amount is 1"""
+        pet = pet.lower()
         account = await self.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", ctx.author.id)
 
         if not account:
