@@ -57,7 +57,7 @@ class Misc(commands.Cog):
         """Get the bot's latency"""
         return await ctx.send(f"{round((self.bot.latency*1000))}ms")
 
-    @commands.command(name="about")
+    @commands.command(name="about", aliases=["info"])
     async def about(self, ctx):
         """Some info about the bot"""
         try:
