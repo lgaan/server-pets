@@ -42,7 +42,7 @@ class PetManager(commands.Cog):
 
             for account in accounts:
                 data = json.loads(account["pet_bars"])
-                settings = json.loads(account["settings"]
+                settings = json.loads(account["settings"])
                 if account["pets"] != None:
                     pets = json.loads(account["pets"])
                     for pet_type, pet_names in pets.items():
