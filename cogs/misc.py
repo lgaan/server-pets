@@ -185,9 +185,7 @@ class Misc(commands.Cog):
     @commands.command(name="invites", aliases=["invite"])
     async def invites_(self, ctx):
         """Gives the support server and the bot's invite"""
-        try:
-            test = await self.bot.db.fetch("SELECT * FROM accounts")
-            print(test)
+        try:                       
             embed = discord.Embed(title="Invite Links", description="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot)", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed.set_footer(icon_url=ctx.guild.me.avatar_url)
 
