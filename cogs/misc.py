@@ -23,9 +23,9 @@ class Misc(commands.Cog):
         comments = 0
 
         for path, _, files in os.walk("."):
-            '''if path.startswith(os.environ.get("env")):
+            if path.startswith(os.environ.get("env")):
                 continue
-            '''
+            
             for name in files:
                 if name.endswith(".py"):
                     file_amount += 1
