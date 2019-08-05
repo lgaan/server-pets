@@ -80,7 +80,7 @@ class Accounts(commands.Cog):
 
             if account[0]["pets"]:
                 pets = json.loads(account[0]["pets"])
-                embed.add_field(name="Pets", value=", ".join([f"{len(value)} {key}(s)" for key, value in pets.items()]))
+                embed.add_field(name="Pets", value=", ".join([f"{len(value)} {key}(s)" for key, value in pets.items() if len(value) > 0]))
             else:
                 embed.add_field(name="Pets", value="None")
             embed.add_field(name="Balance", value=f"${account[0]['balance']}")
