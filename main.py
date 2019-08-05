@@ -37,7 +37,7 @@ class Bot(commands.Bot):
         for ext in os.listdir(f"{folder}"):
             if ext.startswith("__"):
                 continue
-            module = ext.as_posix().replace("/", ".").replace(".py", "")
+            module = ext.replace("/", ".").replace(".py", "")
             try:
                 self.load_extension(module)
                 print(f"Loaded extension: {module}")
