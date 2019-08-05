@@ -34,7 +34,7 @@ class Bot(commands.Bot):
 
     
     async def load_from_folder(self, folder):                     
-        for ext in os.listdir(f"/{folder}"):
+        for ext in os.listdir(f"{folder}"):
             if ext.startswith("__"):
                 continue
             module = ext.as_posix().replace("/", ".").replace(".py", "")
