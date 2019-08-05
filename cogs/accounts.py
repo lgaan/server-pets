@@ -65,7 +65,7 @@ class Accounts(commands.Cog):
 
         return await ctx.send("Your account has been deleted.")
 
-    @commands.command(name="account")
+    @commands.command(name="account", aliases=["profile"])
     async def account_(self, ctx, user:discord.Member=None):
         """Get the account of a user or yourself."""
         try:
@@ -133,7 +133,7 @@ class Accounts(commands.Cog):
         except Exception:
             traceback.print_exc()
     
-    @commands.command(name="supplies")
+    @commands.command(name="supplies", aliases=["inventory","inv"])
     async def supplies_(self, ctx, user:discord.Member=None):
         """Shows the supplies of a user or yourself."""
         try:
