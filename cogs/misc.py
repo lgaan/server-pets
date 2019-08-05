@@ -4,6 +4,8 @@ import os
 import codecs
 import pathlib
 
+import dbl
+
 import discord
 from discord.ext import commands
 
@@ -13,6 +15,7 @@ from helpers.paginator import EmbedPaginator
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.dblpy = dbl.Client(bot, os.environ.get("DBL_TOKEN"))
 
         self.ignored_cogs = ["jishaku", "handlers", "accountmanager", "petmanager"]
     
@@ -85,7 +88,7 @@ class Misc(commands.Cog):
             embed.add_field(name="Total Adopted Pets", value=total_pets if total_pets > 0 else "None")
 
             embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets) | [Discord Bot List](https://discordbots.org/bot/502205162694246412) | [Vote](https://discordbots.org/bot/502205162694246412/vote)")
-            #embed.set_image(url="https://discordbots.org/api/widget/502205162694246412.png")
+            embed.set_image(url=self.dblpy.generate_widget_large())
             return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()
