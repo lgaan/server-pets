@@ -33,7 +33,8 @@ class Bot(commands.Bot):
         return await super().get_context(message, cls=BotContext)
 
     
-    async def load_from_folder(self, folder):                     
+    async def load_from_folder(self, folder):      
+        self.load_extension("jishaku")
         for ext in os.listdir(f"{folder}"):
             if ext.startswith("__"):
                 continue
