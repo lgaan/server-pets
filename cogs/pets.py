@@ -147,7 +147,8 @@ class Pets(commands.Cog):
             data = json.loads(account[0]["pet_bars"])
             items = json.loads(account[0]["items"])
 
-            pet_type = list(pets.keys())[[p for p in pets.values() if pet in p][0].index(pet)]
+            pet_type = [key for key, value if pet.lower() in value][0]
+            print(pet_type)                    
             try:
                 food = items[f"{pet_type} food"]
             except KeyError:
