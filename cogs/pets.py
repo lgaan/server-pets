@@ -147,7 +147,7 @@ class Pets(commands.Cog):
             data = json.loads(account[0]["pet_bars"])
             items = json.loads(account[0]["items"])
 
-            pet_type = [key for key, value if pet.lower() in value][0]
+            pet_type = [key for key, value in pets.items() if pet.lower() in value][0]
             print(pet_type)                    
             try:
                 food = items[f"{pet_type} food"]
