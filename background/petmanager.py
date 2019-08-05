@@ -53,11 +53,14 @@ class PetManager(commands.Cog):
                                 amount_to_take = random.uniform(hunger_rate[0],hunger_rate[1])
 
                                 if pet_name in data["hunger"].keys() and (data["hunger"][pet_name] - amount_to_take) <= 0:
-                                    if settings["death_reminder"]:
+                                    if settings["death_reminder"]:                               
                                         owner = self._bot.get_user(account["owner_id"])
 
-                                        await owner.send(f"{pet_name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
-
+                                        try:
+                                            await owner.send(f"{pet_name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
+                                        except discord.Forbidden:
+                                            pass
+                                            
                                     del data["hunger"][pet_name]
                                     pets[pet_type].remove(pet_name)
 
