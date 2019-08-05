@@ -33,7 +33,7 @@ class Bot(commands.Bot):
         return await super().get_context(message, cls=BotContext)
 
     
-    def load_from_folder(self, folder):
+    async def load_from_folder(self, folder):
         if not isinstance(folder, Path):
             folder = Path(folder)
             
@@ -59,12 +59,12 @@ class Bot(commands.Bot):
             password=os.environ.get("PG_PASSWORD")
         )
         self.db = await asyncpg.create_pool(**credentials)
-        self.load_from_folder("cogs")
+        await self.load_from_folder("cogs")
         
         
 
     async def on_ready(self):
-        self.load_from_folder("background")
+        await self.load_from_folder("background")
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Server Pets"))
         print("Connected")
 
