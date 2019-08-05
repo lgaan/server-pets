@@ -28,13 +28,13 @@ class Bot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix="p-", case_insensitive=True)
         self.remove_command("help")
+        self.load_extension("jishaku")
 
     async def get_context(self, message, *, cls=None):
         return await super().get_context(message, cls=BotContext)
 
     
-    async def load_from_folder(self, folder):      
-        self.load_extension("jishaku")
+    async def load_from_folder(self, folder):           
         for ext in os.listdir(f"{folder}"):
             if ext.startswith("__"):
                 continue
