@@ -33,11 +33,8 @@ class Bot(commands.Bot):
         return await super().get_context(message, cls=BotContext)
 
     
-    async def load_from_folder(self, folder):
-        if not isinstance(folder, Path):
-            folder = Path(folder)
-            
-        for ext in folder.glob("*.py"):
+    async def load_from_folder(self, folder):                     
+        for ext in os.listdir(f"/{folder}"):
             if ext.startswith("__"):
                 continue
             module = ext.as_posix().replace("/", ".").replace(".py", "")
@@ -46,6 +43,7 @@ class Bot(commands.Bot):
                 print(f"Loaded extension: {module}")
             except commands.ExtensionAlreadyLoaded:
                 self.reload_extension(module)
+                print(f"Reloaded extension: {module}")
 
             except commands.NoEntryPointError:
                 print(f"Extension: {ext.as_posix()} does not have a setup function")
