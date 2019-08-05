@@ -31,9 +31,7 @@ class DiscordBotList(commands.Cog):
     @commands.command(name="dbl")
     async def dbl_(self, ctx):
         """Get some info about the DBL stats"""
-        bot = self.dblpy.get_bot_info()
-        
-        return await ctx.send(bot)
+        bot = await self.dblpy.get_bot_info()
 
         embed = discord.Embed(title="Server Pets DBL", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
