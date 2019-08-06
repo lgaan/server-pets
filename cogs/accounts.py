@@ -31,7 +31,7 @@ class Accounts(commands.Cog):
 
         pet_bars = json.dumps({"thirst":{},"hunger":{}})
         items = json.dumps({"water bowls": 0})
-        settings = json.dumps({"dm_notifications": True, "death_reminder":False, "channel_mentions":False})
+        settings = json.dumps({"dm_notifications": True, "death_reminder":True, "channel_mentions":False})
         await self.bot.db.execute("INSERT INTO accounts (owner_id, balance, pet_bars, items, settings) VALUES ($1,$2,$3,$4,$5)", ctx.author.id, 600, pet_bars, items, settings)
         
         return await ctx.message.add_reaction(":greenTick:596576670815879169")
