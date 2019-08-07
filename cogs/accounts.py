@@ -173,7 +173,7 @@ class Accounts(commands.Cog):
         for account in accounts:
             index += 1
 
-            user = self.bot.get_user(account["owner_id"])
+            user = self.bot.get_user(int(account["owner_id"]))
 
             total_pets = 0
             if account["pets"]:
