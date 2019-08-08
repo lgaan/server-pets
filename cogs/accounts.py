@@ -162,8 +162,8 @@ class Accounts(commands.Cog):
     @commands.command(name="leaderboard", aliases=["lb"])
     async def leaderboard_(self, ctx, lb_type=None):
         """Get a leaderboard of the people in your server or globally. For server leave `lb_type` empty, for global use `p-lb global`"""
-        return await ctx.send("<:redTick:596576672149667840> leaderboard is currently disabled due to maintenance, sorry for the inconvenience.")
-        accounts = await self.bot.db.fetch("SELECT * FROM accounts ORDER BY balance")
+        #return await ctx.send("<:redTick:596576672149667840> leaderboard is currently disabled due to maintenance, sorry for the inconvenience.")
+        accounts = await self.bot.db.fetch("SELECT * FROM accounts ORDER BY balance DESC LIMIT 5")
         
         if lb_type == None:
             embed = discord.Embed(title=f"{ctx.guild.name}'s leaderboard", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
