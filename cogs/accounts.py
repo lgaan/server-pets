@@ -170,9 +170,9 @@ class Accounts(commands.Cog):
             accounts = [account for account in accounts if account["owner_id"] in [member.id for member in ctx.guild.members]]
         else:
             embed = discord.Embed(title=f"Global leaderboard", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-
-        index = 0
+       
         for account in accounts:
+            index = accounts.index(account)
             #if self.bot.get_user(account["owner_id"]) is None:
                 #continue
                             
