@@ -176,10 +176,6 @@ class Accounts(commands.Cog):
             if self.bot.get_user(account["owner_id"]) is None:
                 continue
                             
-            index += 1
-            if index > 5:
-                break
-                            
             user = self.bot.get_user(int(account["owner_id"]))
 
             total_pets = 0
