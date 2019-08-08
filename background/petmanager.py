@@ -41,10 +41,17 @@ class PetManager(commands.Cog):
             accounts = await self._bot.db.fetch("SELECT * FROM accounts")
 
             for account in accounts:
+                if self._bot.get_user(account["owner_id"] is None:
+                    await self._bot.db.execute("DELETE FROM accounts WHERE owner_id = $1", account["owner_id"]
+                    
+                    continue
+                                               
                 data = json.loads(account["pet_bars"])
                 settings = json.loads(account["settings"])
+                                               
                 if account["pets"] != None:
                     pets = json.loads(account["pets"])
+                                               
                     for pet_type, pet_names in pets.items():
                         for pet_name in pet_names:
                             # hunger
