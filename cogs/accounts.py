@@ -172,7 +172,7 @@ class Accounts(commands.Cog):
             embed = discord.Embed(title=f"Global leaderboard", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
        
         for account in accounts:
-            index = accounts.index(account)
+            index = accounts.index(account) + 1
             #if self.bot.get_user(account["owner_id"]) is None:
                 #continue
                             
