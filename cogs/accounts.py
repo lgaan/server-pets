@@ -173,8 +173,8 @@ class Accounts(commands.Cog):
 
         index = 0
         for account in accounts:
-            if self.bot.get_user(account["owner_id"]) is None:
-                continue
+            #if self.bot.get_user(account["owner_id"]) is None:
+                #continue
                             
             user = self.bot.get_user(int(account["owner_id"]))
 
