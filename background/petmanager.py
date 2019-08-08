@@ -112,6 +112,7 @@ class PetManager(commands.Cog):
                                 traceback.print_exc()
 
                     await self._bot.db.execute("UPDATE accounts SET pet_bars = $1, pets = $2 WHERE owner_id = $3", json.dumps(data), json.dumps(pets), account["owner_id"])
+        
         except Exception:
             traceback.print_exc()
     
