@@ -40,7 +40,7 @@ class AccountManager(commands.Cog):
 
             for account in accounts:
                 if self._bot.get_user(account["owner_id"]) is None:
-                    await self._bot.db.execute("DELETE FROM accounts WHERE owner_id = $1", account["owner_id"]
+                    await self._bot.db.execute("DELETE FROM accounts WHERE owner_id = $1", account["owner_id"])
                     
                     continue
                                                
