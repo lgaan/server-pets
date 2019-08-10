@@ -12,13 +12,13 @@ class BotContext(commands.Context):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.current_paginators = {}
+        #self.current_paginators = {}
 
     async def paginate(self, **kwargs):
         """Paginate a message"""
         print(self.author.id)
-        if self.author.id in self.current_paginators.keys():
-            await self.current_paginators[self.author.id].delete()
+        if self.author.id in self.bot.current_paginators.keys():
+            await self.bot.current_paginators[self.author.id].delete()
         
         message = kwargs.get("message")
         entries = kwargs.get("entries")
@@ -27,8 +27,8 @@ class BotContext(commands.Context):
 
         await Paginator.paginate()
 
-        self.current_paginators[self.author.id] = Paginator.message
-        print(self.current_paginators)
+        self.bot.current_paginators[self.author.id] = Paginator.message
+        print(self.bot.current_paginators)
 
     async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None):
         if content is not None:
@@ -41,6 +41,8 @@ class Bot(commands.Bot):
         super().__init__(command_prefix="p-", case_insensitive=True)
         self.remove_command("help")
         self.load_extension("jishaku")
+
+        self.current_paginators = {}
 
     async def get_context(self, message, *, cls=None):
         return await super().get_context(message, cls=BotContext)
