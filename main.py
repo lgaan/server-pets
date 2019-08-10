@@ -9,14 +9,22 @@ from helpers.paginator import EmbedPaginator
 
 
 class BotContext(commands.Context):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.current_paginators = {}
+
     async def paginate(self, **kwargs):
         """Paginate a message"""
+        if self.author.id in self.current_paginators.keys():
+            await self.current_paginators[self.author.id].message.delete()
+        
         message = kwargs.get("message")
         entries = kwargs.get("entries")
 
         Paginator = EmbedPaginator(ctx=self, message=message, entries=entries)
-
-        return await Paginator.paginate()
+        self.current_paginators[ctx.author.id] = Paginator
+        await Paginator.paginate()
 
     async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None):
         if content is not None:
