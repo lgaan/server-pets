@@ -23,7 +23,9 @@ class BotContext(commands.Context):
         entries = kwargs.get("entries")
 
         Paginator = EmbedPaginator(ctx=self, message=message, entries=entries)
-        self.current_paginators[ctx.author.id] = Paginator
+
+        self.current_paginators[self.author.id] = Paginator
+        
         await Paginator.paginate()
 
     async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None):
