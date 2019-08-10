@@ -28,6 +28,7 @@ class BotContext(commands.Context):
         await Paginator.paginate()
 
         self.current_paginators[self.author.id] = Paginator.message
+        print(self.current_paginators)
 
     async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None):
         if content is not None:
