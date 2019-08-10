@@ -54,7 +54,7 @@ class EmbedPaginator:
         while self.looping:
             try:
                 try:
-                    reaction, _ = await self.ctx.bot.wait_for("reaction_add", timeout=30.0, check=lambda r, u: u == self.ctx.author and str(r.emoji) in ["\u2b05","\u27a1","\u23f9"])
+                    reaction, _ = await self.ctx.bot.wait_for("reaction_add", timeout=600.0, check=lambda r, u: u == self.ctx.author and str(r.emoji) in ["\u2b05","\u27a1","\u23f9"])
 
                     if str(reaction.emoji) != "\u23f9":
                         await self.emotes[str(reaction.emoji)]()
@@ -175,7 +175,7 @@ class SettingsPaginator:
         while self.looping:
             try:
                 try:
-                    reaction, _ = await self.ctx.bot.wait_for("reaction_add", timeout=30.0, check=lambda r, u: u == self.ctx.author and str(r.emoji) in ["\u2b05","\u27a1","\u23f9","\U0001f504"])
+                    reaction, _ = await self.ctx.bot.wait_for("reaction_add", timeout=600.0, check=lambda r, u: u == self.ctx.author and str(r.emoji) in ["\u2b05","\u27a1","\u23f9","\U0001f504"])
 
                     if str(reaction.emoji) != "\u23f9":
                         await self.emotes[str(reaction.emoji)]()
