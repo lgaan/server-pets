@@ -118,7 +118,7 @@ class Pets(commands.Cog):
                 else:
                     pets = {pet.lower(): [message.content.lower()]}
 
-                await self.bot.db.execute("UPDATE accounts SET balance = $1, pets = $2 WHERE owner_id = $3", author_account[0]["balance"]-self.pet_prices[pet], json.dumps(pets), ctx.author.id)
+                await self.bot.db.execute("UPDATE accounts SET balance = $1, pets = $2 WHERE owner_id = $3", author_account[0]["balance"]-self.pet_prices[pet.lower()], json.dumps(pets), ctx.author.id)
                 
                 embed = discord.Embed(title="Success!", description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                 embed.add_field(name="Old balance", value=f"${author_account[0]['balance']}")
