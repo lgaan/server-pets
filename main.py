@@ -16,17 +16,18 @@ class BotContext(commands.Context):
 
     async def paginate(self, **kwargs):
         """Paginate a message"""
+        print(self.author.id)
         if self.author.id in self.current_paginators.keys():
-            await self.current_paginators[self.author.id].message.delete()
+            await self.current_paginators[self.author.id].delete()
         
         message = kwargs.get("message")
         entries = kwargs.get("entries")
 
         Paginator = EmbedPaginator(ctx=self, message=message, entries=entries)
 
-        self.current_paginators[self.author.id] = Paginator
-        
         await Paginator.paginate()
+
+        self.current_paginators[self.author.id] = Paginator.message
 
     async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None):
         if content is not None:
