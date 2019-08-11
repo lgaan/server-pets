@@ -18,8 +18,11 @@ class BotContext(commands.Context):
         """Paginate a message"""
         print(self.author.id)
         if self.author.id in self.bot.current_paginators.keys():
-            await self.bot.current_paginators[self.author.id].delete()
-        
+            try:
+                await self.bot.current_paginators[self.author.id].delete()
+            except discord.NotFound:
+                del self.bot.current_paginators[self.author.id]
+
         message = kwargs.get("message")
         entries = kwargs.get("entries")
 
