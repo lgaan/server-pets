@@ -50,6 +50,9 @@ class Misc(commands.Cog):
         accounts = await self.bot.db.fetch("SELECT * FROM accounts")
 
         for account in accounts:
+            if not account["pets"]:
+                continue
+
             for key, value in json.loads(account["pets"]).items():
                 count += len(value)
 
