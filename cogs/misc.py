@@ -49,7 +49,7 @@ class Misc(commands.Cog):
         accounts = await self.bot.db.fetch("SELECT * FROM accounts")
 
         for account in accounts:
-            for key, value in account["pets"]:
+            for key, value in account["pets"].items():
                 count += len(value)
 
         return count
