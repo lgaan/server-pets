@@ -83,7 +83,7 @@ class Bot(commands.Bot):
 
     async def on_command(self, ctx):
         try:
-            self.usage[ctx.command.name] + 1
+            self.usage[ctx.command.name] = self.usage[ctx.command.name] + 1
         except KeyError:
             self.usage[ctx.command.name] = 1
 
