@@ -85,7 +85,7 @@ class Bot(commands.Bot):
         try:
             self.usage[ctx.command.name] + 1
         except KeyError:
-            self.usage[ctxcommand.name] = 1
+            self.usage[ctx.command.name] = 1
 
     async def logout(self):
         await self.db.close()
