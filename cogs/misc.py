@@ -42,7 +42,18 @@ class Misc(commands.Cog):
                                 total += 1
         
         return (total, comments, file_amount)
-    
+
+    async def fetch_pets(self):
+        """Gets the total number of pets"""
+        count = 0
+        accounts = await self.db.fetch("SELECT * FROM accounts")
+
+        for account in accounts:
+            for key, value in account["pets"]:
+                count += len(value)
+
+        return count
+
     async def get_paramaters(self, paramaters):
         """Returns a commands peramaters in the format of <> or []"""
         final_string = []
@@ -68,9 +79,7 @@ class Misc(commands.Cog):
             accounts = await self.bot.db.fetch("SELECT * FROM accounts")
             pets = await self.bot.db.fetch("SELECT pets FROM accounts")
 
-            total_pets = 0
-            for entry in pets:
-                total_pets += len(entry)
+            total_pets = await self.fetch_pets()
             
             embed = discord.Embed(title="About Server Pets", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
