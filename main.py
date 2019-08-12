@@ -44,12 +44,11 @@ class Bot(commands.Bot):
         super().__init__(command_prefix="p-", case_insensitive=True)
         self.remove_command("help")
         self.load_extension("jishaku")
-
-        self.current_paginators = {}
+       
+        self.usage = {}
 
     async def get_context(self, message, *, cls=None):
         return await super().get_context(message, cls=BotContext)
-
     
     async def load_from_folder(self, folder):           
         for ext in os.listdir(f"{folder}"):
@@ -66,7 +65,6 @@ class Bot(commands.Bot):
             except commands.NoEntryPointError:
                 print(f"Extension: {ext.as_posix()} does not have a setup function")
 
-
     async def on_connect(self):
         credentials = dict(
             host=os.environ.get("DATABASE_HOST"),
@@ -76,18 +74,21 @@ class Bot(commands.Bot):
         )
         self.db = await asyncpg.create_pool(**credentials)
         await self.load_from_folder("cogs")
-        
-        
-
+              
     async def on_ready(self):
         await self.load_from_folder("background")
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Server Pets"))
         print("Connected")
 
+    async def on_command(self, ctx):
+        try:
+            self.usage[ctx.command.name] + 1
+        except KeyError:
+            self.usage[ctxcommand.name] = 1
+
     async def logout(self):
         await self.db.close()
         await super().logout()
-
 
 if __name__ == "__main__":
     Bot().run(os.environ.get("TOKEN"), reconnect=True)
