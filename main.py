@@ -45,6 +45,7 @@ class Bot(commands.Bot):
         self.remove_command("help")
         self.load_extension("jishaku")
        
+        self.current_paginators = {}
         self.usage = {}
 
     async def get_context(self, message, *, cls=None):
