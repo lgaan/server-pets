@@ -46,7 +46,7 @@ class Misc(commands.Cog):
     async def fetch_pets(self):
         """Gets the total number of pets"""
         count = 0
-        accounts = await self.db.fetch("SELECT * FROM accounts")
+        accounts = await self.bot.db.fetch("SELECT * FROM accounts")
 
         for account in accounts:
             for key, value in account["pets"]:
