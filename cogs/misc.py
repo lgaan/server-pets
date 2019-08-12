@@ -3,6 +3,7 @@ import traceback
 import os
 import codecs
 import pathlib
+import json
 
 import dbl
 
@@ -49,7 +50,7 @@ class Misc(commands.Cog):
         accounts = await self.bot.db.fetch("SELECT * FROM accounts")
 
         for account in accounts:
-            for key, value in account["pets"].items():
+            for key, value in json.loads(account["pets"]).items():
                 count += len(value)
 
         return count
