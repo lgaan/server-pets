@@ -12,7 +12,7 @@ Class UsageManager(commands.Cog):
     @tasks.loop(minutes=10)
     async def managment(self):
         """Manage the bot usage"""
-        old_usage = await self.bot.fetch("SELECT * FROM usage")
+        old_usage = await self.bot.db.fetch("SELECT * FROM usage")
         new_usage = {}
 
         for command, uses in json.loads(old_usage[0]["usage_json"]).items():
