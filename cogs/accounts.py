@@ -78,15 +78,17 @@ class Accounts(commands.Cog):
 
             embed = discord.Embed(title=f"{user.name}'s account. ({user.id})", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed.set_thumbnail(url=user.avatar_url)
-
-            if account[0]["pets"]:
+            
+            print(json.loads(account[0]["pets"]))
+            if not account[0]["pets"]:
+                embed.add_field(name="Pets", value="None")
+            else:
                 pets = json.loads(account[0]["pets"])
                 embed.add_field(name="Pets", value=", ".join([f"{len(value)} {key}(s)" for key, value in pets.items() if len(value) > 0]))
-            else:
-                embed.add_field(name="Pets", value="None")
+                      
             embed.add_field(name="Balance", value=f"${account[0]['balance']}")
 
-            return await ctx.send(f'{[f"{e.name}: {e.value}" for e in embed.fields]}')
+            return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()
     
