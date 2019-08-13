@@ -27,11 +27,10 @@ class UsageManager(commands.Cog):
             new_usage = {}
 
             for command, uses in json.loads(old_usage[0]["usage_json"]).items():
-                try:
+                if command in self.bot.usage.keys():
                     new_usage[command] = self.bot.usage[command] + uses
-                except KeyError:
+                else:
                     continue           
-
             try:
                 await self.bot.db.execute("UPDATE usage SET usage_json = $1", json.dumps(new_usage))
             except Exception as e:
