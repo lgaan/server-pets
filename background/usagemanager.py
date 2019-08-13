@@ -24,7 +24,6 @@ Class UsageManager(commands.Cog):
         await self.bot.execute(UPDATE usage SET usage_json = $1", json.dumps(new_uses)
 
         print("Uses dumped")
-
         return
 
     @managment.before_loop
