@@ -21,7 +21,7 @@ class UsageManager(commands.Cog):
             except KeyError:
                 continue
 
-        await self.bot.execute(UPDATE usage SET usage_json = $1", json.dumps(new_uses)
+        await self.bot.db.execute(UPDATE usage SET usage_json = $1", json.dumps(new_uses)
 
         print("Uses dumped")
         return
