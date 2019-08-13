@@ -9,21 +9,31 @@ class UsageManager(commands.Cog):
         
         self.managment.start()
 
+        self.loop_index = 0
+
     @tasks.loop(minutes=10)
     async def managment(self):
         """Manage the bot usage"""
+
         old_usage = await self.bot.db.fetch("SELECT * FROM usage")
-        new_usage = {}
 
-        for command, uses in json.loads(old_usage[0]["usage_json"]).items():
-            try:
-                new_usage[command] = self.bot.usage[command] + uses
-            except KeyError:
-                continue
+        if self.loop_index == 0:
+            self.bot.usage = json.loads(old_usage[0]["usage_json"])
+            
+            self.loop_index += 1
 
-        await self.bot.db.execute(UPDATE usage SET usage_json = $1", json.dumps(new_uses))
+        else:
+            new_usage = {}
 
-        print("Uses dumped")
+            for command, uses in json.loads(old_usage[0]["usage_json"]).items():
+                try:
+                    new_usage[command] = self.bot.usage[command] + uses
+                except KeyError:
+                    continue
+
+            await self.bot.db.execute(UPDATE usage SET usage_json = $1", json.dumps(new_uses))
+
+            print("Uses dumped")
         return
 
     @managment.before_loop
