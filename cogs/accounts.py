@@ -78,9 +78,8 @@ class Accounts(commands.Cog):
 
             embed = discord.Embed(title=f"{user.name}'s account. ({user.id})", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed.set_thumbnail(url=user.avatar_url)
-            
-            print(json.loads(account[0]["pets"]))
-            if not account[0]["pets"]:
+                        
+            if not account[0]["pets"] or not [value for _, value in json.loads(account[0]["pets"]).items() if len(value) > 0]:
                 embed.add_field(name="Pets", value="None")
             else:
                 pets = json.loads(account[0]["pets"])
