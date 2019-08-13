@@ -35,7 +35,7 @@ class UsageManager(commands.Cog):
             print(new_usage)
 
             try:
-                await self.bot.db.execute("UPDATE usage SET usage_json = $1", json.dumps(new_uses))
+                await self.bot.db.execute("UPDATE usage SET usage_json = $1", json.dumps(new_usage))
             except Exception as e:
                 traceback.print_exc()
 
