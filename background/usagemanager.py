@@ -3,7 +3,7 @@ import json
 import discord
 from discord.ext import commands, tasks
 
-Class UsageManager(commands.Cog):
+class UsageManager(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
