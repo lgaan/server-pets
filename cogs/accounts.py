@@ -86,7 +86,7 @@ class Accounts(commands.Cog):
                 embed.add_field(name="Pets", value="None")
             embed.add_field(name="Balance", value=f"${account[0]['balance']}")
 
-            return await ctx.send([f"{e.name}: {e.value}" for e in embed.fields])
+            return await ctx.send(f'{[f"{e.name}: {e.value}" for e in embed.fields]}')
         except Exception:
             traceback.print_exc()
     
