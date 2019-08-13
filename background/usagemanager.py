@@ -30,7 +30,7 @@ class UsageManager(commands.Cog):
                     new_usage[command] = self.bot.usage[command] + uses
                 except KeyError:
                     continue
-
+            print(new_usage)
             await self.bot.db.execute("UPDATE usage SET usage_json = $1", json.dumps(new_uses))
 
             print("Uses dumped")
