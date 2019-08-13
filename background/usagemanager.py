@@ -11,7 +11,7 @@ class UsageManager(commands.Cog):
 
         self.loop_index = 0
 
-    @tasks.loop(minutes=10)
+    @tasks.loop(seconds=10)
     async def managment(self):
         """Manage the bot usage"""
 
@@ -31,7 +31,7 @@ class UsageManager(commands.Cog):
                 except KeyError:
                     continue
 
-            await self.bot.db.execute(UPDATE usage SET usage_json = $1", json.dumps(new_uses))
+            await self.bot.db.execute("UPDATE usage SET usage_json = $1", json.dumps(new_uses))
 
             print("Uses dumped")
         return
