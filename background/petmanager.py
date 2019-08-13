@@ -31,12 +31,19 @@ class PetManager(commands.Cog):
 
         self.managment.start()
 
+        self.loop_index = 0
+
     def cog_unload(self):
         self.managment.cancel()
     
     @tasks.loop(hours=2)
     async def managment(self):
         """Will decide if a pet gets hungry or thirsty"""
+        if self.loop_index = 0:
+            # Check if the bot has just restarted to stop pets loosing stats upon restart 
+            await asyncio.sleep(7200):
+        self.loop_index += 1
+
         try:
             accounts = await self._bot.db.fetch("SELECT * FROM accounts")
 
