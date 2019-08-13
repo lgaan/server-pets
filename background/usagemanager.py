@@ -1,3 +1,4 @@
+import traceback
 import json
 
 import discord
@@ -32,7 +33,11 @@ class UsageManager(commands.Cog):
                     continue
 
             print(new_usage)
-            await self.bot.db.execute("UPDATE usage SET usage_json = $1", json.dumps(new_uses))
+
+            try:
+                await self.bot.db.execute("UPDATE usage SET usage_json = $1", json.dumps(new_uses))
+            except Exception as e:
+                traceback.print_exc()
 
             print("Uses dumped")
         return
