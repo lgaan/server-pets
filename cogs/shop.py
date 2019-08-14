@@ -182,6 +182,10 @@ class Shopping(commands.Cog):
                 balance = (account[0]["balance"] - (self.shop_items_food[item]*amount))
 
             await bot_msg.delete()
+
+            if balance <= 0:
+                await ctx.send("Making this purchase will send you into debt, you will need to earn this money back.")
+
             data = json.loads(account[0]["items"])
             
             if not is_water:
