@@ -15,7 +15,6 @@ class UsageManager(commands.Cog):
     @tasks.loop(seconds=10)
     async def managment(self):
         """Manage the bot usage"""
-
         old_usage = await self._bot.db.fetch("SELECT * FROM usage")
 
         if self.loop_index == 0:
