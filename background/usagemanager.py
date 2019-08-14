@@ -19,7 +19,7 @@ class UsageManager(commands.Cog):
         old_usage = await self._bot.db.fetch("SELECT * FROM usage")
 
         if self.loop_index == 0:
-            self.bot.usage = json.loads(old_usage[0]["usage_json"])
+            self._bot.usage = json.loads(old_usage[0]["usage_json"])
             
             self.loop_index += 1
 
