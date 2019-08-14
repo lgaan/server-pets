@@ -106,7 +106,7 @@ class Misc(commands.Cog):
             embed.add_field(name="Total successful commands run today", value=await self.fetch_commands_used())
 
             embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets) | [Discord Bot List](https://discordbots.org/bot/502205162694246412) | [Vote](https://discordbots.org/bot/502205162694246412/vote)")
-            embed.set_image(url=await self.dblpy.generate_widget_large())
+            #embed.set_image(url=await self.dblpy.generate_widget_large())
             return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()
