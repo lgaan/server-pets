@@ -42,6 +42,7 @@ class PetManager(commands.Cog):
     @tasks.loop(hours=2)
     async def managment(self):
         """Will decide if a pet gets hungry or thirsty"""
+
         if self.loop_index == 0:
             # Check if the bot has just restarted to stop pets loosing stats upon restart 
             await asyncio.sleep(7200)
@@ -63,6 +64,9 @@ class PetManager(commands.Cog):
                                                
                 if account.pets:                                      
                     for pet in account.pets:
+                        if pet.kenneled:
+                            continue
+
                         # hunger
                         try:
                             hunger_rate = self.pet_hunger_rates[pet.type]
