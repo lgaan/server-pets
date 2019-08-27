@@ -18,7 +18,7 @@ class Misc(commands.Cog):
         self.bot = bot
         self.dblpy = dbl.Client(bot, os.environ.get("DBL_TOKEN"))
 
-        self.ignored_cogs = ["jishaku", "handlers", "accountmanager", "petmanager"]
+        self.ignored_cogs = ["jishaku", "handlers", "accountearnmanager", "petmanager", "usagemanager", "shopmanager", "kennelmanager"]
     
     async def fetch_lines(self):
         """Returns a tuple for lines and comments"""
@@ -128,9 +128,9 @@ class Misc(commands.Cog):
                     if len(command.aliases) > 0:
                         to_add = [command.name]
                         for alias in command.aliases: to_add.append(alias)
-                        embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
+                        embed.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help)
                     else:
-                        embed.add_field(name=f"{command.name} {params}", value=command.help)
+                        embed.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help)
                 
                 embed.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
                 
@@ -148,9 +148,9 @@ class Misc(commands.Cog):
             if len(command.aliases) > 0:
                 to_add = [command.name]
                 for alias in command.aliases: to_add.append(alias)
-                embed_basic.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
+                embed_basic.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help)
             else:
-                embed_basic.add_field(name=f"{command.name} {params}", value=command.help)
+                embed_basic.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help)
 
             embed_other = discord.Embed(title=f"Server Pets Help | {command.name}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed_other.set_thumbnail(url=ctx.guild.me.avatar_url)
@@ -189,9 +189,9 @@ class Misc(commands.Cog):
                 if len(command.aliases) > 0:
                     to_add = [command.name]
                     for alias in command.aliases: to_add.append(alias)
-                    embed.add_field(name=f"[{', '.join(to_add)}] {params}", value=command.help)
+                    embed.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help)
                 else:
-                    embed.add_field(name=f"{command.name} {params}", value=command.help)
+                    embed.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help)
             
             embed.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
             return await ctx.send(embed=embed)
