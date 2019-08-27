@@ -10,8 +10,8 @@ import dbl
 import discord
 from discord.ext import commands
 
-from helpers.converters import CommandOrCog
-from helpers.paginator import EmbedPaginator
+from utils.converters import CommandOrCog
+from utils.paginator import EmbedPaginator
 
 class Misc(commands.Cog):
     def __init__(self, bot):
@@ -25,10 +25,12 @@ class Misc(commands.Cog):
         total = 0
         file_amount = 0
         comments = 0
+        functions = 0
 
         for path, _, files in os.walk("."):
-            if path.startswith(os.environ.get("env")):
-                continue
+            if "env" in os.environ.keys():
+                if path.startswith(os.environ.get("env")):
+                    continue
             
             for name in files:
                 if name.endswith(".py"):
@@ -37,26 +39,18 @@ class Misc(commands.Cog):
                         for i, l in enumerate(f):
                             if l.strip().startswith("#"):
                                 comments += 1
-                            if len(l.strip()) is 0:
-                                pass
+                            if l.strip().startswith("def") or l.strip().startswith("async def"):
+                                functions += 1
                             else:
                                 total += 1
         
-        return (total, comments, file_amount)
+        return (total, comments, functions, file_amount)
 
     async def fetch_pets(self):
         """Gets the total number of pets"""
-        count = 0
-        accounts = await self.bot.db.fetch("SELECT * FROM accounts")
+        pets = await self.bot.db.fetch("SELECT * FROM pets")
 
-        for account in accounts:
-            if not account["pets"]:
-                continue
-
-            for key, value in json.loads(account["pets"]).items():
-                count += len(value)
-
-        return count
+        return len(pets)
     
     async def fetch_commands_used(self):
         """Get the total number of successful commands run"""
@@ -85,8 +79,6 @@ class Misc(commands.Cog):
         try:
             lines = await self.fetch_lines()
             accounts = await self.bot.db.fetch("SELECT * FROM accounts")
-            pets = await self.bot.db.fetch("SELECT pets FROM accounts")
-
             total_pets = await self.fetch_pets()
             
             embed = discord.Embed(title="About Server Pets", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
@@ -99,14 +91,14 @@ class Misc(commands.Cog):
 
             embed.add_field(name="Total Line Count", value=lines[0])
             embed.add_field(name="Total Comment Count", value=lines[1])
-            embed.add_field(name="Total File Count", value=lines[2], inline=False)
+            embed.add_field(name="Total Function Count", value=lines[2])
+            embed.add_field(name="Total File Count", value=lines[3], inline=False)
 
             embed.add_field(name="Total Registered Users", value=len(accounts) if len(accounts) > 0 and accounts else "None")
             embed.add_field(name="Total Adopted Pets", value=total_pets if total_pets > 0 else "None")
-            embed.add_field(name="Total successful commands run today", value=await self.fetch_commands_used())
+            embed.add_field(name="Total successful commands run", value=await self.fetch_commands_used())
 
             embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets) | [Discord Bot List](https://discordbots.org/bot/502205162694246412) | [Vote](https://discordbots.org/bot/502205162694246412/vote)")
-            #embed.set_image(url=await self.dblpy.generate_widget_large())
             return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()

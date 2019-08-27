@@ -1,8 +1,12 @@
+import traceback
 import random
 import string
 import json
 
+from datetime import datetime
 import asyncio
+
+import aiohttp
 
 import discord
 from discord.ext import commands
@@ -47,24 +51,55 @@ class Handlers(commands.Cog):
                 code = await self.create_token()
                 ticket.add_field(name="Your Error Code", value=code)
 
-                tickets = await self.bot.db.fetch("SELECT * FROM tokens")
-
-                if tickets:
-                    data = json.loads(tickets[0]["token_values"])
-                    data[code] = str(error)
-
-                    await self.bot.db.execute("UPDATE tokens SET token_values = $1", json.dumps(data))
-                else:
-                    data = {}
-                    data[code] = str(error)
-
-                    await self.bot.db.execute("INSERT INTO tokens (token_values) VALUES ($1)", json.dumps(data))
-
-                
+                await self.bot.db.execute("INSERT INTO tokens (token, error) VALUES ($1,$2)", code, str(error))
                 return await bot_msg.edit(embed=ticket)
 
         except asyncio.TimeoutError:
             return
+    
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        try:
+            async with aiohttp.ClientSession() as cs:
+                async with cs.post("http://127.0.0.1:5000/api/guilds", json={"id": guild.id, "members": guild.member_count}, headers={"x-token": "logan"}) as r:
+                    resp = await r.json()
+            
+            embed = discord.Embed(title="Guild joined", colour=discord.Colour.blue(), timestamp=guild.me.joined_at)
+            embed.add_field(name="Name", value=guild.name, inline=False)
+            embed.add_field(name="Member Count", value=guild.member_count, inline=False)
+
+            embed.add_field(name="** **", value="** **", inline=False)
+
+            embed.add_field(name="New Guild Count", value=len(self.bot.guilds), inline=False)
+            embed.add_field(name="New Member Count", value=len(self.bot.users), inline=False)
+
+            embed.set_thumbnail(url=guild.icon_url)
+
+            return await self.bot.get_channel(615299190485942292).send(embed=embed)
+        except Exception:
+            traceback.print_exc()
+    
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild):
+        try:
+            async with aiohttp.ClientSession() as cs:
+                async with cs.delete("http://127.0.0.1:5000/api/guilds", json={"id": guild.id}, headers={"x-token": "logan"}) as r:
+                    resp = await r.json()
+            
+            embed = discord.Embed(title="Guild Left", colour=discord.Colour.blue(), timestamp=datetime.now())
+            embed.add_field(name="Name", value=guild.name, inline=False)
+            embed.add_field(name="Member Count", value=guild.member_count, inline=False)
+
+            embed.add_field(name="** **", value="** **", inline=False)
+
+            embed.add_field(name="New Guild Count", value=len(self.bot.guilds), inline=False)
+            embed.add_field(name="New Member Count", value=len(self.bot.users), inline=False)
+
+            embed.set_thumbnail(url=guild.icon_url)
+
+            return await self.bot.get_channel(615299190485942292).send(embed=embed)
+        except Exception:
+            traceback.print_exc()
 
 
 def setup(bot):

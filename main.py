@@ -2,36 +2,22 @@ import traceback
 import os
 import asyncpg
 import discord
+import json
 
 from discord.ext import commands
 from pathlib import Path
-from helpers.paginator import EmbedPaginator
+from utils.paginator import EmbedPaginator
 
 
 class BotContext(commands.Context):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        #self.current_paginators = {}
-
     async def paginate(self, **kwargs):
         """Paginate a message"""
-        print(self.author.id)
-        if self.author.id in self.bot.current_paginators.keys():
-            try:
-                await self.bot.current_paginators[self.author.id].delete()
-            except discord.NotFound:
-                del self.bot.current_paginators[self.author.id]
-
         message = kwargs.get("message")
         entries = kwargs.get("entries")
 
-        Paginator = EmbedPaginator(ctx=self, message=message, entries=entries)
+        paginator = EmbedPaginator(ctx=self, message=message, entries=entries)
 
-        await Paginator.paginate()
-
-        self.bot.current_paginators[self.author.id] = Paginator.message
-        print(self.bot.current_paginators)
+        return await paginator.paginate()
 
     async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None):
         if content is not None:
@@ -44,9 +30,11 @@ class Bot(commands.Bot):
         super().__init__(command_prefix="p-", case_insensitive=True)
         self.remove_command("help")
         self.load_extension("jishaku")
-       
-        self.current_paginators = {}
+
+        self.db = None
+
         self.usage = {}
+        self.shop = {}
 
     async def get_context(self, message, *, cls=None):
         return await super().get_context(message, cls=BotContext)
@@ -55,7 +43,9 @@ class Bot(commands.Bot):
         for ext in os.listdir(f"{folder}"):
             if ext.startswith("__"):
                 continue
+
             module = f"{folder}.{ext.replace('/','.').replace('.py', '')}"
+
             try:
                 self.load_extension(module)
                 print(f"Loaded extension: {module}")
@@ -64,21 +54,31 @@ class Bot(commands.Bot):
                 print(f"Reloaded extension: {module}")
 
             except commands.NoEntryPointError:
-                print(f"Extension: {ext.as_posix()} does not have a setup function")
+                print(f"Extension: {ext} does not have a setup function")
+
+    async def set_codecs(self, pool):
+        await pool.set_type_codec(
+            "json",
+            encoder=json.dumps,
+            decoder=json.loads,
+            schema="pg_catalog"
+        )
 
     async def on_connect(self):
         credentials = dict(
             host=os.environ.get("DATABASE_HOST"),
             database=os.environ.get("DATABASE"),
             user=os.environ.get("PG_NAME"),
-            password=os.environ.get("PG_PASSWORD")
+            password=os.environ.get("PG_PASSWORD"),
+            init=self.set_codecs
         )
         self.db = await asyncpg.create_pool(**credentials)
         await self.load_from_folder("cogs")
               
     async def on_ready(self):
         await self.load_from_folder("background")
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Server Pets"))
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Pets"))
+        
         print("Connected")
 
     async def on_command(self, ctx):

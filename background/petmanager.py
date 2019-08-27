@@ -6,9 +6,12 @@ import asyncio
 import discord
 from discord.ext import commands, tasks
 
+from utils.managers.accountmanager import AccountManager
+
 class PetManager(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
+        self._manager = AccountManager(bot)
 
         self.pet_hunger_rates = {
             "dog": (1.0,1.5),
@@ -43,82 +46,69 @@ class PetManager(commands.Cog):
             # Check if the bot has just restarted to stop pets loosing stats upon restart 
             await asyncio.sleep(7200)
         self.loop_index += 1
-
+        
         try:
-            accounts = await self._bot.db.fetch("SELECT * FROM accounts")
+            accounts = await self._manager.get_all_accounts()
+
+            if not accounts:
+                return
 
             for account in accounts:
-                if self._bot.get_user(account["owner_id"]) is None:
+                if self._bot.get_user(account.id) is None:
                     await self._bot.db.execute("DELETE FROM accounts WHERE owner_id = $1", account["owner_id"])
                     
                     continue
                                                
-                data = json.loads(account["pet_bars"])
-                settings = json.loads(account["settings"])
+                settings = account.settings
                                                
-                if account["pets"] != None:
-                    pets = json.loads(account["pets"])
-                                               
-                    for pet_type, pet_names in pets.items():
-                        for pet_name in pet_names:
-                            # hunger
-                            try:
-                                hunger_rate = self.pet_hunger_rates[pet_type]
-                                amount_to_take = random.uniform(hunger_rate[0],hunger_rate[1])
+                if account.pets:                                      
+                    for pet in account.pets:
+                        # hunger
+                        try:
+                            hunger_rate = self.pet_hunger_rates[pet.type]
+                            amount_to_take = random.uniform(hunger_rate[0],hunger_rate[1])
 
-                                if pet_name in data["hunger"].keys() and (data["hunger"][pet_name] - amount_to_take) <= 0:
-                                    if settings["death_reminder"]:                               
-                                        owner = self._bot.get_user(account["owner_id"])
+                            if (pet.hunger - amount_to_take) <= 0:
+                                if settings["death_reminder"]:                               
+                                    owner = self._bot.get_user(account.id)
 
-                                        try:
-                                            await owner.send(f"{pet_name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
-                                        except discord.Forbidden:
-                                            pass
-                                            
-                                    del data["hunger"][pet_name]
-                                    pets[pet_type].remove(pet_name)
+                                    try:
+                                        await owner.send(f"{pet.name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
+                                    except discord.Forbidden:
+                                        pass
+                                        
+                                await self._bot.db.execute("DELETE FROM pets WHERE name = $1 AND owner_id = $2", pet.name, pet.owner_id)      
 
-                                if pet_name in data["hunger"].keys():
-                                    data["hunger"][pet_name] = data["hunger"][pet_name] - amount_to_take
-                                else:
-                                    data["hunger"][pet_name] = (10.0 - amount_to_take)       
+                            if (pet.hunger - amount_to_take) <= 3.0 and settings["dm_notifications"]:
+                                owner = self._bot.get_user(account.id)
 
-                                if data["hunger"][pet_name] < 3.0 and settings["dm_notifications"]:
-                                    owner = self._bot.get_user(account["owner_id"])
+                                await owner.send(f"{pet.name} has not been fed for a while, consider feeding it with the `p-feed {pet.name}` command.")
+                            
+                        except Exception:
+                            traceback.print_exc()
 
-                                    await owner.send(f"{pet_name} has not been fed for a while, consider feeding it with the `p-feed {pet_name}` command.")
-                                
-                            except Exception:
-                                traceback.print_exc()
+                        # thirst
+                        try:
+                            thirst_rate = self.pet_thirst_rates[pet.type]
+                            amount_to_take = random.uniform(thirst_rate[0],thirst_rate[1])
+                            
+                            if (pet.thirst - amount_to_take) <= 0:
+                                if settings["death_reminder"]:
+                                    owner = self._bot.get_user(account.id)
 
-                            # thirst
-                            try:
-                                thirst_rate = self.pet_thirst_rates[pet_type]
-                                amount_to_take = random.uniform(thirst_rate[0],thirst_rate[1])
-                                
-                                if pet_name in data["thirst"].keys() and (data["thirst"][pet_name] - amount_to_take) <= 0:
-                                    if settings["death_reminder"]:
-                                        owner = self._bot.get_user(account["owner_id"])
+                                    await owner.send(f"{pet.name} was found to have not been watered in a long time. The animal rescue company has had to remove your pet.")
 
-                                        await owner.send(f"{pet_name} was found to have not been watered in a long time. The animal rescue company has had to remove your pet.")
+                                await self._bot.db.execute("DELETE FROM pets WHERE name = $1 AND owner_id = $2", pet.name, pet.owner_id)      
 
-                                    del data["thirst"][pet_name]
-                                    pets[pet_type].remove(pet_name)
+                            if (pet.thirst - amount_to_take) <= 3.0 and settings["dm_notifications"]:
+                                owner = self._bot.get_user(account.id)
 
-                                if pet_name in data["thirst"].keys():
-                                    data["thirst"][pet_name] = data["thirst"][pet_name] - amount_to_take
-                                else:
-                                    data["thirst"][pet_name] = (20.0 - amount_to_take)     
+                                await owner.send(f"{pet.name} has not drunk for a while, give it a drink with the `p-water {pet.name}` command.") 
+                            
+                        except Exception:
+                            traceback.print_exc()
 
-                                if data["thirst"][pet_name] < 3.0 and settings["dm_notifications"]:
-                                    owner = self._bot.get_user(account["owner_id"])
-
-                                    await owner.send(f"{pet_name} has not drunk for a while, give it a drink with the `p-water {pet_name}` command.") 
-                                
-                            except Exception:
-                                traceback.print_exc()
-
-                    await self._bot.db.execute("UPDATE accounts SET pet_bars = $1, pets = $2 WHERE owner_id = $3", json.dumps(data), json.dumps(pets), account["owner_id"])
+                    await self._bot.db.execute("UPDATE pets SET hunger = $1, thirst = $2 WHERE owner_id = $3 AND name = $4", (pet.hunger - amount_to_take), (pet.thirst - amount_to_take), account.id, pet.name)
         
         except Exception:
             traceback.print_exc()

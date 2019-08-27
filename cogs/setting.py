@@ -4,7 +4,7 @@ import json
 import discord
 from discord.ext import commands
 
-from helpers.paginator import SettingsPaginator
+from utils.paginator import SettingsPaginator
 class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
