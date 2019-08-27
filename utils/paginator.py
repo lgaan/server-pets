@@ -4,6 +4,7 @@ import json
 
 import discord
 
+from utils.managers.accountmanager import AccountManager
 
 class EmbedPaginator:
     def __init__(self, **kwargs):
@@ -77,6 +78,8 @@ class SettingsPaginator:
         self.message = kwargs.get("message")
         self.entries = kwargs.get("entries")
 
+        self.manager = AccountManager(self.ctx.bot)
+
         self.conversions = {
             True: "<:greenTick:596576670815879169>",
             False: "<:redTick:596576672149667840>"
@@ -147,13 +150,13 @@ class SettingsPaginator:
         self.setting -= 1
 
     async def switch_setting(self):
-        account = await self.ctx.bot.db.fetch("SELECT * FROM accounts WHERE owner_id = $1", self.ctx.author.id)
+        account = await self.manager.get_account(self.ctx.author.id)
 
         field = self.message.embeds[0].fields[self.setting]
         setting = field.name.replace("> ", "").replace(field.name.replace("> ", "")[0],
                                                        field.name.replace("> ", "")[0].lower()).replace(" ", "_")
 
-        settings = json.loads(account[0]["settings"])
+        settings = account.settings
         settings[setting] = not settings[setting]
 
         embed = discord.Embed(title=f"{self.ctx.author.name}'s settings", colour=discord.Colour.blue(),
@@ -168,7 +171,7 @@ class SettingsPaginator:
 
             incr += 1
 
-        await self.ctx.bot.db.execute("UPDATE accounts SET settings = $1 WHERE owner_id = $2", json.dumps(settings),
+        await self.ctx.bot.db.execute("UPDATE accounts SET settings = $1 WHERE owner_id = $2", settings,
                                       self.ctx.author.id)
 
         return await self.message.edit(embed=embed)
