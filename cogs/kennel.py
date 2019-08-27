@@ -75,6 +75,9 @@ class Kennel(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.send("Time ran out.")
 
+        if account.balance - price <= 0:
+            return await ctx.send("You have not got enough money to do this.")
+            
         await self.manager.add_pet(ctx.author.id, pet.name, time)
         await self.manager.charge_account(account, price)
 
@@ -129,6 +132,9 @@ class Kennel(commands.Cog):
             except asyncio.TimeoutError:
                 return await ctx.send("Time ran out.")
             
+            if account.balance - price <= 0:
+                return await ctx.send("You have not got enough money to do this.")
+                
             await self.manager.charge_account(account, price)
             await self.manager.remove_pet(ctx.author.id, pet.name)
 
