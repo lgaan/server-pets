@@ -27,7 +27,7 @@ class Settings(commands.Cog):
             if not account:
                 return await ctx.send("You do not have an account. To create one use `p-create`")
 
-            account_settings = json.loads(account.settings)
+            account_settings = account.settings
 
             embed = discord.Embed(title=f"{ctx.author.name}'s settings", description="Use the arrows to navigate between settings, use the switch emoji to change the setting.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
