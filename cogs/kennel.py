@@ -104,7 +104,9 @@ class Kennel(commands.Cog):
             
             price = 500
 
-            if pet.overdue:
+            kennel = await self.manager.get_pet(ctx.author.id, pet.name)
+
+            if kennel.overdue:
                 return await ctx.send("Your pet is ready to collect, to collect them use `p-kennel collect`")
 
             embed = discord.Embed(title="Remove a pet", colour=discord.Colour.blue(), description=f"Are you sure you want to remove this pet from the kennel this pet? It will cost you ${price}\nTo confirm react with <:greenTick:596576670815879169>, to cancel use <:redTick:596576672149667840>.", timestamp=ctx.message.created_at)
