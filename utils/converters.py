@@ -55,4 +55,4 @@ class KennelDate(commands.Converter):
         if match[1].lower() in ["y","years","year"]:
             d = now + relativedelta(years=+int(match[0]))
 
-        return datetime.utcnow()
+        return d
