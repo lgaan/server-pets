@@ -225,8 +225,11 @@ class Pets(commands.Cog):
                 gain = shop[item]["gain"]
                 pet_hunger = pet.hunger + gain
 
+                if pet_hunger > 10:
+                    pet_hunger = 10
+                    
                 await ctx.send(
-                    f"Your pet has gained {gain} hunger. It's health bar has changed to {gain}/10")
+                    f"Your pet has gained {gain} hunger. It's health bar has changed to {pet_hunger}/10")
 
                 if (food - 1) <= 0:
                     del items[item]
