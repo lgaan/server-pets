@@ -7,8 +7,8 @@ class Account:
 
         self.balance = json.get("balance")
 
-        self.items = js.loads(json.get("items"))
-        self.settings = js.loads(json.get("settings"))
+        self.items = js.loads(json.get("items")) if isinstance(json.get("items"), str) else json.get("items")
+        self.settings = json.get("settings") if isinstance(json.get("settings"), str) else json.get("settings")
 
         self.pets = json.get("pets")
     
