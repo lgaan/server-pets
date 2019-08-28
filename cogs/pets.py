@@ -227,7 +227,7 @@ class Pets(commands.Cog):
 
                 if pet_hunger > 10:
                     pet_hunger = 10
-                    
+
                 await ctx.send(
                     f"Your pet has gained {gain} hunger. It's health bar has changed to {pet_hunger}/10")
 
@@ -241,7 +241,7 @@ class Pets(commands.Cog):
                 return await self.bot.db.execute("UPDATE pets SET hunger = $1 WHERE owner_id = $2 AND name = $3",
                                                  pet_hunger, ctx.author.id, pet.name)
             else:
-                return await ctx.send(f"{pet} is on full hunger. You can check all of your pets' hunger and thirst "
+                return await ctx.send(f"{pet.name} is on full hunger. You can check all of your pets' hunger and thirst "
                                       f"bars using `p-pets`")
         except Exception:
             traceback.print_exc()
