@@ -189,7 +189,7 @@ class Pets(commands.Cog):
             traceback.print_exc()
 
     @commands.command(name="feed")
-    async def feed_(self, ctx, *, pet):
+    async def feed_(self, ctx, item, *, pet):
         """Feed a pet a certain amount of food"""
         pet = pet.lower()
         account = await self.manager.get_account(ctx.author.id)

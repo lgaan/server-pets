@@ -1,7 +1,5 @@
 import traceback
 import asyncio
-import json
-
 import discord
 
 from utils.managers.accountmanager import AccountManager

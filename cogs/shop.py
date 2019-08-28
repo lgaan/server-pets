@@ -45,7 +45,6 @@ class Shopping(commands.Cog):
     @commands.command(name="shop", aliases=["buy"])
     async def shop_(self, ctx, *, item=None):
         """Displays the shop is item is left empty. You can buy an item by adding it to the command."""
-        raise commands.BadArgument()
         account = await self.manager.get_account(ctx.author.id)
         amount = 1
 
