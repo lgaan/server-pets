@@ -74,7 +74,7 @@ class Shopping(commands.Cog):
             if not account:
                 return await ctx.send("You do not have an account. Please make one using `p-create`")
             
-            if (item not in self.shop_items_food.keys()) and (item not in self.bot.shop.keys()):
+            if (item not in self.shop_items_water.keys()) and (item not in self.bot.shop.keys()):
                 return await ctx.send("That item does not exist. Please check the options from `p-shop` and make sure to type the capitals correctly.")
 
             is_water = (item in self.shop_items_water.keys())
