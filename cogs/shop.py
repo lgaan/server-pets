@@ -132,7 +132,7 @@ class Shopping(commands.Cog):
                 balance = (account.balance - (self.shop_items_water[item]*amount))
 
                 try:
-                    amount_of_bowls = json.loads(account.items)["water bowls"] + (self.conversions[item]*amount)
+                    amount_of_bowls = account.items["water bowls"] + (self.conversions[item]*amount)
                 except KeyError:
                     amount_of_bowls = (self.conversions[item]*amount)
             else:
