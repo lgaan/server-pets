@@ -70,9 +70,16 @@ class AccountEarnManager(commands.Cog):
                     continue
                                                
                 if account.pets:
-                    earning = sum((pet.earns*pet.level) for pet in account.pets)
+                    earning = 0 #sum((pet.earns*pet.level) for pet in account.pets)
+
 
                     for pet in account.pets:
+                        earn = pet.earns*pet.level
+
+                        earn *= self._bot.pet_species[pet.type][pet.species][1]
+
+                        earning += earn
+
                         if not pet.earned:
                             pet.earned = 0
 
@@ -95,6 +102,7 @@ class AccountEarnManager(commands.Cog):
                         
                         await self._bot.db.execute("UPDATE pets SET earned = $1, level = $2, age = $3 WHERE owner_id = $4 AND name = $5", (pet.earned+(pet.earns/pet.level)), level, age, account.id, pet.name)
 
+                    print(earning)
                     await self._bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account.balance+earning, account.id)
         except Exception:
             traceback.print_exc()

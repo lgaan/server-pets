@@ -3,6 +3,7 @@ import asyncio
 import json
 import random
 
+from numpy import random as npr
 from datetime import datetime
 
 import discord
@@ -57,6 +58,14 @@ class Pets(commands.Cog):
             "bird": "chick",
             "horse": "foal"
         }
+
+    async def get_random_species(self, pet_type):
+        """Get a random spicies"""
+        species = self.bot.pet_species
+
+        rand = npr.choice(list(species[pet_type]), p=[0.3, 0.2, 0.2, 0.2, 0.05, 0.05])
+
+        return rand
 
     @commands.command(name="adopt")
     async def adopt_(self, ctx, pet=None):
@@ -139,14 +148,16 @@ class Pets(commands.Cog):
                 if account.pets and message.content.lower() in [pet.name for pet in account.pets]:
                     return await ctx.send(f"You already own a pet named {message.content.lower()}, please re-use this command with an alternate name.")
 
+                species = await self.get_random_species(pet.lower())
+
                 await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2",
                                           account.balance - self.pet_prices[pet.lower()], ctx.author.id)
 
-                await self.bot.db.execute("INSERT INTO pets (owner_id, name, type, thirst, hunger, earns, level, age, earned) VALUES ($1,"
-                                          "$2,$3,20,10,$4,$5,$6,0)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()])
+                await self.bot.db.execute("INSERT INTO pets (owner_id, name, type, thirst, hunger, earns, level, age, earned, species) VALUES ($1,"
+                                          "$2,$3,20,10,$4,$5,$6,0,$7)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species)
 
                 embed = discord.Embed(title="Success!",
-                                      description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]}",
+                                      description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]} (With a species of {species})",
                                       colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                 embed.add_field(name="Old balance", value=f"${account.balance}")
                 embed.add_field(name="New balance", value=f"${account.balance - self.pet_prices[pet]}")
@@ -178,11 +189,14 @@ class Pets(commands.Cog):
             
             for key, value in vars(pet).items():
                 key = key.replace("_"," ")
-                if key.lower() != "earns":
+                if key.lower() not in  ["earns", "species"]:
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
-                else:
+                elif key.lower() == "earns":
                     value = value*pet.level
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
+                else:
+                    value = f"{self.bot.pet_species[pet.type][value][0]} {value} {pet.type}"
+                    embed.add_field(name="Species", value=f"{value[0].upper()}{value[1:]}")
             
             return await ctx.send(embed=embed)
         except Exception:
