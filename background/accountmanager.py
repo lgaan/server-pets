@@ -25,14 +25,14 @@ class AccountEarnManager(commands.Cog):
             "horse": 100
         }
 
-        self.earning_rates_fun = {
-            "dog": 99999999,
-            "cat": 99999999,
-            "mouse": 99999999,
-            "snake": 99999999,
-            "spider": 99999999,
-            "bird": 99999999,
-            "horse": 99999999
+        self.pet_age = {
+            "dog": {0: "puppy", 5: "adolescent", 10: "adult", 15: "elder"},
+            "cat": {0: "kitten", 5: "adolescent", 10: "adult", 15: "elder"},
+            "mouse": {0: "pup", 5: "adolescent", 10: "adult", 15: "elder"},
+            "snake": {0: "hatchling", 5: "adolescent", 10: "adult", 15: "elder"},
+            "spider": {0: "spiderling", 5: "adolescent", 10: "adult", 15: "elder"},
+            "bird": {0: "chick", 5: "adolescent", 10: "adult", 15: "elder"},
+            "horse": {0: "foal", 5: "adolescent", 10: "adult", 15: "elder"}
         }
 
         self.managment.start()
@@ -47,6 +47,15 @@ class AccountEarnManager(commands.Cog):
             points += to_next
         
         return points
+
+    async def get_next_level(self, level):
+        """Get the next level to age"""
+        rounded = 5 * round(level/5)
+
+        if rounded <= level:
+            rounded += 5
+        
+        return rounded
 
     @tasks.loop(minutes=30.0)
     async def managment(self):
@@ -75,7 +84,16 @@ class AccountEarnManager(commands.Cog):
                         else:
                             level = pet.level
                         
-                        await self._bot.db.execute("UPDATE pets SET earned = $1, level = $2 WHERE owner_id = $3 AND name = $4", (pet.earned+(pet.earns/pet.level)), level, account.id, pet.name)
+                        next_level = await self.get_next_level(pet.level) - 5
+
+                        if pet.level == next_level and pet.age != self.pet_age[pet.type][next_level]:
+                            await self._bot.get_user(account.id).send(f"{pet.name} has grown up! They are now a {self.pet_age[pet.type][next_level]}")
+
+                            age = self.pet_age[pet.type][next_level] if next_level in self.pet_age[pet.type].keys() else "elder"
+                        else:
+                            age = pet.age
+                        
+                        await self._bot.db.execute("UPDATE pets SET earned = $1, level = $2, age = $3 WHERE owner_id = $4 AND name = $5", (pet.earned+(pet.earns/pet.level)), level, age, account.id, pet.name)
 
                     await self._bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account.balance+earning, account.id)
         except Exception:

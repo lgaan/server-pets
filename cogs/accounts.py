@@ -138,7 +138,7 @@ class Accounts(commands.Cog):
                     except KeyError:
                         val += f"\nThirst: 20/20"
 
-                    embed.add_field(name=f"{pet.name.upper()[0]}{pet.name[1:]} (Level {pet.level} {pet.type}) {'| Kenneled' if pet.kenneled else ''}", value=val, inline=False)
+                    embed.add_field(name=f"{pet.name.upper()[0]}{pet.name[1:]} (Level {pet.level} {pet.type}), {pet.age[0].upper()}{pet.age[1:]} {'| Kenneled' if pet.kenneled else ''}", value=val, inline=False)
 
             embed.set_thumbnail(url=user.avatar_url)
 

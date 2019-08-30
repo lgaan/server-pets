@@ -217,7 +217,153 @@ class Shopping(commands.Cog):
                 embed.add_field(name="New balance", value=f"${account.balance-(self.shop_items_water[item]*amount)}")
 
             return await ctx.send(embed=embed)
-        except Exception as error:
+        except Exception:
+            traceback.print_exc()
+
+            return await ctx.send("Something went wrong and your account has not been charged.")
+
+    @commands.command(name="sell")
+    async def sell_(self, ctx, item):
+        """Sell some items to make some money"""
+        try:
+            account = await self.manager.get_account(ctx.author.id)
+
+            if not account:
+                return await ctx.send("You do not have an account. To create one use `p-create`.")
+
+            item = item.lower()
+
+            if (item not in self.shop_items_water.keys()) and (item not in self.bot.cogs["ShopManager"].valid_items.keys()):
+                return await ctx.send("That item does not exist.")
+
+            is_water = item in self.shop_items_water.keys()
+            items = account.items
+            shop = self.bot.cogs["ShopManager"].valid_items
+            amount = 1
+
+            confirm_embed = discord.Embed(title="Confirm", description="Use the up and down arrows to change the amount of items you wish to sell.\nPlease react with <:greenTick:596576670815879169> to confirm, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
+            confirm_embed.add_field(name="Amount of Items", value=amount)
+            confirm_embed.add_field(name="Cost", value=f"${amount*shop[item]['price']/2}" if not is_water else f"${amount*self.shop_items_water[item]/2}")
+
+            bot_msg = await ctx.send(embed=confirm_embed)
+
+            await bot_msg.add_reaction("\u2b06")
+            await bot_msg.add_reaction("\u2b07")
+
+            await bot_msg.add_reaction(":greenTick:596576670815879169")
+            await bot_msg.add_reaction(":redTick:596576672149667840")
+
+            changing = True
+
+            if not is_water:
+                while changing:
+                    try:
+                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
+                        if str(reaction.emoji) == "\u2b06":
+                            amount += 1
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
+
+                            new_embed.add_field(name="Amount of Items", value=amount)
+                            new_embed.add_field(name="Cost", value=f"${amount*shop[item]['price']/2}")
+                            await bot_msg.edit(embed=new_embed)
+                        if str(reaction.emoji) == "\u2b07":
+                            if (amount - 1) <= 0:
+                                amount = 1
+                            else:
+                                amount -= 1
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
+
+                            new_embed.add_field(name="Amount of Items", value=amount)
+                            new_embed.add_field(name="Cost", value=f"${amount*shop[item]['price']/2}")
+                            await bot_msg.edit(embed=new_embed)
+                        if str(reaction.emoji) == "<:greenTick:596576670815879169>":
+                            changing = False
+                        if str(reaction.emoji) == "<:redTick:596576672149667840>":
+                            await bot_msg.delete()
+                            changing = True
+
+                            return await ctx.send("Canceled.")
+                    except asyncio.TimeoutError:
+                        await bot_msg.delete()
+                        return await ctx.send("Canceled.")
+
+                balance = (account.balance + ((shop[item]['price']/2)*amount))
+            else:
+                while changing:
+                    try:
+                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
+                        if str(reaction.emoji) == "\u2b06":
+                            amount += 1
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
+
+                            new_embed.add_field(name="Amount of Items", value=amount)
+                            new_embed.add_field(name="Cost", value=f"${amount*self.shop_items_water[item]/2}")
+                            await bot_msg.edit(embed=new_embed)
+                        if str(reaction.emoji) == "\u2b07":
+                            if (amount - 1) <= 0:
+                                amount = 1
+                            else:
+                                amount -= 1
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
+
+                            new_embed.add_field(name="Amount of Items", value=amount)
+                            new_embed.add_field(name="Cost", value=f"${amount*self.shop_items_water[item]/2}")
+                            await bot_msg.edit(embed=new_embed)
+                        if str(reaction.emoji) == "<:greenTick:596576670815879169>":
+                            changing = False
+                        if str(reaction.emoji) == "<:redTick:596576672149667840>":
+                            await bot_msg.delete()
+                            changing = True
+
+                            return await ctx.send("Canceled.")
+                    except asyncio.TimeoutError:
+                        await bot_msg.delete()
+                        return await ctx.send("Canceled.")
+
+                balance = (account.balance + ((self.shop_items_water[item]/2)*amount))
+
+            await bot_msg.delete()
+
+            
+            if is_water:
+                if (items["water bowls"] - amount) < 0:
+                    return await ctx.send("You do not have enough items.")
+
+                if (items["water bowls"] - amount) == 0:
+                    del items["water bowls"]
+                else:
+                    items["water bowls"] = items["water bowls"] - amount
+            else:
+                if (items[item] - amount) < 0:
+                    return await ctx.send("You do not have enough items.")
+
+                if (items[item] - amount) == 0:
+                    del items[item]
+                else:
+                    items[item] = items[item] - amount
+            
+            await self.bot.db.execute("UPDATE accounts SET balance = $1, items = $2 WHERE owner_id = $3", balance, json.dumps(items), ctx.author.id)
+
+            if not is_water:
+                desc = f"You sold {amount} of {item}(s) for ${amount*shop[item]['price']/2}"
+            else:
+                desc = f"You sold {amount*self.conversions[item]} bowl(s) of water for ${amount*self.shop_items_water[item]}"
+
+            embed = discord.Embed(title="Success!", description=desc, colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed.add_field(name="Old balance", value=f"${account.balance}")
+
+            if not is_water:
+                embed.add_field(name="New balance", value=f"${account.balance+(round(shop[item]['price']*amount/2))}")
+            else:
+                embed.add_field(name="New balance", value=f"${account.balance+(round(self.shop_items_water[item]*amount/2))}")
+
+            return await ctx.send(embed=embed)
+        except Exception:
             traceback.print_exc()
 
             return await ctx.send("Something went wrong and your account has not been charged.")
