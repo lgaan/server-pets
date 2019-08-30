@@ -99,7 +99,7 @@ class Accounts(commands.Cog):
                 embed.add_field(name="Pets", value=', '.join(v))
 
             if account.pets:
-                embed.add_field(name="Currently earning", value=f"${sum((p.earns*p.level) for p in account.pets)}/30 minutes")
+                embed.add_field(name="Currently earning", value=f"${sum((p.earns*p.level*self.bot.pet_species[p.type][p.sepcies][1]) for p in account.pets)}/30 minutes")
             embed.add_field(name="Balance", value=f"${account.balance}")
 
             return await ctx.send(embed=embed)
