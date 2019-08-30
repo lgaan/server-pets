@@ -25,7 +25,7 @@ class BotContext(commands.Context):
         return await super().send(content=content, tts=tts, embed=embed, file=file, files=files, delete_after=delete_after, nonce=nonce) 
 
 
-class Bot(commands.Bot):
+class Bot(commands.AutoShardedBot):
     def __init__(self):
         super().__init__(command_prefix="p-", case_insensitive=True)
         self.remove_command("help")
