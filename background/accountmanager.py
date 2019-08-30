@@ -72,7 +72,6 @@ class AccountEarnManager(commands.Cog):
                 if account.pets:
                     earning = 0 #sum((pet.earns*pet.level) for pet in account.pets)
 
-
                     for pet in account.pets:
                         earn = pet.earns*pet.level
 

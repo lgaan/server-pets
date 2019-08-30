@@ -192,7 +192,7 @@ class Pets(commands.Cog):
                 if key.lower() not in  ["earns", "species"]:
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
                 elif key.lower() == "earns":
-                    value = value*pet.level
+                    value = value*pet.level*self.bot.pet_species[pet.type][pet.species][1]
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
                 else:
                     value = f"{self.bot.pet_species[pet.type][value][0]} {value} {pet.type}"
