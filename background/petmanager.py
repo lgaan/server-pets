@@ -86,7 +86,7 @@ class PetManager(commands.Cog):
                             if (pet.hunger - amount_to_take) <= 3.0 and settings["dm_notifications"]:
                                 owner = self._bot.get_user(account.id)
 
-                                await owner.send(f"{pet.name} has not been fed for a while, consider feeding it with the `p-feed {pet.name}` command.")
+                                await owner.send(f"{pet.name} has not been fed for a while, consider feeding it with the `p-feed <item> {pet.name}` command.")
                             
                         except Exception:
                             traceback.print_exc()

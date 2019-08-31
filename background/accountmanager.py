@@ -77,7 +77,7 @@ class AccountEarnManager(commands.Cog):
 
                         earn *= self._bot.pet_species[pet.type][pet.species][1]
 
-                        earning += earn
+                        earning += earn / (pet.level * 2)
 
                         if not pet.earned:
                             pet.earned = 0
