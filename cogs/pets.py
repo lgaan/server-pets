@@ -68,6 +68,7 @@ class Pets(commands.Cog):
         return rand
 
     @commands.command(name="adopt")
+    @commands.cooldown(1, 86400, commands.BucketType.user)
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
         try:
@@ -93,6 +94,9 @@ class Pets(commands.Cog):
                 if not account:
                     return await ctx.send(
                         "You need an account to adopt an animal, to do so use the `p-create` command.")
+
+                if len(account.pets) > 100 and account.pets:
+                    return await ctx.send("You have too many pets!")
 
                 if pet.lower() not in self.pets:
                     return await ctx.send("That pet does not exist. To view a list of pets use `p-adopt`")
