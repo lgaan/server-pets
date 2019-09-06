@@ -64,55 +64,54 @@ class PetManager(commands.Cog):
                                                
                 if account.pets:                                      
                     for pet in account.pets:
-                        if pet.kenneled:
-                            continue
+                        if not pet.kenneled:
 
-                        # hunger
-                        try:
-                            hunger_rate = self.pet_hunger_rates[pet.type]
-                            amount_to_take = random.uniform(hunger_rate[0],hunger_rate[1])
+                            # hunger
+                            try:
+                                hunger_rate = self.pet_hunger_rates[pet.type]
+                                amount_to_take = random.uniform(hunger_rate[0],hunger_rate[1])
 
-                            if (pet.hunger - amount_to_take) <= 0:
-                                if settings["death_reminder"]:                               
+                                if (pet.hunger - amount_to_take) <= 0:
+                                    if settings["death_reminder"]:                               
+                                        owner = self._bot.get_user(account.id)
+
+                                        try:
+                                            await owner.send(f"{pet.name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
+                                        except discord.Forbidden:
+                                            pass
+                                            
+                                    await self._bot.db.execute("DELETE FROM pets WHERE name = $1 AND owner_id = $2", pet.name, pet.owner_id)      
+
+                                if (pet.hunger - amount_to_take) <= 3.0 and settings["dm_notifications"]:
                                     owner = self._bot.get_user(account.id)
 
-                                    try:
-                                        await owner.send(f"{pet.name} was found to have not been fed in a long time. The animal rescue company has had to remove your pet.")
-                                    except discord.Forbidden:
-                                        pass
-                                        
-                                await self._bot.db.execute("DELETE FROM pets WHERE name = $1 AND owner_id = $2", pet.name, pet.owner_id)      
+                                    await owner.send(f"{pet.name} has not been fed for a while, consider feeding it with the `p-feed <item> {pet.name}` command.")
+                                
+                            except Exception:
+                                traceback.print_exc()
 
-                            if (pet.hunger - amount_to_take) <= 3.0 and settings["dm_notifications"]:
-                                owner = self._bot.get_user(account.id)
+                            # thirst
+                            try:
+                                thirst_rate = self.pet_thirst_rates[pet.type]
+                                amount_to_take = random.uniform(thirst_rate[0],thirst_rate[1])
+                                
+                                if (pet.thirst - amount_to_take) <= 0:
+                                    if settings["death_reminder"]:
+                                        owner = self._bot.get_user(account.id)
 
-                                await owner.send(f"{pet.name} has not been fed for a while, consider feeding it with the `p-feed <item> {pet.name}` command.")
-                            
-                        except Exception:
-                            traceback.print_exc()
+                                        await owner.send(f"{pet.name} was found to have not been watered in a long time. The animal rescue company has had to remove your pet.")
 
-                        # thirst
-                        try:
-                            thirst_rate = self.pet_thirst_rates[pet.type]
-                            amount_to_take = random.uniform(thirst_rate[0],thirst_rate[1])
-                            
-                            if (pet.thirst - amount_to_take) <= 0:
-                                if settings["death_reminder"]:
+                                    await self._bot.db.execute("DELETE FROM pets WHERE name = $1 AND owner_id = $2", pet.name, pet.owner_id)      
+
+                                if (pet.thirst - amount_to_take) <= 3.0 and settings["dm_notifications"]:
                                     owner = self._bot.get_user(account.id)
 
-                                    await owner.send(f"{pet.name} was found to have not been watered in a long time. The animal rescue company has had to remove your pet.")
+                                    await owner.send(f"{pet.name} has not drunk for a while, give it a drink with the `p-water {pet.name}` command.") 
+                                
+                            except Exception:
+                                traceback.print_exc()
 
-                                await self._bot.db.execute("DELETE FROM pets WHERE name = $1 AND owner_id = $2", pet.name, pet.owner_id)      
-
-                            if (pet.thirst - amount_to_take) <= 3.0 and settings["dm_notifications"]:
-                                owner = self._bot.get_user(account.id)
-
-                                await owner.send(f"{pet.name} has not drunk for a while, give it a drink with the `p-water {pet.name}` command.") 
-                            
-                        except Exception:
-                            traceback.print_exc()
-
-                    await self._bot.db.execute("UPDATE pets SET hunger = $1, thirst = $2 WHERE owner_id = $3 AND name = $4", (pet.hunger - amount_to_take), (pet.thirst - amount_to_take), account.id, pet.name)
+                            await self._bot.db.execute("UPDATE pets SET hunger = $1, thirst = $2 WHERE owner_id = $3 AND name = $4", (pet.hunger - amount_to_take), (pet.thirst - amount_to_take), account.id, pet.name)
         
         except Exception:
             traceback.print_exc()

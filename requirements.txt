@@ -1,5 +1,0 @@
-discord.py
-asyncpg
-jishaku
-dblpy
-psutil 
