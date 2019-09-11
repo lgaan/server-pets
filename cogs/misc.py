@@ -16,7 +16,7 @@ from utils.paginator import EmbedPaginator
 class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.dblpy = dbl.Client(bot, os.environ.get("DBL_TOKEN"))
+        self.dblpy = bot.dbl
 
         self.ignored_cogs = ["jishaku", "handlers", "accountearnmanager", "petmanager", "usagemanager", "shopmanager", "kennelmanager"]
     
