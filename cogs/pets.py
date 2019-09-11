@@ -182,13 +182,15 @@ class Pets(commands.Cog):
         if not account.pets:
             return await ctx.send("You do not have any pets to rename. To adopt one please use `p-adopt`")
         
-        pet = RenameConverter().convert(ctx, argument=pet.lower())
+        pet = await RenameConverter().convert(ctx, argument=pet.lower())
 
         if not pet[0]:
             return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
 
         await self.bot.db.execute("UPDATE pets SET name = $1 WHERE owner_id = $2 AND name = $3", pet[1], ctx.author.id, pet[0].name)
 
+        return await ctx.send(f"{pet[0].name} has been renamed to {pet[1]}")
+        
     @commands.command(name="inspect")
     async def inspect_(self, ctx, *, pet):
         """Inspect a pet"""
