@@ -33,7 +33,7 @@ class Bot(commands.AutoShardedBot):
         self.remove_command("help")
         self.load_extension("jishaku")
 
-        self.dbl = dbl.DBLClient(bot, os.environ.get("DBL_TOKEN"))
+        self.dbl = dbl.DBLClient(self, os.environ.get("DBL_TOKEN"))
         self.db = None
 
         self.usage = {}
