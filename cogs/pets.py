@@ -172,6 +172,7 @@ class Pets(commands.Cog):
             traceback.print_exc()
 
     @commands.command(name="rename")
+    @commands.cooldown(1, 60, commands.BucketType.user)
     async def rename_(self, ctx, *, pet):
         """Rename a pet"""
         account = await self.manager.get_account(ctx.author.id)
@@ -185,12 +186,12 @@ class Pets(commands.Cog):
         pet = await RenameConverter().convert(ctx, argument=pet.lower())
 
         if not pet[0]:
-            return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
+            return await ctx.send(f"You do not own a pet with that name. To buy an animal use `p-adopt`")
 
         await self.bot.db.execute("UPDATE pets SET name = $1 WHERE owner_id = $2 AND name = $3", pet[1], ctx.author.id, pet[0].name)
 
-        return await ctx.send(f"{pet[0].name} has been renamed to {pet[1]}")
-        
+        return await ctx.send(f"{str(pet[0].name)[0].upper()}{str(pet[0].name)[1:]} has been renamed to {str(pet[1])[0].upper()}{str(pet[1])[1:]}")
+
     @commands.command(name="inspect")
     async def inspect_(self, ctx, *, pet):
         """Inspect a pet"""
