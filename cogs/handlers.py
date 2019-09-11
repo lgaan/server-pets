@@ -26,6 +26,8 @@ class Handlers(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             return
         
+        await ctx.message.add_reaction("<:redTick:596576672149667840>")
+        
         embed = discord.Embed(title="There was an error.", description="Are you able to solve this on your own? If yes react with <:greenTick:596576670815879169>, if not react with <:redTick:596576672149667840>", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
         embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 

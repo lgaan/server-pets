@@ -10,6 +10,7 @@ import discord
 from discord.ext import commands
 
 from utils.paginator import EmbedPaginator
+from utils.converters import RenameConverter
 from utils.managers.accountmanager import AccountManager
 
 class Pets(commands.Cog):
@@ -169,6 +170,24 @@ class Pets(commands.Cog):
             return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()
+
+    @commands.command(name="rename")
+    async def rename_(self, ctx, *, pet):
+        """Rename a pet"""
+        account = await self.manager.get_account(ctx.author.id)
+
+        if not account:
+            return await ctx.send("You do not have an account. To create one please use `p-create`")
+        
+        if not account.pets:
+            return await ctx.send("You do not have any pets to rename. To adopt one please use `p-adopt`")
+        
+        pet = RenameConverter.convert(ctx, pet)
+
+        if not pet[0]:
+            return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
+
+        await self.bot.db.execute("UPDATE pets SET name = $1 WHERE owner_id = $2 AND name = $3", pet[1], ctx.author.id, pet[0].name)
 
     @commands.command(name="inspect")
     async def inspect_(self, ctx, *, pet):

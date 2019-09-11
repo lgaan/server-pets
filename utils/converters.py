@@ -1,6 +1,7 @@
 import traceback
 
 import re
+import shlex
 
 import calendar
 from datetime import datetime, date, timedelta
@@ -8,6 +9,8 @@ from dateutil.relativedelta import relativedelta
 
 import discord
 from discord.ext import commands
+
+from utils.managers.accountmanager import AccountManager
 
 DATE_REGEX = r"(?i)^(\d+)(d(ays|ay)?|w(eeks|eek)?|m(onths|onth)?|y(ears|ear)?)$"
 DAY_REGEX = r"^(3[01]|[12][0-9]|[1-9])$"
@@ -56,3 +59,15 @@ class KennelDate(commands.Converter):
             d = now + relativedelta(years=+int(match[0]))
 
         return d
+
+class RenameConverter(commands.Converter):
+    async def convert(self, ctx, argument):
+        manager = AccountManager(ctx.bot)
+        has_quotes = any(word.startswith('"') or word.startswith("'") for word in argument.split(" "))
+
+        if has_quotes and not argument.split(" ")[0].startswith("'") and not argument.split(" ")[0].startswith('"'):
+            raise commands.BadArgument("If using quotes, they must be on the first argument, e.g. `p-rename \"pet\" new name`")
+        
+        pet = await manager.get_pet_named(ctx.author.id, shlex.split(argument)[0] if has_quotes else argument.split(" ")[0])
+
+        return (pet, ' '.join(argument.split(" ")[1:]))
