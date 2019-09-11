@@ -182,7 +182,7 @@ class Pets(commands.Cog):
         if not account.pets:
             return await ctx.send("You do not have any pets to rename. To adopt one please use `p-adopt`")
         
-        pet = RenameConverter.convert(ctx, pet)
+        pet = RenameConverter().convert(ctx, argument=pet.lower())
 
         if not pet[0]:
             return await ctx.send(f"You do not own a pet named {pet}. To buy an animal use `p-adopt`")
