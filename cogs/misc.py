@@ -5,7 +5,6 @@ import codecs
 import pathlib
 import json
 
-import dbl
 
 import discord
 from discord.ext import commands

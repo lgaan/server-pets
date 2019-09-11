@@ -4,6 +4,8 @@ import asyncpg
 import discord
 import json
 
+import dbl
+
 from discord.ext import commands
 from pathlib import Path
 from utils.paginator import EmbedPaginator
