@@ -84,7 +84,7 @@ class AccountEarnManager(commands.Cog):
 
                         needed = await self.get_points_needed(pet)
 
-                        if (pet.earned+pet.earns) >= needed:
+                        if (pet.earned+pet.earns) >= needed and account.settings["dm_notifications"]:
                             await self._bot.get_user(account.id).send(f"{pet.name} has levelled up to level {pet.level+1}! They now earn {pet.earns*(pet.level+1)} cash/30 minutes")
                             level = pet.level + 1
                         else:
@@ -92,7 +92,7 @@ class AccountEarnManager(commands.Cog):
                         
                         next_level = await self.get_next_level(pet.level) - 5
 
-                        if pet.level == next_level and pet.age != self.pet_age[pet.type][next_level]:
+                        if pet.level == next_level and pet.age != self.pet_age[pet.type][next_level] and account.settings["dm_notifications"]:
                             await self._bot.get_user(account.id).send(f"{pet.name} has grown up! They are now a {self.pet_age[pet.type][next_level]}")
 
                             age = self.pet_age[pet.type][next_level] if next_level in self.pet_age[pet.type].keys() else "elder"
