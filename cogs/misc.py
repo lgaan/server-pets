@@ -82,6 +82,7 @@ class Misc(commands.Cog):
             
             embed = discord.Embed(title="About Server Pets", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
+            embed.set_footer(text="Hosted by MrRandom#4847")
             embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
             embed.add_field(name="Bot Users", value=len(self.bot.users))
