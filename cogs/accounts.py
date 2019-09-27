@@ -128,7 +128,7 @@ class Accounts(commands.Cog):
 
                     # hunger
                     try:
-                        val += f"Hunger: {str(pet.hunger)[:4]}/10"
+                        val += f"Hunger: {str(pet.hunger)[:4]}/20"
                     except KeyError:
                         val += f"Hunger: 10/10"
 

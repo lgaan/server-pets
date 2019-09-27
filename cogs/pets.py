@@ -69,7 +69,6 @@ class Pets(commands.Cog):
         return rand
 
     @commands.command(name="adopt")
-    @commands.cooldown(1, 86400, commands.BucketType.user)
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
         try:
@@ -146,7 +145,7 @@ class Pets(commands.Cog):
                 except asyncio.TimeoutError:
                     return await ctx.send("Time ran out.")
 
-                if "@everyone" in message.content or "@here" in message.content:
+                if any(word in ["@everyone","@here"] for word in message.content):
                     return await ctx.send("That pet name includes a blacklisted word. Please try again with another "
                                           "name.")
 
@@ -159,7 +158,7 @@ class Pets(commands.Cog):
                                           account.balance - self.pet_prices[pet.lower()], ctx.author.id)
 
                 await self.bot.db.execute("INSERT INTO pets (owner_id, name, type, thirst, hunger, earns, level, age, earned, species) VALUES ($1,"
-                                          "$2,$3,20,10,$4,$5,$6,0,$7)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species)
+                                          "$2,$3,20,20,$4,$5,$6,0,$7)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species)
 
                 embed = discord.Embed(title="Success!",
                                       description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]} (With a species of {species})",
@@ -261,15 +260,15 @@ class Pets(commands.Cog):
             if item not in shop_cog.valid_items.keys():
                 return await ctx.send("That item does not exist.")
 
-            if pet.hunger < 10:
+            if pet.hunger < 20:
                 gain = shop[item]["gain"]
                 pet_hunger = pet.hunger + gain
 
-                if pet_hunger > 10:
-                    pet_hunger = 10
+                if pet_hunger > 20:
+                    pet_hunger = 20
 
                 await ctx.send(
-                    f"Your pet has gained {gain} hunger. It's health bar has changed to {pet_hunger}/10")
+                    f"Your pet has gained {gain} hunger. It's health bar has changed to {pet_hunger}/20")
 
                 if (food - 1) <= 0:
                     del items[item]
