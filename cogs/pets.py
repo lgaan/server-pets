@@ -96,7 +96,7 @@ class Pets(commands.Cog):
                     return await ctx.send(
                         "You need an account to adopt an animal, to do so use the `p-create` command.")
 
-                if len(account.pets) > 100 and account.pets:
+                if account.pets and len(account.pets) > 100:
                     return await ctx.send("You have too many pets!")
 
                 if pet.lower() not in self.pets:
