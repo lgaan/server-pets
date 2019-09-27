@@ -85,7 +85,6 @@ class Pets(commands.Cog):
                                         inline=False)
 
                     embed.set_thumbnail(url=ctx.guild.icon_url)
-
                     embeds.append(embed)
 
                 return await ctx.paginate(message=None, entries=embeds)
