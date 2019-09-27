@@ -14,6 +14,7 @@ from utils.paginator import EmbedPaginator
 from utils.converters import RenameConverter
 from utils.managers.accountmanager import AccountManager
 
+
 class Pets(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
