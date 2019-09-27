@@ -2,6 +2,7 @@ import traceback
 import asyncio
 import json
 import random
+import re
 
 from numpy import random as npr
 from datetime import datetime
@@ -154,11 +155,42 @@ class Pets(commands.Cog):
 
                 species = await self.get_random_species(pet.lower())
 
+                m = await ctx.send("Would you like to add an image? If yes respond with `yes`, if not respond with `no`.")
+                try:
+                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m.content.lower in ["yes","no"])
+
+                    if confirmation:
+                        if confirmation.content.lower() == "yes":
+                            attach = True
+                        else:
+                            attach = False
+                        await m.delete()
+                except asyncio.TimeoutError:
+                    return await ctx.send("Time ran out.")
+
+                if attach:
+                    m = await ctx.send("Please supply a URL for your pet's image.")
+
+                    try:
+                        img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower())
+
+                        if img:
+                            image_url = re.findall(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+", img.content)
+
+                            if not image_url:
+                                return await ctx.send("It doesnt seem like you send a valid url.")
+                            
+                            image_url = image_url[0]
+
+                            await m.delete()
+                    except asyncio.TimeoutError:
+                        return await ctx.send("Time ran out.")
+
                 await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2",
                                           account.balance - self.pet_prices[pet.lower()], ctx.author.id)
 
-                await self.bot.db.execute("INSERT INTO pets (owner_id, name, type, thirst, hunger, earns, level, age, earned, species) VALUES ($1,"
-                                          "$2,$3,20,20,$4,$5,$6,0,$7)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species)
+                await self.bot.db.execute("INSERT INTO pets (owner_id, name, type, thirst, hunger, earns, level, age, earned, species, image_url) VALUES ($1,"
+                                          "$2,$3,20,20,$4,$5,$6,0,$7,$8)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species, image_url)
 
                 embed = discord.Embed(title="Success!",
                                       description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]} (With a species of {species})",

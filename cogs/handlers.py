@@ -23,7 +23,7 @@ class Handlers(commands.Cog):
         if ctx.guild is None:
             return await ctx.send("Commands should be done in guilds")
 
-        if isinstance(error, commands.CommandNotFound):
+        if isinstance(error, (commands.CommandNotFound, commands.CheckFailure)):
             return
         
         await ctx.message.add_reaction("<:redTick:596576672149667840>")
