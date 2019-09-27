@@ -129,7 +129,7 @@ class Pets(commands.Cog):
                     else:
                         await bot_msg.delete()
                         return await ctx.send("Canceled.")
-                except asyncio.TimeoutError:
+                except asyncio.TimeoutError: 
                     return await ctx.send("Time ran out.")
 
                 name_message = await ctx.send(embed=discord.Embed(title=f"Your {pet.lower()}",
