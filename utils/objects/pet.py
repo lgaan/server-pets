@@ -18,6 +18,8 @@ class Pet:
         self.age = json.get("age", self.get_baby_name(self.type))
         self.species = json.get("species")
 
+        self.image_url = json.get("image_url")
+
         self.kenneled = json.get("kenneled")
     
     def get_baby_name(self, pet_type):

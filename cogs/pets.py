@@ -254,6 +254,8 @@ class Pets(commands.Cog):
                 elif key.lower() == "earns":
                     value = value*pet.level*self.bot.pet_species[pet.type][pet.species][1]/pet.level*2
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"${str(value)[0].upper()}{str(value)[1:]}")
+                elif key.lower() == "image_url":
+                    embed.set_image(url=value)
                 else:
                     value = f"{self.bot.pet_species[pet.type][value][0]} {value} {pet.type}"
                     embed.add_field(name="Species", value=f"{value[0].upper()}{value[1:]}")
