@@ -157,13 +157,16 @@ class Pets(commands.Cog):
 
                 m = await ctx.send("Would you like to add an image? If yes respond with `yes`, if not respond with `no`.")
                 try:
-                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m.content.lower in ["yes","no"])
+                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
                     if confirmation:
                         if confirmation.content.lower() == "yes":
                             attach = True
-                        else:
+                        elif confirmation.content.lower() == "no":
                             attach = False
+                        else:
+                            return
+
                         await m.delete()
                 except asyncio.TimeoutError:
                     return await ctx.send("Time ran out.")
