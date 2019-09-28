@@ -180,6 +180,7 @@ class Pets(commands.Cog):
                         if img:
                             image_url = re.findall(r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?", img.content)
 
+                            print(image_url)
                             if not image_url:
                                 return await ctx.send("It doesnt seem like you send a valid url.")
                             
