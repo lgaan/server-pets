@@ -192,9 +192,9 @@ class Pets(commands.Cog):
 
                 await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2",
                                           account.balance - self.pet_prices[pet.lower()], ctx.author.id)
-
+                
                 await self.bot.db.execute("INSERT INTO pets (owner_id, name, type, thirst, hunger, earns, level, age, earned, species, image_url) VALUES ($1,"
-                                          "$2,$3,20,20,$4,$5,$6,0,$7,$8)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species, image_url)
+                                          "$2,$3,20,20,$4,$5,$6,0,$7,$8)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species, None if not attach else image_url)
 
                 embed = discord.Embed(title="Success!",
                                       description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]} (With a species of {species})",
@@ -250,9 +250,8 @@ class Pets(commands.Cog):
             
             for key, value in vars(pet).items():
                 key = key.replace("_"," ")
-                if key.lower() == "image url":
-                    if value != "None" or value is not None:
-                        embed.set_image(url=value)
+                if key.lower() == "image url" and value:
+                    embed.set_image(url=value)
                 elif key.lower() not in  ["earns", "species"]:
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
                 elif key.lower() == "earns":
