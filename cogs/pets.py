@@ -178,7 +178,7 @@ class Pets(commands.Cog):
                         img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower())
 
                         if img:
-                            image_url = re.findall(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+", img.content)
+                            image_url = re.findall(r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?", img.content)
 
                             if not image_url:
                                 return await ctx.send("It doesnt seem like you send a valid url.")
