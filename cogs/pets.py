@@ -164,6 +164,7 @@ class Pets(commands.Cog):
                             attach = True
                         elif confirmation.content.lower() == "no":
                             attach = False
+                            image_url = "None"
                         else:
                             return
 
@@ -250,7 +251,8 @@ class Pets(commands.Cog):
             for key, value in vars(pet).items():
                 key = key.replace("_"," ")
                 if key.lower() == "image url":
-                    embed.set_image(url=value)
+                    if value not None:
+                        embed.set_image(url=value)
                 elif key.lower() not in  ["earns", "species"]:
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
                 elif key.lower() == "earns":
