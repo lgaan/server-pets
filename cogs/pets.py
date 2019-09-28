@@ -251,8 +251,10 @@ class Pets(commands.Cog):
             for key, value in vars(pet).items():
                 key = key.replace("_"," ")
                 if key.lower() == "image url":
-                    if value is not None:
+                    try:
                         embed.set_image(url=value)
+                    except discord.errors.HTTPException:
+                        pass
                 elif key.lower() not in  ["earns", "species"]:
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
                 elif key.lower() == "earns":
