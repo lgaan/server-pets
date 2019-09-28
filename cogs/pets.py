@@ -248,9 +248,9 @@ class Pets(commands.Cog):
             embed = discord.Embed(title=f"Inspecting {pet.name}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             
             for key, value in vars(pet).items():
-                if key.lower() == "image_url":
+                key = key.replace("_"," ")
+                if key.lower() == "image url":
                     embed.set_image(url=value)
-                key = key.replace("_"," "); print(key)
                 elif key.lower() not in  ["earns", "species"]:
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
                 elif key.lower() == "earns":
