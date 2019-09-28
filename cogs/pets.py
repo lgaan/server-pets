@@ -251,7 +251,7 @@ class Pets(commands.Cog):
                 if key.lower() == "image_url":
                     embed.set_image(url=value)
                 key = key.replace("_"," "); print(key)
-                if key.lower() not in  ["earns", "species"]:
+                elif key.lower() not in  ["earns", "species"]:
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
                 elif key.lower() == "earns":
                     value = value*pet.level*self.bot.pet_species[pet.type][pet.species][1]/pet.level*2
