@@ -206,6 +206,21 @@ class Pets(commands.Cog):
         except Exception:
             traceback.print_exc()
 
+    @commands.command(name="edit-image")
+    async def edit_image_(self, ctx, *, pet):
+        """Set an image for a pet"""
+        account = await self.manager.get_account(ctx.author.id)
+
+        if not account:
+            return await ctx.send("You do not have an account. To create one please use `p-create`")
+        
+        if not account.pets:
+            return await ctx.send("You do not have any pets to rename. To adopt one please use `p-adopt`")
+        
+        pet = await RenameConverter().convert(ctx, argument=pet.lower())
+
+        return await ctx.send(pet)
+        
     @commands.command(name="rename")
     @commands.cooldown(1, 60, commands.BucketType.user)
     async def rename_(self, ctx, *, pet):
