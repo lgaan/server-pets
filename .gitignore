@@ -136,6 +136,7 @@ dmypy.json
 # Visual Studio
 .vs/
 .visualstudio/
+.vscode/
 
 # Configuration files
 /config.json
