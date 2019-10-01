@@ -19,7 +19,7 @@ class DiscordBotList(commands.Cog):
     @tasks.loop(minutes=30.0)
     async def update_stats(self):
         try:
-            await self.dblpy.post_guild_count()
+            await self.dblpy.post_guild_count(shard_count=len(self.bot.shards))
         except Exception as e:
             traceback.print_exc()
     
