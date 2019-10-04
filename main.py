@@ -41,15 +41,15 @@ class Bot(commands.AutoShardedBot):
         self.usage = {}
         self.shop = {}
         self.session = aiohttp.ClientSession(loop=self.loop)
-        
+
         self.pet_species = {
-            "dog": {"bulldog": ("common", 1), "poodle": ("common", 1.5), "beagle": ("common", 1.5), "siberian husky": ("uncommon", 2), "bernese mountain dog": ("uncommon", 2), "miniature pinscher": ("rare", 2.5)},
-            "cat": {"persian": ("common", 1), "abyssinian": ("common", 1), "exotic shorthair": ("common", 1.5), "bengal": ("uncommon", 1.5), "american bobtail": ("uncommon", 1.5), "egyptian mau": ("rare", 2.5)},
-            "mouse": {"wood": ("common", 1), "deer": ("common", 1.5), "cotton": ("uncommon", 2), "silky pocket": ("uncommon", 1.5), "steppe": ("rare", 2), "ethiopian ampphibious": ("rare", 2.5)},
-            "snake": {"corn": ("common", 1), "black rat": ("common", 1), "milk": ("uncommon", 1.5), "diamondback rattle": ("uncommon", 2), "indian cobra": ("rare", 2.5), "king cobra": ("rare", 2.5)},
-            "spider": {"hobo": ("common", 1), "sydney funnel web": ("common", 1.5), "brown widow": ("uncommon", 1.5), "orchard": ("uncommon", 2), "black widow": ("rare", 2.5), "goliath birdeater": ("rare", 2.5)},
-            "bird": {"sparrow": ("common", 1), "blue tit": ("common", 1.5), "short-eared owl": ("uncommon", 1.5), "dove": ("uncommon", 1.5), "great egret": ("rare", 2.5), "peregrine falcon": ("rare", 2.5)},
-            "horse": {"lipizzan": ("common", 1), "gypsy": ("common", 1), "paso fino": ("uncommon", 1.5), "boulonnais": ("uncommon", 1.5), "rocky mountain": ("rare", 2), "kathiawari": ("rare", 2.5)}
+            "dog": {"bulldog": ("common", 1), "poodle": ("common", 1.5), "beagle": ("common", 1.5), "siberian husky": ("uncommon", 2), "bernese mountain dog": ("uncommon", 2), "skeleton miniature pinscher": ("rare", 2.5)},
+            "cat": {"persian": ("common", 1), "abyssinian": ("common", 1), "exotic shorthair": ("common", 1.5), "bengal": ("uncommon", 1.5), "american bobtail": ("uncommon", 1.5), "skeleton egyptian mau": ("rare", 2.5)},
+            "mouse": {"wood": ("common", 1), "deer": ("common", 1.5), "cotton": ("uncommon", 2), "silky pocket": ("uncommon", 1.5), "steppe": ("rare", 2), "skeleton ethiopian ampphibious": ("rare", 2.5)},
+            "snake": {"corn": ("common", 1), "black rat": ("common", 1), "milk": ("uncommon", 1.5), "diamondback rattle": ("uncommon", 2), "indian cobra": ("rare", 2.5), "skeleton king cobra": ("rare", 2.5)},
+            "spider": {"hobo": ("common", 1), "sydney funnel web": ("common", 1.5), "brown widow": ("uncommon", 1.5), "orchard": ("uncommon", 2), "black widow": ("rare", 2.5), "skeleton goliath birdeater": ("rare", 2.5)},
+            "bird": {"sparrow": ("common", 1), "blue tit": ("common", 1.5), "short-eared owl": ("uncommon", 1.5), "dove": ("uncommon", 1.5), "great egret": ("rare", 2.5), "skeleton peregrine falcon": ("rare", 2.5)},
+            "horse": {"lipizzan": ("common", 1), "gypsy": ("common", 1), "paso fino": ("uncommon", 1.5), "boulonnais": ("uncommon", 1.5), "rocky mountain": ("rare", 2), "skeleton kathiawari": ("rare", 2.5)}
         }
 
     async def get_context(self, message, *, cls=None):
