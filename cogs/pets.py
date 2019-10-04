@@ -197,7 +197,11 @@ class Pets(commands.Cog):
                             
                             i = await self.get_image(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}")
 
-                            print(i)
+                            try:
+                                Image.open(i)
+                            except IOError:
+                                return await ctx.send("Not a valid image.")
+                                
                             image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
 
                             await m.delete()
