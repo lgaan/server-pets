@@ -66,9 +66,9 @@ class Pets(commands.Cog):
             "horse": "foal"
         }
 
-    async def get_image(self, bot, url):
+    async def get_image(self, url):
         """Used to check if a url is an image"""
-        async with bot.session.get(url) as resp:
+        async with aiohttp.ClientSession().get(url) as resp:
             bytes = await resp.read()
         
         return bytes
