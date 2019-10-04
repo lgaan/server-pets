@@ -190,7 +190,7 @@ class Pets(commands.Cog):
                             
                             async with aiohttp.ClientSession() as cs:
                                 async with cs.get(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}") as r:
-                                    image = Image.open(BytesIO(r.text))
+                                    image = Image.open(BytesIO(await r.text()))
                             
                                     print(image)
                             image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
