@@ -197,6 +197,7 @@ class Pets(commands.Cog):
                             
                             i = await self.get_image(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}")
 
+                            print(i)
                             try:
                                 Image.frombytes("RGBA", (128,128), i, "raw")
                             except IOError:
