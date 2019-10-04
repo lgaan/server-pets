@@ -4,6 +4,8 @@ import asyncpg
 import discord
 import json
 
+import aiohttp
+
 import dbl
 
 from discord.ext import commands
@@ -38,7 +40,8 @@ class Bot(commands.AutoShardedBot):
 
         self.usage = {}
         self.shop = {}
-
+        self.session = aiohttp.ClientSession(loop=self.loop)
+        
         self.pet_species = {
             "dog": {"bulldog": ("common", 1), "poodle": ("common", 1.5), "beagle": ("common", 1.5), "siberian husky": ("uncommon", 2), "bernese mountain dog": ("uncommon", 2), "miniature pinscher": ("rare", 2.5)},
             "cat": {"persian": ("common", 1), "abyssinian": ("common", 1), "exotic shorthair": ("common", 1.5), "bengal": ("uncommon", 1.5), "american bobtail": ("uncommon", 1.5), "egyptian mau": ("rare", 2.5)},

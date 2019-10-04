@@ -68,8 +68,9 @@ class Pets(commands.Cog):
 
     async def get_image(self, url):
         """Used to check if a url is an image"""
-        async with aiohttp.ClientSession().get(url) as resp:
-            bytes = await resp.read()
+        async with self.bot.session as cs:
+            async with cs.get(url) as resp:
+                bytes = await resp.read()
         
         return bytes
 
@@ -197,7 +198,6 @@ class Pets(commands.Cog):
                             
                             i = await self.get_image(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}")
 
-                            print(i)
                             try:
                                 Image.open(BytesIO(i))
                             except IOError:
