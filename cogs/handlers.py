@@ -61,6 +61,7 @@ class Handlers(commands.Cog):
     
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        print("g j")
         try:    
             embed = discord.Embed(title="Guild joined", colour=discord.Colour.blue(), timestamp=guild.me.joined_at)
             embed.add_field(name="Name", value=guild.name, inline=False)
@@ -76,9 +77,10 @@ class Handlers(commands.Cog):
             return await self.bot.get_channel(615299190485942292).send(embed=embed)
         except Exception:
             traceback.print_exc()
-    
+
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
+        print("g r")
         try:
             embed = discord.Embed(title="Guild Left", colour=discord.Colour.blue(), timestamp=datetime.now())
             embed.add_field(name="Name", value=guild.name, inline=False)
