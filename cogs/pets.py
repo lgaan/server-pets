@@ -66,6 +66,13 @@ class Pets(commands.Cog):
             "horse": "foal"
         }
 
+    async def get_image(self, bot, url):
+        """Used to check if a url is an image"""
+        async with bot.session.get(url) as resp:
+            bytes = await resp.read()
+        
+        return bytes
+
     async def get_random_species(self, pet_type):
         """Get a random spicies"""
         species = self.bot.pet_species
@@ -188,6 +195,9 @@ class Pets(commands.Cog):
                             if not image_url:
                                 return await ctx.send("It doesnt seem like you send a valid url.")
                             
+                            i = await self.get_image(self.bot, f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}")
+
+                            print(i)
                             image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
 
                             await m.delete()
