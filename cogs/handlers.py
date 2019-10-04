@@ -61,11 +61,7 @@ class Handlers(commands.Cog):
     
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        try:
-            async with aiohttp.ClientSession() as cs:
-                async with cs.post("http://127.0.0.1:5000/api/guilds", json={"id": guild.id, "members": guild.member_count}, headers={"x-token": "logan"}) as r:
-                    resp = await r.json()
-            
+        try:    
             embed = discord.Embed(title="Guild joined", colour=discord.Colour.blue(), timestamp=guild.me.joined_at)
             embed.add_field(name="Name", value=guild.name, inline=False)
             embed.add_field(name="Member Count", value=guild.member_count, inline=False)
@@ -84,10 +80,6 @@ class Handlers(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         try:
-            async with aiohttp.ClientSession() as cs:
-                async with cs.delete("http://127.0.0.1:5000/api/guilds", json={"id": guild.id}, headers={"x-token": "logan"}) as r:
-                    resp = await r.json()
-            
             embed = discord.Embed(title="Guild Left", colour=discord.Colour.blue(), timestamp=datetime.now())
             embed.add_field(name="Name", value=guild.name, inline=False)
             embed.add_field(name="Member Count", value=guild.member_count, inline=False)
