@@ -1,3 +1,7 @@
+from PIL import Image
+from io import BytesIO
+import aiohttp
+
 import traceback
 import asyncio
 import json
@@ -184,6 +188,11 @@ class Pets(commands.Cog):
                             if not image_url:
                                 return await ctx.send("It doesnt seem like you send a valid url.")
                             
+                            async with aiohttp.ClientSession() as cs:
+                                async with cs.get(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}") as r:
+                                    image = Image.open(BytesIO(await r.content))
+                            
+                                    print(image)
                             image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
 
                             await m.delete()
