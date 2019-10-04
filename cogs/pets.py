@@ -199,7 +199,7 @@ class Pets(commands.Cog):
 
                             print(i)
                             try:
-                                Image.frombytes("RGBA", (128,128), i, "raw")
+                                Image.open(BytesIO(i))
                             except IOError:
                                 return await ctx.send("Not a valid image.")
 
