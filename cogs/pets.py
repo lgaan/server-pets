@@ -188,7 +188,6 @@ class Pets(commands.Cog):
                             if not image_url:
                                 return await ctx.send("It doesnt seem like you send a valid url.")
                             
-                                    print(image)
                             image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
 
                             await m.delete()
