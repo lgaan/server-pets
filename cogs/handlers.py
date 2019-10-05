@@ -66,11 +66,14 @@ class Handlers(commands.Cog):
             embed = discord.Embed(title="Guild joined", colour=discord.Colour.blue(), timestamp=guild.me.joined_at)
             embed.add_field(name="Name", value=guild.name, inline=False)
             embed.add_field(name="Member Count", value=guild.member_count, inline=False)
+            embed.add_field(name="Bot Count", value=sum(m for m in guild.members if m.bot), inline=False)
 
             embed.add_field(name="** **", value="** **", inline=False)
 
             embed.add_field(name="New Guild Count", value=len(self.bot.guilds), inline=False)
             embed.add_field(name="New Member Count", value=len(self.bot.users), inline=False)
+            
+            embed.add_field(name="Potential Bot Farm?", value="Yes" if sum(m for m in guild.members if m.bot) > 100 else "No", inline=False)
 
             embed.set_thumbnail(url=guild.icon_url)
 
@@ -85,11 +88,14 @@ class Handlers(commands.Cog):
             embed = discord.Embed(title="Guild Left", colour=discord.Colour.blue(), timestamp=datetime.now())
             embed.add_field(name="Name", value=guild.name, inline=False)
             embed.add_field(name="Member Count", value=guild.member_count, inline=False)
+            embed.add_field(name="Bot Count", value=sum(m for m in guild.members if m.bot), inline=False)
 
             embed.add_field(name="** **", value="** **", inline=False)
 
             embed.add_field(name="New Guild Count", value=len(self.bot.guilds), inline=False)
             embed.add_field(name="New Member Count", value=len(self.bot.users), inline=False)
+
+            embed.add_field(name="Potential Bot Farm?", value="Yes" if sum(m for m in guild.members if m.bot) > 100 else "No", inline=False)
 
             embed.set_thumbnail(url=guild.icon_url)
 
