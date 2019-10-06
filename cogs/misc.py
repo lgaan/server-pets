@@ -128,9 +128,9 @@ class Misc(commands.Cog):
                     if len(command.aliases) > 0:
                         to_add = [command.name]
                         for alias in command.aliases: to_add.append(alias)
-                        embed.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help)
+                        embed.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help, inline=True)
                     else:
-                        embed.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help)
+                        embed.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help, inline=True)
                 
                 embed.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
                 
@@ -148,27 +148,27 @@ class Misc(commands.Cog):
             if len(command.aliases) > 0:
                 to_add = [command.name]
                 for alias in command.aliases: to_add.append(alias)
-                embed_basic.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help)
+                embed_basic.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help, inline=True)
             else:
-                embed_basic.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help)
+                embed_basic.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help, inline=True)
 
             embed_other = discord.Embed(title=f"Server Pets Help | {command.name}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed_other.set_thumbnail(url=ctx.guild.me.avatar_url)
 
             if len(command.aliases) == 0:
-                embed_other.add_field(name="Aliases", value="None")
+                embed_other.add_field(name="Aliases", value="None", inline=True)
             else:
-                embed_other.add_field(name="Aliases", value=", ".join(command.aliases))
-            embed_other.add_field(name="Parent Command", value=command.parent)
+                embed_other.add_field(name="Aliases", value=", ".join(command.aliases), inline=True)
+            embed_other.add_field(name="Parent Command", value=command.parent, inline=True)
 
             clean_checks = []
             for check in command.checks:
                 clean_checks.append(str(check).split("<function ")[1].split(".")[0].replace("_", " "))
 
             if len(clean_checks) == 0:
-                embed_other.add_field(name="Checks", value="None")
+                embed_other.add_field(name="Checks", value="None", inline=True)
             else:
-                embed_other.add_field(name="Checks", value=", ".join(clean_checks))
+                embed_other.add_field(name="Checks", value=", ".join(clean_checks), inline=True)
 
             embed_basic.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
             embed_other.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
@@ -189,9 +189,9 @@ class Misc(commands.Cog):
                 if len(command.aliases) > 0:
                     to_add = [command.name]
                     for alias in command.aliases: to_add.append(alias)
-                    embed.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help)
+                    embed.add_field(name=f"{command.parent if command.parent else ''} [{', '.join(to_add)}] {params}", value=command.help, inline=True)
                 else:
-                    embed.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help)
+                    embed.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help, inline=True)
             
             embed.set_footer(text="To zoom in on a command or cog, use `p-help {command/cog}`")
             return await ctx.send(embed=embed)
