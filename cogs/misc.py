@@ -123,7 +123,7 @@ class Misc(commands.Cog):
 
                 cog = self.bot.get_cog(cog)
 
-                for command in cog.walk_commands():
+                for command in set(cog.walk_commands()):
                     params = await self.get_paramaters(command.clean_params)
                     if len(command.aliases) > 0:
                         to_add = [command.name]

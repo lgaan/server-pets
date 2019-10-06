@@ -47,6 +47,11 @@ class Contests(commands.Cog):
         
         contests = await self.manager.get_account_contests(ctx.author.id)
 
+        if not contests:
+            embed = discord.Embed(title="Contests", colour=discord.Colour.blue(), description="You are not in any contests. To view a list use `p-contests` and to join one use `p-contest join <id>`", timestamp=ctx.message.created_at)
+
+            return await ctx.send(embed=embed)
+
         entries = []
         for l in self.bot.chunk(contests, 5):
             embed = discord.Embed(title="Your Contests", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
