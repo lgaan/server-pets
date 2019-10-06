@@ -184,7 +184,7 @@ class Misc(commands.Cog):
             embed = discord.Embed(title=f"Server Pets Help | {cog.__class__.__name__}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
-            for command in cog.walk_commands():
+            for command in set(cog.walk_commands()):
                 params = await self.get_paramaters(command.clean_params)
                 if len(command.aliases) > 0:
                     to_add = [command.name]
