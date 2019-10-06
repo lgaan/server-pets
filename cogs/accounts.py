@@ -117,32 +117,40 @@ class Accounts(commands.Cog):
             if not account:
                 return await ctx.send("The user in question does not have an account.")
 
-            embed = discord.Embed(title=f"{user.name}'s animals.", colour=discord.Colour.blue(),
-                                  timestamp=ctx.message.created_at)
-
             if not account.pets:
+                embed = discord.Embed(title=f"{user.name}'s animals.", colour=discord.Colour.blue(),
+                                  timestamp=ctx.message.created_at)
                 embed.add_field(name="This user has no pets.", value="** **")
+
+                return await ctx.send(embed=embed)
             else:
-                for pet in account.pets:
-                    val = ""
+                print("yaya")
+                entries = []
+                for l in self.bot.chunk(account.pets, 5):
+                    embed = discord.Embed(title=f"{user.name}'s animals.", colour=discord.Colour.blue(),
+                                  timestamp=ctx.message.created_at)
+                    for pet in l:
+                        val = ""
 
-                    # hunger
-                    try:
-                        val += f"Hunger: {str(pet.hunger)[:4]}/20"
-                    except KeyError:
-                        val += f"Hunger: 10/10"
+                        # hunger
+                        try:
+                            val += f"Hunger: {str(pet.hunger)[:4]}/20"
+                        except KeyError:
+                            val += f"Hunger: 10/10"
 
-                    # thirst
-                    try:
-                        val += f"\nThirst: {str(pet.thirst)[:4]}/20"
-                    except KeyError:
-                        val += f"\nThirst: 20/20"
+                        # thirst
+                        try:
+                            val += f"\nThirst: {str(pet.thirst)[:4]}/20"
+                        except KeyError:
+                            val += f"\nThirst: 20/20"
 
-                    embed.add_field(name=f"{pet.name.upper()[0]}{pet.name[1:]} (Level {pet.level} {pet.type}), {pet.age[0].upper()}{pet.age[1:]} {'| Kenneled' if pet.kenneled else ''}", value=val, inline=False)
+                        embed.add_field(name=f"{pet.name.upper()[0]}{pet.name[1:]} (Level {pet.level} {pet.type}), {pet.age[0].upper()}{pet.age[1:]} {'| Kenneled' if pet.kenneled else ''}", value=val, inline=False)
 
-            embed.set_thumbnail(url=user.avatar_url)
+                    embed.set_thumbnail(url=user.avatar_url)
 
-            return await ctx.send(embed=embed)
+                    entries.append(embed)
+                
+                return await ctx.paginate(message=None, entries=entries)
         except Exception:
             traceback.print_exc()
 

@@ -55,6 +55,11 @@ class Bot(commands.AutoShardedBot):
     async def get_context(self, message, *, cls=None):
         return await super().get_context(message, cls=BotContext)
     
+    def chunk(self, list, size):
+        """Split a list into chunks"""
+        for incr in range(0, len(list), size):
+            yield list[incr:incr + size]
+
     async def load_from_folder(self, folder):           
         for ext in os.listdir(f"{folder}"):
             if ext.startswith("__"):

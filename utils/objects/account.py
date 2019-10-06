@@ -3,6 +3,8 @@ import json as js
 
 class Account:
     def __init__(self, json):
+        self.json = json
+
         self.id = json.get("owner_id")
 
         self.balance = json.get("balance")
@@ -23,11 +25,17 @@ class Account:
                 pet_types[pet.type] = 1
         
         if "mouse" in pet_types.keys() and pet_types["mouse"] > 1:
-            print("mouse")
             pet_types["mice"] = pet_types["mouse"]
             del pet_types["mouse"]
 
         return pet_types
+
+    def to_json(self):
+        json = dict(self.json)
+
+        json["pets"] = [pet.to_json() for pet in json["pets"]]
+
+        return json
 
     def __repr__(self):
         return f"<Account id={self.id}, balance={self.balance}, items={self.items}, pets={self.pets}>"

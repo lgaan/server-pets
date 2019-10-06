@@ -185,12 +185,15 @@ class Pets(commands.Cog):
                     return await ctx.send("Time ran out.")
 
                 if attach:
-                    m = await ctx.send("Please supply a URL for your pet's image.")
+                    m = await ctx.send("Please supply a URL for your pet's image, or send a file with the image you would like. (Note attachments will be taken if both are supplied)")
 
                     try:
                         img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower())
 
-                        if img:
+                        if img.attachments:
+                            image_url = img.attachments[0].url
+
+                        elif img.content:
                             image_url = re.findall(r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?", img.content)
 
                             if not image_url:
@@ -326,7 +329,7 @@ class Pets(commands.Cog):
             except KeyError:
                 return await ctx.send(f"It looks like you do not have any {item}.")
 
-            shop = self.bot.shop
+            shop = self.bot.cogs["ShopManager"].valid_items
             shop_cog = self.bot.cogs["ShopManager"]
 
             if item not in shop_cog.valid_items.keys():

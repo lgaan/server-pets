@@ -1,5 +1,7 @@
 class Pet:
     def __init__(self, json):
+        self.json = json
+
         # Info
         self.owner_id = json.get("owner_id")
 
@@ -36,5 +38,8 @@ class Pet:
 
         return conversions[pet_type.lower()]
     
+    def to_json(self):
+        return dict(self.json)
+
     def __repr__(self):
         return f"<Pet owner_id={self.owner_id}, name={self.name}, type={self.type}, hunger={self.hunger}, thirst={self.thirst}, earns={self.earns}, level={self.level}, age={self.age}, species={self.species}, kenneled={self.kenneled}>"
