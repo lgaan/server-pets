@@ -151,7 +151,7 @@ class Pets(commands.Cog):
                                                                   timestamp=ctx.message.created_at))
 
                 try:
-                    message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
+                    message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m == ctx.message)
 
                     if message:
                         await name_message.delete()
@@ -169,7 +169,7 @@ class Pets(commands.Cog):
 
                 m = await ctx.send("Would you like to add an image? If yes respond with `yes`, if not respond with `no`.")
                 try:
-                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
+                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m == ctx.message)
 
                     if confirmation:
                         if confirmation.content.lower() == "yes":
@@ -188,7 +188,7 @@ class Pets(commands.Cog):
                     m = await ctx.send("Please supply a URL for your pet's image, or send a file with the image you would like. (Note attachments will be taken if both are supplied)")
 
                     try:
-                        img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower())
+                        img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower() and m == ctx.message)
 
                         if img.attachments:
                             image_url = img.attachments[0].url
