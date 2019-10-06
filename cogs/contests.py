@@ -101,48 +101,51 @@ class Contests(commands.Cog):
     @contest_.command(name="create", aliases=["add"])
     async def create_(self, ctx, name, entry_fee: int, prize: int):
         """Create a contest, this costs $500 to do"""
-        account = await self.accounts.get_account(ctx.author.id)
-
-        if not account:
-            return await ctx.send("You do not have an account. To make one use `p-create`")
-        
-        message = await ctx.send("Would you like this to be a global contest? If you reply with `no`, you will be against NPCS; if you reply with `yes` other players can join until you run `p-contest start <id>`.")
-
         try:
-            reply = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
+            account = await self.accounts.get_account(ctx.author.id)
 
-            if reply.content == "no":
-                npcs = await self.generate_npcs(random.randint(1, 10))
+            if not account:
+                return await ctx.send("You do not have an account. To make one use `p-create`")
+            
+            message = await ctx.send("Would you like this to be a global contest? If you reply with `no`, you will be against NPCS; if you reply with `yes` other players can join until you run `p-contest start <id>`.")
 
-                json = {
-                    "owner": ctx.author.id,
-                    "id": int(''.join([str(random.randint(0,9)) for x in range(10)])),
-                    "name": name,
-                    "npcs": [acc.to_json() for acc in npcs],
-                    "users": [account.to_json()],
-                    "fee": entry_fee,
-                    "reward": prize
-                }
-                contest = await self.manager.create_contest(json)
+            try:
+                reply = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
-            elif reply == "yes":
-                json = {
-                    "owner": ctx.author.id,
-                    "id": int(''.join([str(random.randint(0,9)) for x in range(10)])),
-                    "name": name,
-                    "users": [account.to_json()],
-                    "fee": entry_fee,
-                    "reward": prize
-                }
+                if reply.content == "no":
+                    npcs = await self.generate_npcs(random.randint(1, 10))
 
-                contest = await self.manager.create_contest(json)
-            else:
-                return await ctx.send("Cancelled.")
-        
-        except TimeoutError:
-            return await ctx.send("Time ran out.")
+                    json = {
+                        "owner": ctx.author.id,
+                        "id": int(''.join([str(random.randint(0,9)) for x in range(10)])),
+                        "name": name,
+                        "npcs": [acc.to_json() for acc in npcs],
+                        "users": [account.to_json()],
+                        "fee": entry_fee,
+                        "reward": prize
+                    }
+                    contest = await self.manager.create_contest(json)
 
-        return await ctx.send(contest)
+                elif reply == "yes":
+                    json = {
+                        "owner": ctx.author.id,
+                        "id": int(''.join([str(random.randint(0,9)) for x in range(10)])),
+                        "name": name,
+                        "users": [account.to_json()],
+                        "fee": entry_fee,
+                        "reward": prize
+                    }
+
+                    contest = await self.manager.create_contest(json)
+                else:
+                    return await ctx.send("Cancelled.")
+            
+            except TimeoutError:
+                return await ctx.send("Time ran out.")
+
+            return await ctx.send(contest)
+        except Exception:
+            traceback.print_exc()
 
     @contest_.command(name="join")
     async def join_(self, ctx, contest_id: int):

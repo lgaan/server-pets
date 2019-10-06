@@ -289,6 +289,8 @@ class Pets(commands.Cog):
                 key = key.replace("_"," ")
                 if key.lower() == "image url" and value:
                     embed.set_image(url=value)
+                elif key.lower() == "json":
+                    continue
                 elif key.lower() not in  ["earns", "species"]:
                     embed.add_field(name=f"{str(key)[0].upper()}{str(key)[1:]}", value=f"{str(value)[0].upper()}{str(value)[1:]}")
                 elif key.lower() == "earns":

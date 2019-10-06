@@ -3,7 +3,7 @@ import json as js
 
 class Account:
     def __init__(self, json):
-        self.json = json
+        self.json = dict(json)
 
         self.id = json.get("owner_id")
 

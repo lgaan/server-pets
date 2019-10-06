@@ -1,6 +1,6 @@
 class Pet:
     def __init__(self, json):
-        self.json = json
+        self.json = dict(json)
 
         # Info
         self.owner_id = json.get("owner_id")
