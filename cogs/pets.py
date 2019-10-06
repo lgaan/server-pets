@@ -66,6 +66,8 @@ class Pets(commands.Cog):
             "horse": "foal"
         }
 
+        self.adopt_cache = []
+
     async def get_image(self, url):
         """Used to check if a url is an image"""
         async with self.bot.session as cs:
@@ -85,6 +87,10 @@ class Pets(commands.Cog):
     @commands.command(name="adopt")
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
+        if ctx.author.id in self.adopt_cache:
+            return await ctx.send("You are already adopting a pet right now.")
+        else:
+            self.adopt_cache.append(ctx.author.id)
         try:
             if pet is None:
                 embeds = []
@@ -224,6 +230,7 @@ class Pets(commands.Cog):
                 embed.add_field(name="Old balance", value=f"${account.balance}")
                 embed.add_field(name="New balance", value=f"${account.balance - self.pet_prices[pet]}")
 
+            self.adopt_cache.remove(ctx.author.id)
             return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()
