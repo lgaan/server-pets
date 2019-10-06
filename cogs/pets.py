@@ -134,7 +134,7 @@ class Pets(commands.Cog):
 
                 try:
                     reaction, _ = await self.bot.wait_for("reaction_add", timeout=600,
-                                                          check=lambda r, u: u == ctx.author and str(r.emoji) in [
+                                                          check=lambda r, u: r.message.id == ctx.message.id and u == ctx.author and str(r.emoji) in [
                                                               "<:greenTick:596576670815879169>",
                                                               "<:redTick:596576672149667840>"])
                     if str(reaction.emoji) == "<:greenTick:596576670815879169>":
@@ -151,7 +151,7 @@ class Pets(commands.Cog):
                                                                   timestamp=ctx.message.created_at))
 
                 try:
-                    message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m == ctx.message)
+                    message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m.id == ctx.message.id)
 
                     if message:
                         await name_message.delete()
@@ -169,7 +169,7 @@ class Pets(commands.Cog):
 
                 m = await ctx.send("Would you like to add an image? If yes respond with `yes`, if not respond with `no`.")
                 try:
-                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m == ctx.message)
+                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m.id == ctx.message.id)
 
                     if confirmation:
                         if confirmation.content.lower() == "yes":
@@ -188,7 +188,7 @@ class Pets(commands.Cog):
                     m = await ctx.send("Please supply a URL for your pet's image, or send a file with the image you would like. (Note attachments will be taken if both are supplied)")
 
                     try:
-                        img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower() and m == ctx.message)
+                        img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower() and m.id == ctx.message.id)
 
                         if img.attachments:
                             image_url = img.attachments[0].url
