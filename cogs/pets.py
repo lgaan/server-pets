@@ -134,7 +134,7 @@ class Pets(commands.Cog):
 
                 try:
                     reaction, _ = await self.bot.wait_for("reaction_add", timeout=600,
-                                                          check=lambda r, u: r.message.id == ctx.message.id and u == ctx.author and str(r.emoji) in [
+                                                          check=lambda r, u: r.message.id == bot_msg.id and u == ctx.author and str(r.emoji) in [
                                                               "<:greenTick:596576670815879169>",
                                                               "<:redTick:596576672149667840>"])
                     if str(reaction.emoji) == "<:greenTick:596576670815879169>":
