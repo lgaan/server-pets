@@ -33,7 +33,8 @@ class Account:
     def to_json(self):
         json = dict(self.json)
 
-        json["pets"] = [pet.to_json() for pet in json["pets"]]
+        if json["pets"]:
+            json["pets"] = [pet.to_json() for pet in json["pets"]]
 
         return json
 
