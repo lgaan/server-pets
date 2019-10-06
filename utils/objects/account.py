@@ -20,7 +20,7 @@ class Account:
 
         for pet in self.pets:
             if pet.type in pet_types.keys():
-                pet_types[pet.type] + 1
+                pet_types[pet.type] = pet_types[pet.type] + 1
             else:
                 pet_types[pet.type] = 1
         
