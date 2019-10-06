@@ -151,7 +151,7 @@ class Pets(commands.Cog):
                                                                   timestamp=ctx.message.created_at))
 
                 try:
-                    message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m.id == ctx.message.id)
+                    message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
                     if message:
                         await name_message.delete()
@@ -169,7 +169,7 @@ class Pets(commands.Cog):
 
                 m = await ctx.send("Would you like to add an image? If yes respond with `yes`, if not respond with `no`.")
                 try:
-                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and m.id == ctx.message.id)
+                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
                     if confirmation:
                         if confirmation.content.lower() == "yes":
