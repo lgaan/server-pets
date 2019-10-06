@@ -66,7 +66,7 @@ class Handlers(commands.Cog):
             embed = discord.Embed(title="Guild joined", colour=discord.Colour.blue(), timestamp=guild.me.joined_at)
             embed.add_field(name="Name", value=guild.name, inline=False)
             embed.add_field(name="Member Count", value=guild.member_count, inline=False)
-            embed.add_field(name="Bot Count", value=len(m for m in guild.members if m.bot), inline=False)
+            embed.add_field(name="Bot Count", value=len([m for m in guild.members if m.bot]), inline=False)
 
             embed.add_field(name="** **", value="** **", inline=False)
 
@@ -88,7 +88,7 @@ class Handlers(commands.Cog):
             embed = discord.Embed(title="Guild Left", colour=discord.Colour.blue(), timestamp=datetime.now())
             embed.add_field(name="Name", value=guild.name, inline=False)
             embed.add_field(name="Member Count", value=guild.member_count, inline=False)
-            embed.add_field(name="Bot Count", value=len(m for m in guild.members if m.bot), inline=False)
+            embed.add_field(name="Bot Count", value=len([m for m in guild.members if m.bot]), inline=False)
 
             embed.add_field(name="** **", value="** **", inline=False)
 
