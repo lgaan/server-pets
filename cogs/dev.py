@@ -19,3 +19,6 @@ class Dev(commands.Cog):
         plt.savefig("img/usage.png")
 
         return await _ctx.send(file=discord.File("img/usage.png"))
+
+def setup(bot):
+    bot.add_cog(Dev(bot))
