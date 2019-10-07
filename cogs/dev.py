@@ -17,6 +17,7 @@ class Dev(commands.Cog):
         plt.bar([k for k in self.bot.usage.keys()], [v for v in self.bot.usage.values()])
 
         plt.ylabel("Commands"); plt.xlabel("Usage")
+        plt.xticks(rotation=90)
         plt.savefig("img/usage.png")
 
         return await ctx.send(file=discord.File("img/usage.png"))
