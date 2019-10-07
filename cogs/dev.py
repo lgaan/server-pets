@@ -14,7 +14,7 @@ class Dev(commands.Cog):
     async def usage(self, ctx):
         """Get usage"""
         plt.clf()
-        plt.bar([v for v in self.bot.usage.values()], [k for k in self.bot.usage.keys()])
+        plt.bar([k for k in self.bot.usage.keys()], [v for v in self.bot.usage.values()])
 
         plt.ylabel("Commands"); plt.xlabel("Usage")
         plt.savefig("img/usage.png")
