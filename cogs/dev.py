@@ -14,11 +14,11 @@ class Dev(commands.Cog):
     async def usage(self, ctx):
         """Get usage"""
         plt.clf()
-        plt.plot([v for v in _bot.usage.values()], [k for k in _bot.usage.keys()])
+        plt.plot([v for v in self.bot.usage.values()], [k for k in self.bot.usage.keys()])
 
         plt.savefig("img/usage.png")
 
-        return await _ctx.send(file=discord.File("img/usage.png"))
+        return await ctx.send(file=discord.File("img/usage.png"))
 
 def setup(bot):
     bot.add_cog(Dev(bot))
