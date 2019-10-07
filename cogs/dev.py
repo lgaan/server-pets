@@ -15,8 +15,6 @@ class Dev(commands.Cog):
         """Get usage"""
         plt.clf()
 
-        plt.subplots_adjust(bottom=0.25, left=0.99, right=1)
-
         plt.bar([k for k in self.bot.usage.keys()], [v for v in self.bot.usage.values()])
 
         plt.ylabel("Usage"); plt.xlabel("Commands")
