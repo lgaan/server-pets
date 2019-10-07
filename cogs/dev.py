@@ -14,6 +14,8 @@ class Dev(commands.Cog):
     async def usage(self, ctx):
         """Get usage"""
         plt.clf()
+
+        plt.use("Agg")
         plt.bar([k for k in self.bot.usage.keys()], [v for v in self.bot.usage.values()])
 
         plt.ylabel("Commands"); plt.xlabel("Usage")
