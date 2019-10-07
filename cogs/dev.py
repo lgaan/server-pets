@@ -16,7 +16,7 @@ class Dev(commands.Cog):
         plt.clf()
         plt.bar([v for v in self.bot.usage.values()], [k for k in self.bot.usage.keys()])
 
-        plt.ylable("Commands"); plt.xlabel("Usage")
+        plt.ylabel("Commands"); plt.xlabel("Usage")
         plt.savefig("img/usage.png")
 
         return await ctx.send(file=discord.File("img/usage.png"))
