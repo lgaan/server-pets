@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-import matplotlib; matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 class Dev(commands.Cog):
     def __init__(self, bot):
@@ -13,7 +13,6 @@ class Dev(commands.Cog):
     @commands.command(name="usage")
     async def usage(self, ctx):
         """Get usage"""
-        plt = matplotlib.pyplot
         plt.clf()
 
         plt.subplots_adjust(bottom=0.25, left=0.99, right=1)
