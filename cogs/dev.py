@@ -16,7 +16,7 @@ class Dev(commands.Cog):
         plt = matplotlib.pyplot
         plt.clf()
 
-        plt.subplots_adjust(left=0.4, right=0.5)
+        plt.subplots_adjust(left=1, right=2)
 
         plt.bar([k for k in self.bot.usage.keys()], [v for v in self.bot.usage.values()])
 
