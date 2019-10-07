@@ -71,3 +71,15 @@ class RenameConverter(commands.Converter):
         pet = await manager.get_pet_named(ctx.author.id, shlex.split(argument)[0] if has_quotes else argument.split(" ")[0])
 
         return (pet, ' '.join(argument.split(" ")[1:]))
+
+class MultiStringConverter(commands.Converter):
+    async def convert(self, ctx, argument):
+        manager = AccountManager(ctx.bot)
+        has_quotes = any(word.startswith('"') or word.startswith("'") for word in argument.split(" "))
+
+        if has_quotes and not argument.split(" ")[0].startswith("'") and not argument.split(" ")[0].startswith('"'):
+            raise commands.BadArgument("If using quotes, they must be on the first argument, e.g. `p-rename \"pet\" new name`")
+        
+        arg1 = shlex.split(argument)[0] if has_quotes else argument.split(" ")[0]
+
+        return (arg1, ' '.join(argument.split(" ")[1:]))

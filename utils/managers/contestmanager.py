@@ -10,9 +10,13 @@ class ContestManager:
     
     async def create_contest(self, json):
         """Create a contest"""
-        await self.bot.db.execute("INSERT INTO contests (owner_id, id, name, users, npcs, fee, reward) VALUES ($7, $1, $2, $3, $4, $5, $6)", json.get("id"), json.get("name"), json.get("users"), json.get("npcs"), json.get("fee"), json.get("reward"), json.get("owner_id"))
+        await self.bot.db.execute("INSERT INTO contests (owner_id, id, name, users, npcs, fee, reward, status) VALUES ($7, $1, $2, $3, $4, $5, $6, $8)", json.get("id"), json.get("name"), json.get("users"), json.get("npcs"), json.get("fee"), json.get("reward"), json.get("owner_id"), "idle")
 
         return await self.get_contest(json.get("id"))
+    
+    async def delete_contest(self, contest_id, owner_id):
+        """Delete a contest"""
+        await self.bot.db.execute("DELETE FROM contests WHERE id = $1 AND owner_id = $2", contest_id, owner_id)
 
     async def get_account_contests(self, account_id):
         """Get account contests"""

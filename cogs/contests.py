@@ -5,10 +5,12 @@ import traceback
 import string
 import random
 
+from utils.converters import MultiStringConverter
 from utils.managers.contestmanager import ContestManager
 from utils.managers.accountmanager import AccountManager
 from utils.objects.account import Account
 from utils.objects.pet import Pet
+
 
 class Contests(commands.Cog):
     def __init__(self, bot):
@@ -32,7 +34,7 @@ class Contests(commands.Cog):
                 }
 
                 npcs.append(Account(json))
-            
+
             return npcs
         except Exception:
             traceback.print_exc()
@@ -57,7 +59,7 @@ class Contests(commands.Cog):
             embed = discord.Embed(title="Your Contests", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
             for contest in l:
-                embed.add_field(name=contest.id, value=f"Entry Fee: {contest.fee} | Reward: {contest.reward}", inline=False)
+                embed.add_field(name=contest.id, value=f"Entry Fee: {contest.fee} | Reward: {contest.reward} | Owner: {contest.owner_id}", inline=False)
 
             embed.set_thumbnail(url=ctx.author.avatar_url)
 
@@ -85,7 +87,7 @@ class Contests(commands.Cog):
                 embed = discord.Embed(name="Global Contests", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
                 for contest in l:
-                    embed.add_field(name=contest.id, value=f"Entry Fee: ${contest.fee} | Reward: ${contest.reward}")
+                    embed.add_field(name=contest.id, value=f"Entry Fee: ${contest.fee} | Reward: ${contest.reward} | Owner: {contest.owner_id}", inline=False)
 
                 embed.set_thumbnail(url=ctx.me.avatar_url)
 
@@ -98,10 +100,33 @@ class Contests(commands.Cog):
         """Group command, create, join and leave contests"""
         return
     
+    @contest_.command(name="info")
+    async def info_(self, ctx, contest_id: int):
+        """See a contest's status"""
+        account = await self.accounts.get_account(ctx.author.id)
+
+        if not account:
+            return await ctx.send("You do not have an account. To make one use `p-create`")
+        
+        contest = await self.manager.get_contest(contest_id)
+
+        if not contest:
+            return await ctx.send("This contest does not exist, or is private. To see a list of contests use `p-contests`.")
+
+        embed = discord.Embed(title=f"Contest {contest_id}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+        embed.add_field(name="Status", value=f"{contest.status[0].upper()}{contest.status[1:]}", inline=False)
+        embed.add_field(name="ID", value=contest_id)
+
+        return await ctx.send(embed=embed)
+
     @contest_.command(name="create", aliases=["add"])
-    async def create_(self, ctx, name, entry_fee: int, prize: int):
+    async def create_(self, ctx, name: MultiStringConverter, entry_fee: int, prize: int):
         """Create a contest, this costs $500 to do"""
         try:
+            name = " ".join(name)
+            if entry_fee >= prize:
+                return await ctx.send("You cant have the entry fee greater than or equal to the reward.")
+
             account = await self.accounts.get_account(ctx.author.id)
 
             if not account:
@@ -109,6 +134,7 @@ class Contests(commands.Cog):
             
             message = await ctx.send("Would you like this to be a global contest? If you reply with `no`, you will be against NPCS; if you reply with `yes` other players can join until you run `p-contest start <id>`.")
 
+            id = random.randint(1000000, 10000000)
             try:
                 reply = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
@@ -116,24 +142,26 @@ class Contests(commands.Cog):
                     npcs = await self.generate_npcs(random.randint(1, 10))
 
                     json = {
-                        "owner": ctx.author.id,
-                        "id": int(''.join([str(random.randint(0,9)) for x in range(10)])),
+                        "owner_id": ctx.author.id,
+                        "id": id,
                         "name": name,
                         "npcs": [acc.to_json() for acc in npcs],
                         "users": [account.to_json()],
                         "fee": entry_fee,
-                        "reward": prize
+                        "reward": prize,
+                        "status": "idle"
                     }
                     contest = await self.manager.create_contest(json)
 
                 elif reply == "yes":
                     json = {
-                        "owner": ctx.author.id,
-                        "id": int(''.join([str(random.randint(0,9)) for x in range(10)])),
+                        "owner_id": ctx.author.id,
+                        "id": id,
                         "name": name,
                         "users": [account.to_json()],
                         "fee": entry_fee,
-                        "reward": prize
+                        "reward": prize,
+                        "status": idle
                     }
 
                     contest = await self.manager.create_contest(json)
@@ -143,9 +171,54 @@ class Contests(commands.Cog):
             except TimeoutError:
                 return await ctx.send("Time ran out.")
 
-            return await ctx.send(contest)
+            if account.balance < 500:
+                return await ctx.send("You do not have enough money to start a contest.")
+
+            await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account.balance-500, ctx.author.id)
+
+            return await ctx.send(f"Contest created! You can view your contest using `p-contest info {id}` (This has cost you $500)")
         except Exception:
             traceback.print_exc()
+
+    @contest_.command(name="start")
+    async def start_(self, ctx, contest_id: int):
+        """Start a contest"""
+        account = await self.accounts.get_account(ctx.author.id)
+
+        if not account:
+            return await ctx.send("You do not have an account. To make one use `p-create`")
+        
+        contest = await self.manager.get_contest(contest_id)
+
+        if not contest:
+            return await ctx.send("This contest does not exist, or is private. To see a list of contests use `p-contests`.")
+        
+        if contest.owner_id != ctx.author.id:
+            return await ctx.send("You do not own this contest.")
+        
+        await self.bot.db.execute("UPDATE contests SET status = $1 WHERE owner_id = $2 AND id = $3", "playing", ctx.author.id, contest_id)
+
+        return await ctx.send("Contest started! Just sit back, and wait for the results.")
+
+    @contest_.command(name="delete")
+    async def delete_(self, ctx, contest_id: int):
+        """Delete a contest"""
+        account = await self.accounts.get_account(ctx.author.id)
+
+        if not account:
+            return await ctx.send("You do not have an account. To make one use `p-create`")
+        
+        contest = await self.manager.get_contest(contest_id)
+
+        if not contest:
+            return await ctx.send("This contest does not exist, or is private. To see a list of contests use `p-contests`.")
+        
+        if contest.owner_id != ctx.author.id:
+            return await ctx.send("You do not own this contest.")
+        
+        await self.manager.delete_contest(contest_id, ctx.author.id)
+
+        return await ctx.send("Contest deleted.")
 
     @contest_.command(name="join")
     async def join_(self, ctx, contest_id: int):

@@ -44,6 +44,7 @@ class EmbedPaginator:
         self.page -= 1
 
     async def stop(self):
+        await self.ctx.message.add_reaction(":greenTick:596576670815879169")
         return await self.message.delete()
 
     async def paginate(self):

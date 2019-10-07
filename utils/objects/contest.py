@@ -8,6 +8,8 @@ class Contest:
 
         self.fee = json.get("fee")
         self.reward = json.get("reward")
+
+        self.status = json.get("status")
     
     def __repr__(self):
-        return f"<Contest id={self.id}, owner_id={self.owner_id}, participants={self.participants}, npcs={self.npcs}, fee={self.fee}, reward={self.reward}>"
+        return f"<Contest id={self.id}, owner_id={self.owner_id}, participants={self.participants}, npcs={self.npcs}, fee={self.fee}, reward={self.reward}, status={self.status}>"
