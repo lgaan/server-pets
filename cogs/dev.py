@@ -14,8 +14,9 @@ class Dev(commands.Cog):
     async def usage(self, ctx):
         """Get usage"""
         plt.clf()
-        plt.plot([v for v in self.bot.usage.values()], [k for k in self.bot.usage.keys()])
+        plt.bar([v for v in self.bot.usage.values()], [k for k in self.bot.usage.keys()])
 
+        plt.ylable("Commands"); plt.xlabel("Usage")
         plt.savefig("img/usage.png")
 
         return await ctx.send(file=discord.File("img/usage.png"))
