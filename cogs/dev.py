@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-import matplotlib.pyplot as plt
+import matplotlib; matplotlib.use("Agg")
 
 class Dev(commands.Cog):
     def __init__(self, bot):
@@ -13,11 +13,11 @@ class Dev(commands.Cog):
     @commands.command(name="usage")
     async def usage(self, ctx):
         """Get usage"""
+        plt = matplotlib.pyplot
         plt.clf()
 
-        plt.use("Agg")
         plt.tight_layout()
-        
+
         plt.bar([k for k in self.bot.usage.keys()], [v for v in self.bot.usage.values()])
 
         plt.ylabel("Commands"); plt.xlabel("Usage")
