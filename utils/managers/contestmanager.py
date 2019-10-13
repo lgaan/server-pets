@@ -10,7 +10,7 @@ class ContestManager:
     
     async def create_contest(self, json):
         """Create a contest"""
-        await self.bot.db.execute("INSERT INTO contests (owner_id, id, name, users, npcs, fee, reward, status) VALUES ($7, $1, $2, $3, $4, $5, $6, $8)", json.get("id"), json.get("name"), json.get("users"), json.get("npcs"), json.get("fee"), json.get("reward"), json.get("owner_id"), "idle")
+        await self.bot.db.execute("INSERT INTO contests (owner_id, id, name, users, npcs, fee, reward, status, round_num) VALUES ($7, $1, $2, $3, $4, $5, $6, $8, 0)", json.get("id"), json.get("name"), json.get("users"), json.get("npcs"), json.get("fee"), json.get("reward"), json.get("owner_id"), "idle")
 
         return await self.get_contest(json.get("id"))
     

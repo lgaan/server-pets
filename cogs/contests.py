@@ -24,13 +24,13 @@ class Contests(commands.Cog):
         try:
             npcs = []
             for incr in range(amount):
-                id = int(''.join([str(random.choice(range(0, 10))) for x in range(18)]))
+                a_id = random.randint(1000000000,15000000000)
                 json = {
-                    "id": id,
+                    "owner_id": a_id,
                     "balance": random.randint(1000, 10000),
                     "items": {"water bowls": random.randint(0, 20), "steak": random.randint(0, 5)},
                     "settings": {"dm_notifications": True, "death_reminder": True},
-                    "pets": [Pet({"owner_id": id, "name": random.choice(["Dave", "Joe", "Susan", "Cherry"]), "type": random.choice(["dog", "cat", "mouse", "bird", "horse", "snake", "spider"]), "hunger": random.randint(10, 20), "thirst": random.randint(10, 20), "level": random.randint(1, 5)}) for x in range(random.randint(1, 3))]
+                    "pets": [Pet({"owner_id": a_id, "name": random.choice(["Dave", "Joe", "Susan", "Cherry"]), "type": random.choice(["dog", "cat", "mouse", "bird", "horse", "snake", "spider"]), "hunger": random.randint(10, 20), "thirst": random.randint(10, 20), "level": random.randint(1, 5)}) for x in range(random.randint(1, 3))]
                 }
 
                 npcs.append(Account(json))
@@ -59,7 +59,7 @@ class Contests(commands.Cog):
             embed = discord.Embed(title="Your Contests", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
             for contest in l:
-                embed.add_field(name=contest.id, value=f"Entry Fee: {contest.fee} | Reward: {contest.reward} | Owner: {contest.owner_id}", inline=False)
+                embed.add_field(name=contest.id, value=f"Entry Fee: {contest.fee} | Reward: {contest.reward} | Status: {contest.status}", inline=False)
 
             embed.set_thumbnail(url=ctx.author.avatar_url)
 
@@ -87,7 +87,8 @@ class Contests(commands.Cog):
                 embed = discord.Embed(name="Global Contests", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
 
                 for contest in l:
-                    embed.add_field(name=contest.id, value=f"Entry Fee: ${contest.fee} | Reward: ${contest.reward} | Owner: {contest.owner_id}", inline=False)
+                    if contest.status != "playing":
+                        embed.add_field(name=contest.id, value=f"Entry Fee: ${contest.fee} | Reward: ${contest.reward} | Status: {contest.status}", inline=False)
 
                 embed.set_thumbnail(url=ctx.me.avatar_url)
 
@@ -115,7 +116,12 @@ class Contests(commands.Cog):
 
         embed = discord.Embed(title=f"Contest {contest_id}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
         embed.add_field(name="Status", value=f"{contest.status[0].upper()}{contest.status[1:]}", inline=False)
-        embed.add_field(name="ID", value=contest_id)
+        embed.add_field(name="Npcs", value=len(contest.npcs) if contest.npcs else "None")
+        embed.add_field(name="Users", value=len(contest.participants))
+
+        embed.add_field(name="** **", value="** **", inline=False)
+        embed.add_field(name="Entry Cost", value=f"${contest.fee}", inline=False)
+        embed.add_field(name="Prize", value=f"${contest.reward}", inline=False)
 
         return await ctx.send(embed=embed)
 
@@ -138,7 +144,7 @@ class Contests(commands.Cog):
             try:
                 reply = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
-                if reply.content == "no":
+                if reply.content.lower() in ["no", "n"]:
                     npcs = await self.generate_npcs(random.randint(1, 10))
 
                     json = {
@@ -153,7 +159,7 @@ class Contests(commands.Cog):
                     }
                     contest = await self.manager.create_contest(json)
 
-                elif reply == "yes":
+                elif reply.content.lower() in ["yes", "y"]:
                     json = {
                         "owner_id": ctx.author.id,
                         "id": id,
@@ -161,7 +167,7 @@ class Contests(commands.Cog):
                         "users": [account.to_json()],
                         "fee": entry_fee,
                         "reward": prize,
-                        "status": idle
+                        "status": "idle"
                     }
 
                     contest = await self.manager.create_contest(json)
@@ -196,6 +202,9 @@ class Contests(commands.Cog):
         if contest.owner_id != ctx.author.id:
             return await ctx.send("You do not own this contest.")
         
+        if len(contest.participants) == 1 and not contest.npcs:
+            return await ctx.send("This contest has only you in it. Wait for others to join.")
+
         await self.bot.db.execute("UPDATE contests SET status = $1 WHERE owner_id = $2 AND id = $3", "playing", ctx.author.id, contest_id)
 
         return await ctx.send("Contest started! Just sit back, and wait for the results.")
@@ -238,9 +247,9 @@ class Contests(commands.Cog):
         if not account.to_json()["owner_id"] in [u["owner_id"] for u in users]:
             users.append(account.to_json())
 
-            await self.bot.db.execute("UPDATE constests SET users = $1 WHERE id = $2", users, contest_id)
+            await self.bot.db.execute("UPDATE contests SET users = $1 WHERE id = $2", users, contest_id)
 
-            return await ctx.send("You have joined the contest `{contest_id}`, I will notify you when it starts.")
+            return await ctx.send(f"You have joined the contest `{contest_id}`, I will notify you when it starts.")
         else:
             return await ctx.send("You are already in this contest.")
 

@@ -1,10 +1,10 @@
 import json as js
 
-
 class Account:
-    def __init__(self, json):
+    def __init__(self, json, type=None):
         self.json = dict(json)
 
+        self.type = type
         self.id = json.get("owner_id")
 
         self.balance = json.get("balance")
@@ -34,7 +34,15 @@ class Account:
         json = dict(self.json)
 
         if json["pets"]:
-            json["pets"] = [pet.to_json() for pet in json["pets"]]
+            pets = []
+            
+            for pet in json["pets"]:
+                if type(pet) == dict:
+                    pets.append(pet)
+                else:
+                    pets.append(pet.to_json())
+                    
+            json["pets"] = pets
 
         return json
 
