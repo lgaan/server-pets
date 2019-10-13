@@ -138,13 +138,13 @@ class Contests(commands.Cog):
             if not account:
                 return await ctx.send("You do not have an account. To make one use `p-create`")
             
-            message = await ctx.send("Would you like this to be a global contest? If you reply with `no`, you will be against NPCS; if you reply with `yes` other players can join until you run `p-contest start <id>`.")
+            message = await ctx.send("Would you like npcs in your contest? Reply with `yes` or `no`.")
 
             id = random.randint(1000000, 10000000)
             try:
                 reply = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
-                if reply.content.lower() in ["no", "n"]:
+                if reply.content.lower() in ["yes", "y"]:
                     npcs = await self.generate_npcs(random.randint(1, 10))
 
                     json = {
@@ -159,7 +159,7 @@ class Contests(commands.Cog):
                     }
                     contest = await self.manager.create_contest(json)
 
-                elif reply.content.lower() in ["yes", "y"]:
+                elif reply.content.lower() in ["no", "n"]:
                     json = {
                         "owner_id": ctx.author.id,
                         "id": id,
@@ -242,12 +242,26 @@ class Contests(commands.Cog):
         if not contest:
             return await ctx.send("This contest does not exist, or is private. To see a list of contests use `p-contests`.")
         
+        if account.balance < contest.fee:
+            return await ctx.send("You dont have enough money to enter this contest.")
+        
+        await ctx.send(f"This will cost you ${contest.fee}, would you like to continue? Reply with `yes` to continue, or anything else to cancel.")
+
+        try:
+            message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author.id == ctx.author.id)
+
+            if message.content.lower() not in ["yes", "y"]:
+                return await ctx.send("Cancelled.")
+        except TimeoutError:
+            return await ctx.send("Time ran out.")
+
         users = contest.participants
 
         if not account.to_json()["owner_id"] in [u["owner_id"] for u in users]:
             users.append(account.to_json())
 
             await self.bot.db.execute("UPDATE contests SET users = $1 WHERE id = $2", users, contest_id)
+            await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account.balance - contest.fee, account.id)
 
             return await ctx.send(f"You have joined the contest `{contest_id}`, I will notify you when it starts.")
         else:

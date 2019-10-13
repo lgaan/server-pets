@@ -34,7 +34,7 @@ class ContestManager(commands.Cog):
         
         return winner
 
-    @tasks.loop(seconds=10)
+    @tasks.loop(hours=2)
     async def looper(self):
         """Manage the contests"""
         try:
