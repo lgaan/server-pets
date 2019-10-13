@@ -3,6 +3,8 @@ from discord.ext import commands
 
 import matplotlib.pyplot as plt
 
+import collections
+
 class Dev(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -15,7 +17,9 @@ class Dev(commands.Cog):
         """Get usage"""
         plt.clf()
 
-        plt.bar([k for k in self.bot.usage.keys()], [v for v in self.bot.usage.values()])
+        usage = collections.OrderedDict(sorted(self.bot.usage.items(), key=lambda kv: kv[1], reverse=True))
+
+        plt.bar([k for k in usage.keys()], [v for v in usage.values()])
 
         plt.ylabel("Usage"); plt.xlabel("Commands")
         plt.xticks(rotation=90)
