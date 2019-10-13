@@ -84,6 +84,11 @@ class Pets(commands.Cog):
 
         return rand
 
+    @commands.command(name="skin")
+    async def skin_(self, ctx, pet):
+        """Skin a pet"""
+        pass
+    
     @commands.command(name="adopt")
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
