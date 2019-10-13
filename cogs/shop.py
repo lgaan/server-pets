@@ -74,6 +74,17 @@ class Shopping(commands.Cog):
             if not account:
                 return await ctx.send("You do not have an account. Please make one using `p-create`")
             
+            if item.lower().startswith("bulk"):
+                # Bulk buy
+                args = item.split(" ")
+
+                try:
+                    amount = int(args[1])
+                except ValueError:
+                    return await ctx.send("Second argument should be an integer. e.g. `p-buy bulk 10 <item>`")
+                
+                item = " ".join(args[2:])
+
             if (item not in self.shop_items_water.keys()) and (item not in self.bot.shop.keys()):
                 return await ctx.send("That item does not exist. Please check the options from `p-shop` and make sure to type the capitals correctly.")
 
