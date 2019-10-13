@@ -44,7 +44,7 @@ class Shopping(commands.Cog):
 
     @commands.command(name="shop", aliases=["buy"])
     async def shop_(self, ctx, *, item=None):
-        """Displays the shop is item is left empty. You can buy an item by adding it to the command. You can also buy in bulk using `p-buy bulk <amount> <item>"""
+        """Displays the shop is item is left empty. You can buy an item by adding it to the command. You can also buy in bulk using `p-buy bulk <amount> <item>`"""
         account = await self.manager.get_account(ctx.author.id)
         amount = 1
 
