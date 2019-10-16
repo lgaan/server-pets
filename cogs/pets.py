@@ -92,10 +92,11 @@ class Pets(commands.Cog):
     @commands.command(name="adopt")
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
-        if ctx.author.id in self.adopt_cache:
-            return await ctx.send("You are already adopting a pet right now.")
-        else:
-            self.adopt_cache.append(ctx.author.id)
+        if not pet:
+            if ctx.author.id in self.adopt_cache:
+                return await ctx.send("You are already adopting a pet right now.")
+            else:
+                self.adopt_cache.append(ctx.author.id)
         try:
             if pet is None:
                 embeds = []
