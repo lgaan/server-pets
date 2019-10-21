@@ -116,16 +116,20 @@ class Pets(commands.Cog):
                 account = await self.manager.get_account(ctx.author.id)
 
                 if not account:
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send(
                         "You need an account to adopt an animal, to do so use the `p-create` command.")
 
                 if account.pets and len(account.pets) > 100:
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send("You have too many pets!")
 
                 if pet.lower() not in self.pets:
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send("That pet does not exist. To view a list of pets use `p-adopt`")
 
                 if account.balance < self.pet_prices[pet.lower()]:
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send(f"You do not have enough cash to buy this pet. You can earn money by "
                                           f"training your pet or competing in contests.")
 
@@ -151,9 +155,11 @@ class Pets(commands.Cog):
                     if str(reaction.emoji) == "<:greenTick:596576670815879169>":
                         await bot_msg.delete()
                     else:
+                        self.adopt_cache.remove(ctx.author.id)
                         await bot_msg.delete()
                         return await ctx.send("Canceled.")
                 except asyncio.TimeoutError: 
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send("Time ran out.")
 
                 name_message = await ctx.send(embed=discord.Embed(title=f"Your {pet.lower()}",
@@ -167,13 +173,16 @@ class Pets(commands.Cog):
                     if message:
                         await name_message.delete()
                 except asyncio.TimeoutError:
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send("Time ran out.")
 
                 if any(word in ["@everyone","@here"] for word in message.content):
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send("That pet name includes a blacklisted word. Please try again with another "
                                           "name.")
 
                 if account.pets and message.content.lower() in [pet.name for pet in account.pets]:
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send(f"You already own a pet named {message.content.lower()}, please re-use this command with an alternate name.")
 
                 species = await self.get_random_species(pet.lower())
@@ -193,6 +202,7 @@ class Pets(commands.Cog):
 
                         await m.delete()
                 except asyncio.TimeoutError:
+                    self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send("Time ran out.")
 
                 if attach:
@@ -208,6 +218,7 @@ class Pets(commands.Cog):
                             image_url = re.findall(r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?", img.content)
 
                             if not image_url:
+                                self.adopt_cache.remove(ctx.author.id)
                                 return await ctx.send("It doesnt seem like you send a valid url.")
                             
                             i = await self.get_image(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}")
@@ -215,12 +226,14 @@ class Pets(commands.Cog):
                             try:
                                 Image.open(BytesIO(i))
                             except IOError:
+                                self.adopt_cache.remove(ctx.author.id)
                                 return await ctx.send("Not a valid image.")
 
                             image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
 
                             await m.delete()
                     except asyncio.TimeoutError:
+                        self.adopt_cache.remove(ctx.author.id)
                         return await ctx.send("Time ran out.")
 
                 await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2",

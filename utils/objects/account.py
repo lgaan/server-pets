@@ -5,6 +5,7 @@ class Account:
         self.json = dict(json)
 
         self.type = type
+
         self.id = json.get("owner_id")
 
         self.balance = json.get("balance")
@@ -14,6 +15,10 @@ class Account:
 
         self.pets = json.get("pets")
     
+    def owner(self, bot):
+        """Get the owner"""
+        return bot.get_user(self.id)
+
     async def sort_pets(self):
         """Sorts the account's pets into their respective types"""
         pet_types = {}

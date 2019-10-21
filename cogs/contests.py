@@ -158,7 +158,7 @@ class Contests(commands.Cog):
                         "status": "idle"
                     }
                     contest = await self.manager.create_contest(json)
-
+                    
                 elif reply.content.lower() in ["no", "n"]:
                     json = {
                         "owner_id": ctx.author.id,
