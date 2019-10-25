@@ -2,6 +2,7 @@ import traceback
 import random
 import string
 import json
+import os
 
 from datetime import datetime
 import asyncio
@@ -37,7 +38,7 @@ class Handlers(commands.Cog):
             }
 
             async with aiohttp.ClientSession() as cs:
-                await cs.post("https://canary.discordapp.com/api/webhooks/636637271600136192/pYkfF6f7cTSheOKZ12wrL-xzVFDXjQooKgoO2HaOiUX6pllwDTFmw6RQ_K5RarKtOuz3", json=json)
+                await cs.post(os.environ.get("ERROR_URL"), json=json)
         except Exception:
             traceback.print_exc()
         
