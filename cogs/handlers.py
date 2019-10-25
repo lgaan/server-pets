@@ -15,9 +15,6 @@ from discord.ext import commands
 class Handlers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
-    async def create_token(self):
-        return "".join([random.choice(string.ascii_letters) for x in range(10)])
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
