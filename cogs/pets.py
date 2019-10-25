@@ -115,7 +115,7 @@ class Pets(commands.Cog):
                 return await ctx.paginate(message=None, entries=embeds)
             else:
 
-                raise commands.BadArgument()
+                raise commands.BadArgument("lol")
                 account = await self.manager.get_account(ctx.author.id)
 
                 if not account:
