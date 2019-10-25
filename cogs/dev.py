@@ -26,6 +26,11 @@ class Dev(commands.Cog):
         plt.savefig("img/usage.png")
 
         return await ctx.send(file=discord.File("img/usage.png"))
+    
+    @commands.command(name="raise")
+    async def raise_(self, ctx):
+        """Raise an error"""
+        raise commands.CommandError("Raised")
 
 def setup(bot):
     bot.add_cog(Dev(bot))

@@ -98,7 +98,7 @@ class Misc(commands.Cog):
             embed.add_field(name="Total Adopted Pets", value=total_pets if total_pets > 0 else "None")
             embed.add_field(name="Total successful commands run", value=await self.fetch_commands_used())
 
-            embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets) | [Discord Bot List](https://discordbots.org/bot/502205162694246412) | [Vote](https://discordbots.org/bot/502205162694246412/vote)")
+            embed.add_field(name="Quick Links", value="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Source Code](https://github.com/lganwebb/server-pets) | [Discord Bot List](https://discordbots.org/bot/502205162694246412) | [Vote](https://discordbots.org/bot/502205162694246412/vote) | [Patreon](https://patreon.com/server_pets)")
             return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()
@@ -118,7 +118,7 @@ class Misc(commands.Cog):
                 if cog.lower() in self.ignored_cogs:
                     continue
 
-                embed = discord.Embed(title=f"Server Pets Help | {cog}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                embed = discord.Embed(title=f"Server Pets Help | {cog}", description="Need help? Join the [support server](https://discord.gg/kayUTZm)\n\n", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                 embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                 cog = self.bot.get_cog(cog)
@@ -142,7 +142,7 @@ class Misc(commands.Cog):
             command = fetched_command_or_cog
             params = await self.get_paramaters(command.clean_params)
 
-            embed_basic = discord.Embed(title=f"Server Pets Help | {command.name}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed_basic = discord.Embed(title=f"Server Pets Help | {command.name}", description="Need help? Join the [support server](https://discord.gg/kayUTZm)\n\n", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed_basic.set_thumbnail(url=ctx.guild.me.avatar_url)
 
             if len(command.aliases) > 0:
@@ -152,7 +152,7 @@ class Misc(commands.Cog):
             else:
                 embed_basic.add_field(name=f"{command.parent if command.parent else ''} {command.name} {params}", value=command.help, inline=True)
 
-            embed_other = discord.Embed(title=f"Server Pets Help | {command.name}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed_other = discord.Embed(title=f"Server Pets Help | {command.name}", description="Need help? Join the [support server](https://discord.gg/kayUTZm)\n\n", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed_other.set_thumbnail(url=ctx.guild.me.avatar_url)
 
             if len(command.aliases) == 0:
@@ -181,7 +181,7 @@ class Misc(commands.Cog):
             if cog.__class__.__name__.lower() in self.ignored_cogs:
                 return await ctx.send("That command or cog is not found.")
 
-            embed = discord.Embed(title=f"Server Pets Help | {cog.__class__.__name__}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed = discord.Embed(title=f"Server Pets Help | {cog.__class__.__name__}", description="Need help? Join the [support server](https://discord.gg/kayUTZm)\n\n", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
             for command in set(cog.walk_commands()):
@@ -200,7 +200,7 @@ class Misc(commands.Cog):
     async def invites_(self, ctx):
         """Gives the support server and the bot's invite"""
         try:                       
-            embed = discord.Embed(title="Invite Links", description="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot)", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            embed = discord.Embed(title="Invite Links", description="[Support Server](https://discord.gg/kayUTZm) | [Bot Invite](https://discordapp.com/api/oauth2/authorize?client_id=502205162694246412&permissions=262176&scope=bot) | [Patreon](https://patreon.com/server_pets)", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed.set_footer(icon_url=ctx.guild.me.avatar_url)
 
             return await ctx.send(embed=embed)

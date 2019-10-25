@@ -9,6 +9,7 @@ class EmbedPaginator:
         self.ctx = kwargs.get("ctx")
         self.message = kwargs.get("message")
         self.entries = kwargs.get("entries")
+        self.delete_after = kwargs.get("delete_after")
 
         self.looping = True
         self.page = 0
@@ -44,11 +45,12 @@ class EmbedPaginator:
         self.page -= 1
 
     async def stop(self):
-        await self.ctx.message.add_reaction(":greenTick:596576670815879169")
+        if not self.delete_after:
+            await self.ctx.message.add_reaction(":greenTick:596576670815879169")
         return await self.message.delete()
 
     async def paginate(self):
-        self.message = await self.ctx.send(embed=self.entries[self.page]) if self.message is None else self.message
+        self.message = await self.ctx.send(embed=self.entries[self.page], delete_after=self.delete_after) if self.message is None else self.message
 
         await self.react()
 

@@ -28,6 +28,7 @@ class Handlers(commands.Cog):
         
         await ctx.message.add_reaction("<:redTick:596576672149667840>")
         
+        """
         embed = discord.Embed(title="There was an error.", description="Are you able to solve this on your own? If yes react with <:greenTick:596576670815879169>, if not react with <:redTick:596576672149667840>", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
         embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
@@ -58,7 +59,28 @@ class Handlers(commands.Cog):
 
         except asyncio.TimeoutError:
             return
-    
+        """
+        try:
+            json = {
+                "embeds": [{
+                    "title": f"Error in {ctx.guild.name}, invocation: {ctx.command} {' '.join(list(ctx.args)[2:])}",
+                    "description": f"More detailed summary has been logged.\n\n**Type**: {error.__class__.__name__}\n\n**Error**: {error}"
+                }]
+            }
+
+            async with aiohttp.ClientSession() as cs:
+                await cs.post("https://canary.discordapp.com/api/webhooks/636637271600136192/pYkfF6f7cTSheOKZ12wrL-xzVFDXjQooKgoO2HaOiUX6pllwDTFmw6RQ_K5RarKtOuz3", json=json)
+        except Exception:
+            traceback.print_exc()
+        
+        with open("log.txt", mode="a") as log:
+            trace = ''.join(traceback.format_exception(type(error), error, error.__traceback__))
+            log.write(f"{ctx.author} | {ctx.guild} | {ctx.command} {' '.join(list(ctx.args)[2:])}\nIgnoring exception in command {ctx.command}:\n{trace}\n----")
+        
+        embed = discord.Embed(title="Oops! An error has occured and the developer has been notified.", description=f"Want to know what went wrong? \n\n**{error.__class__.__name__}: {error}**", timestamp=ctx.message.created_at, colour=discord.Colour.blue())
+
+        return await ctx.paginate(message=None, entries=[embed], delete_after=30)
+
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         print("g j")

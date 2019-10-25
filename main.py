@@ -18,8 +18,9 @@ class BotContext(commands.Context):
         """Paginate a message"""
         message = kwargs.get("message")
         entries = kwargs.get("entries")
+        delete_after = kwargs.get("delete_after")
 
-        paginator = EmbedPaginator(ctx=self, message=message, entries=entries)
+        paginator = EmbedPaginator(ctx=self, message=message, entries=entries, delete_after=delete_after)
 
         return await paginator.paginate()
 
