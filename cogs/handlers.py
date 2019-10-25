@@ -28,38 +28,6 @@ class Handlers(commands.Cog):
         
         await ctx.message.add_reaction("<:redTick:596576672149667840>")
         
-        """
-        embed = discord.Embed(title="There was an error.", description="Are you able to solve this on your own? If yes react with <:greenTick:596576670815879169>, if not react with <:redTick:596576672149667840>", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-        embed.set_thumbnail(url=ctx.guild.me.avatar_url)
-
-        embed.add_field(name="Error", value=error)
-
-        bot_msg = await ctx.author.send(embed=embed)
-
-        await bot_msg.add_reaction(":greenTick:596576670815879169")
-        await bot_msg.add_reaction(":redTick:596576672149667840")
-
-        try:
-            reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
-            if str(reaction.emoji) == "<:greenTick:596576670815879169>":
-                return await bot_msg.delete()
-            else:
-                for reaction in bot_msg.reactions:
-                    if ctx.guild.me in reaction.users:
-                        await reaction.remove(ctx.guild.me)
-
-                ticket = discord.Embed(title="There was an error.", description="Please visit the [support server](https://discord.gg/kayUTZm) and read the information channel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
-                ticket.set_thumbnail(url=ctx.guild.me.avatar_url)
-
-                code = await self.create_token()
-                ticket.add_field(name="Your Error Code", value=code)
-
-                await self.bot.db.execute("INSERT INTO tokens (token, error) VALUES ($1,$2)", code, str(error))
-                return await bot_msg.edit(embed=ticket)
-
-        except asyncio.TimeoutError:
-            return
-        """
         try:
             json = {
                 "embeds": [{
@@ -75,7 +43,7 @@ class Handlers(commands.Cog):
         
         with open("log.txt", mode="a") as log:
             trace = ''.join(traceback.format_exception(type(error), error, error.__traceback__))
-            log.write(f"{ctx.author} | {ctx.guild} | {ctx.command} {' '.join(list(ctx.args)[2:])}\nIgnoring exception in command {ctx.command}:\n{trace}\n----")
+            log.write(f"\n\n{ctx.author} | {ctx.guild} | {ctx.command} {' '.join(list(ctx.args)[2:])}\nIgnoring exception in command {ctx.command}:\n{trace}\n----")
         
         embed = discord.Embed(title="Oops! An error has occured and the developer has been notified.", description=f"Want to know what went wrong? \n\n**{error.__class__.__name__}: {error}**", timestamp=ctx.message.created_at, colour=discord.Colour.blue())
 
