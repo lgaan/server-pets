@@ -184,35 +184,28 @@ class Accounts(commands.Cog):
     async def leaderboard_(self, ctx, lb_type=None):
         """Get a leaderboard of the people in your server or globally. For server leave `lb_type` empty, for global use `p-lb global`"""
         try:
-            accounts = await self.manager.get_lb_accounts(ctx, lb_type if lb_type is not None else "server")
+            accounts, unchunked = await self.manager.get_lb_accounts(ctx, lb_type if lb_type is not None else "server")
 
-            if lb_type == None:
-                embed = discord.Embed(title=f"{ctx.guild.name}'s leaderboard", colour=discord.Colour.blue(),
-                                    timestamp=ctx.message.created_at)
-            else:
-                embed = discord.Embed(title=f"Global leaderboard", colour=discord.Colour.blue(),
-                                    timestamp=ctx.message.created_at)
+            print(unchunked)
+            entries = []
+            
+            for l in accounts:
+                embed = discord.Embed(title="Global leaderboard" if lb_type else f"{ctx.guild}'s leaderboard", colour=discord.Colour.blue())
+                
+                for account in l:
+                    index = unchunked.index(account.id) + 1
 
-            for account in accounts:
-                index = accounts.index(account) + 1
+                    user = self.bot.get_user(account.id)
 
-                user = self.bot.get_user(account.id)
+                    embed.add_field(name=f"{index} | {user}",
+                                    value=f"{len(account.pets) if account.pets else '0'} pets, has ${account.balance}",
+                                    inline=False)
+                    embed.add_field(name="** **", value="** **", inline=False)
 
-                embed.add_field(name=f"{index} | {user}",
-                                value=f"{len(account.pets) if account.pets else '0'} pets, has ${account.balance}",
-                                inline=False)
-                embed.add_field(name="** **", value="** **", inline=False)
+                embed.set_thumbnail(url=ctx.guild.icon_url if lb_type else ctx.guild.me.avatar_url)
+                entries.append(embed)
 
-            if lb_type == None:
-                embed.set_thumbnail(url=ctx.guild.icon_url)
-            else:
-                embed.set_thumbnail(url=ctx.guild.me.avatar_url)
-
-            if ctx.author.id in [account.id for account in accounts]:
-                embed.set_footer(
-                    text=f"Your rank: {[account.id for account in accounts].index(ctx.author.id) + 1}")
-
-            return await ctx.send(embed=embed)
+            return await ctx.paginate(message=None, entries=entries)
         except Exception:
             traceback.print_exc()
 

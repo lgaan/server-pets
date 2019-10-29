@@ -50,19 +50,29 @@ class AccountManager:
         """Gets a list of account objects for the leaderboard"""
         if lb_type.lower() == "server":
             accounts = await self._bot.db.fetch("SELECT * FROM accounts ORDER BY balance")
-            accounts = [a for a in accounts if a["owner_id"] in [member.id for member in ctx.guild.members]][:5]; accounts.reverse()
+            accounts = [a for a in accounts if a["owner_id"] in [member.id for member in ctx.guild.members]]
+            accounts.reverse()
+            unchunk = unchunk = [a["owner_id"] for a in accounts]
+            accounts = self._bot.chunk(accounts, 5)
         else:
-            accounts = await self._bot.db.fetch("SELECT * FROM accounts ORDER BY balance DESC LIMIT 5")
+            accounts = await self._bot.db.fetch("SELECT * FROM accounts ORDER BY balance")
+            accounts.reverse()
+            
+            unchunk = [a["owner_id"] for a in accounts]
+            accounts = self._bot.chunk(accounts, 5)
         
         accs = []
 
-        for acc in accounts:
-            acc = dict(acc)
-            acc["pets"] = await self.get_account_pets(acc["owner_id"])
+        for i, l in enumerate(accounts):
+            accs.append([])
+            
+            for acc in l:
+                acc = dict(acc)
+                acc["pets"] = await self.get_account_pets(acc["owner_id"])
 
-            accs.append(Account(acc))
+                accs[i].append(Account(acc))
 
-        return accs
+        return (accs, unchunk)
     
     async def get_all_accounts(self):
         """Returns an account object for every account"""
