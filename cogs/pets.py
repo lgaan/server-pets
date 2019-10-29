@@ -188,7 +188,7 @@ class Pets(commands.Cog):
 
                 species = await self.get_random_species(pet.lower())
 
-                m = await ctx.send("Would you like to add an image? If yes respond with `yes`, if not respond with `no`.")
+                m = await ctx.send(f"Would you like to add an image? If yes respond with `yes`, if not respond with `no`. Your pet has a species of {species}")
                 try:
                     confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
