@@ -202,7 +202,8 @@ class Accounts(commands.Cog):
                                     inline=False)
                     embed.add_field(name="** **", value="** **", inline=False)
 
-                embed.set_thumbnail(url=ctx.guild.icon_url if lb_type else ctx.guild.me.avatar_url)
+                embed.set_thumbnail(url=ctx.guild.me.avatar_url if lb_type else ctx.guild.icon_url)
+                embed.set_footer(text=f"Your rank: {unchunked.index(ctx.author.id) + 1}", icon_url=ctx.author.avatar_url)
                 entries.append(embed)
 
             return await ctx.paginate(message=None, entries=entries)
