@@ -83,11 +83,6 @@ class Pets(commands.Cog):
         rand = npr.choice(list(species[pet_type]), p=[0.3, 0.2, 0.2, 0.2, 0.05, 0.05])
 
         return rand
-
-    @commands.command(name="skin")
-    async def skin_(self, ctx, pet):
-        """Skin a pet"""
-        pass
     
     @commands.command(name="adopt")
     async def adopt_(self, ctx, pet=None):
