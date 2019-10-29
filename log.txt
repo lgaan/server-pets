@@ -1,0 +1,49 @@
+
+
+Lgan#4676 | Progress | usage-pie 
+Ignoring exception in command usage-pie:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 79, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "C:\Users\Logan\Documents\Python\Discord\Pets\cogs\dev.py", line 37, in usage_pie
+    labels = [x for x in self.botusage.keys()]
+AttributeError: 'Dev' object has no attribute 'botusage'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 891, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 728, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 88, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: AttributeError: 'Dev' object has no attribute 'botusage'
+
+----
+
+Lgan#4676 | Progress | usage-pie 
+Ignoring exception in command usage-pie:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 79, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "C:\Users\Logan\Documents\Python\Discord\Pets\cogs\dev.py", line 44, in usage_pie
+    return await ctx.send(file=plt.show())
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\abc.py", line 836, in send
+    data = await state.http.send_message(channel.id, content, tts=tts, embed=embed, nonce=nonce)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\http.py", line 220, in request
+    raise HTTPException(r, data)
+discord.errors.HTTPException: 400 BAD REQUEST (error code: 50006): Cannot send an empty message
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 891, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 728, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 88, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: HTTPException: 400 BAD REQUEST (error code: 50006): Cannot send an empty message
+
+----

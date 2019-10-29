@@ -1,4 +1,5 @@
 import traceback
+import os
 
 import aiohttp
 import random
@@ -45,7 +46,7 @@ class ShopManager(commands.Cog):
             self._bot.shop = new_items
 
             async with aiohttp.ClientSession() as cs:
-                await cs.post(f"http://127.0.0.1:5000/api/shop", json={"items": new_items}, headers={"x-token": self.token})
+                await cs.post(f"https://sp-webhost.herokuapp.com/api/shop", json={"items": new_items}, headers={"x-token": os.environ.get("API_TOKEN")})
 
         except Exception:
             traceback.print_exc()
