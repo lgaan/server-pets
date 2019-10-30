@@ -86,6 +86,52 @@ class Bot(commands.AutoShardedBot):
             schema="pg_catalog"
         )
 
+    async def on_guild_join(self, guild):
+        try:    
+            embed = discord.Embed(title="Guild joined", colour=discord.Colour.blue(), timestamp=guild.me.joined_at)
+            embed.add_field(name="Name", value=guild.name, inline=False)
+            embed.add_field(name="Member Count", value=guild.member_count, inline=False)
+            embed.add_field(name="Bot Count", value=len([m for m in guild.members if m.bot]), inline=False)
+
+            embed.add_field(name="** **", value="** **", inline=False)
+
+            embed.add_field(name="New Guild Count", value=len(self.guilds), inline=False)
+            embed.add_field(name="New Member Count", value=len(self.users), inline=False)
+            
+            embed.add_field(name="Potential Bot Farm?", value="Yes" if sum(1 for m in guild.members if m.bot) > 100 else "No", inline=False)
+
+            embed.set_thumbnail(url=guild.icon_url)
+
+            async with aiohttp.ClientSession() as cs:
+                await cs.post("https://sp-webhost.herokuapp.com/api/guilds", headers={"x-token": os.environ.get("API_TOKEN"), "x-type": "add"}, json={"id": guild.id, "members": guild.member_count})
+                
+            return await self.get_channel(615299190485942292).send(embed=embed)
+        except Exception:
+            traceback.print_exc()
+
+    async def on_guild_remove(self, guild):
+        try:
+            embed = discord.Embed(title="Guild Left", colour=discord.Colour.blue(), timestamp=datetime.now())
+            embed.add_field(name="Name", value=guild.name, inline=False)
+            embed.add_field(name="Member Count", value=guild.member_count, inline=False)
+            embed.add_field(name="Bot Count", value=len([m for m in guild.members if m.bot]), inline=False)
+
+            embed.add_field(name="** **", value="** **", inline=False)
+
+            embed.add_field(name="New Guild Count", value=len(self.guilds), inline=False)
+            embed.add_field(name="New Member Count", value=len(self.users), inline=False)
+
+            embed.add_field(name="Potential Bot Farm?", value="Yes" if sum(1 for m in guild.members if m.bot) > 100 else "No", inline=False)
+
+            embed.set_thumbnail(url=guild.icon_url)
+            
+            async with aiohttp.ClientSession() as cs:
+                await cs.post("https://sp-webhost.herokuapp.com/api/guilds", headers={"x-token": os.environ.get("API_TOKEN"), "x-type": "delete"}, json={"id": guild.id, "members": guild.member_count})
+
+            return await self.get_channel(615299190485942292).send(embed=embed)
+        except Exception:
+            traceback.print_exc()
+
     async def on_connect(self):
         credentials = dict(
             host=os.environ.get("DATABASE_HOST"),
