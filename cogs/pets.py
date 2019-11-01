@@ -194,6 +194,7 @@ class Pets(commands.Cog):
                             attach = False
                             image_url = "None"
                         else:
+                            self.adopt_cache.remove(ctx.author.id)
                             return
 
                         await m.delete()
@@ -205,32 +206,36 @@ class Pets(commands.Cog):
                     m = await ctx.send("Please supply a URL for your pet's image, or send a file with the image you would like. (Note attachments will be taken if both are supplied)")
 
                     try:
-                        img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower() and m.id == ctx.message.id)
+                        try:
+                            img = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author and "porn" not in m.content.lower())
 
-                        if img.attachments:
-                            image_url = img.attachments[0].url
+                            if img.attachments:
+                                image_url = img.attachments[0].url
 
-                        elif img.content:
-                            image_url = re.findall(r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?", img.content)
+                            if img.content:
+                                image_url = re.findall(r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?", img.content)
 
-                            if not image_url:
-                                self.adopt_cache.remove(ctx.author.id)
-                                return await ctx.send("It doesnt seem like you send a valid url.")
+                                if not image_url:
+                                    self.adopt_cache.remove(ctx.author.id)
+                                    return await ctx.send("It doesnt seem like you send a valid url.")
+                                
+                                i = await self.get_image(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}")
+
+                                try:
+                                    Image.open(BytesIO(i))
+                                except IOError:
+                                    self.adopt_cache.remove(ctx.author.id)
+                                    return await ctx.send("Not a valid image.")
+
+                                image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
+
+                                await m.delete()
                             
-                            i = await self.get_image(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}")
-
-                            try:
-                                Image.open(BytesIO(i))
-                            except IOError:
-                                self.adopt_cache.remove(ctx.author.id)
-                                return await ctx.send("Not a valid image.")
-
-                            image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
-
-                            await m.delete()
-                    except asyncio.TimeoutError:
-                        self.adopt_cache.remove(ctx.author.id)
-                        return await ctx.send("Time ran out.")
+                        except asyncio.TimeoutError:
+                            self.adopt_cache.remove(ctx.author.id)
+                            return await ctx.send("Time ran out.")
+                    except Exception:
+                        traceback.print_exc()
 
                 await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2",
                                           account.balance - self.pet_prices[pet.lower()], ctx.author.id)
