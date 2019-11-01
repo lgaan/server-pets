@@ -47,3 +47,81 @@ Traceback (most recent call last):
 discord.ext.commands.errors.CommandInvokeError: Command raised an exception: HTTPException: 400 BAD REQUEST (error code: 50006): Cannot send an empty message
 
 ----
+
+Lgan#4676 | discord.py | uh 
+Ignoring exception in command uh:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 79, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "C:\Users\Logan\Documents\Python\Discord\Pets\cogs\dev.py", line 35, in user_
+    plt.plot(self.bot.ug.keys(), self.bot.ug.values())
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\pyplot.py", line 2795, in plot
+    is not None else {}), **kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\axes\_axes.py", line 1668, in plot
+    self.add_line(line)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\axes\_base.py", line 1902, in add_line
+    self._update_line_limits(line)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\axes\_base.py", line 1924, in _update_line_limits
+    path = line.get_path()
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\lines.py", line 1027, in get_path
+    self.recache()
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\lines.py", line 670, in recache
+    x = _to_unmasked_float_array(xconv).ravel()
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\cbook\__init__.py", line 1390, in _to_unmasked_float_array
+    return np.asarray(x, float)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\numpy\core\numeric.py", line 538, in asarray
+    return array(a, dtype, copy=False, order=order)
+TypeError: float() argument must be a string or a number, not 'dict_keys'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 891, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 728, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 88, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: TypeError: float() argument must be a string or a number, not 'dict_keys'
+
+----
+
+Lgan#4676 | discord.py | ug 
+Ignoring exception in command ug:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 79, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "C:\Users\Logan\Documents\Python\Discord\Pets\cogs\dev.py", line 35, in user_growth_
+    plt.plot(self.bot.ug.keys(), self.bot.ug.values())
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\pyplot.py", line 2795, in plot
+    is not None else {}), **kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\axes\_axes.py", line 1666, in plot
+    lines = [*self._get_lines(*args, data=data, **kwargs)]
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\axes\_base.py", line 225, in __call__
+    yield from self._plot_args(this, kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\axes\_base.py", line 391, in _plot_args
+    x, y = self._xy_from_xy(x, y)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\axes\_base.py", line 243, in _xy_from_xy
+    bx = self.axes.xaxis.update_units(x)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\axis.py", line 1493, in update_units
+    default = self.converter.default_units(data, self)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\category.py", line 115, in default_units
+    axis.set_units(UnitData(data))
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\category.py", line 181, in __init__
+    self.update(data)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\matplotlib\category.py", line 215, in update
+    for val in OrderedDict.fromkeys(data):
+TypeError: unhashable type: 'dict_keys'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 891, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 728, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 88, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: TypeError: unhashable type: 'dict_keys'
+
+----

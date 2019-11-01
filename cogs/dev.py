@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 
-import matplotlib.pyplot as plt
+import traceback
 
+from datetime import datetime
+import matplotlib.pyplot as plt
 import collections
 
 class Dev(commands.Cog):
@@ -27,6 +29,23 @@ class Dev(commands.Cog):
 
         return await ctx.send(file=discord.File("img/usage.png"))
     
+    @commands.command(name="ug")
+    async def user_growth_(self, ctx):
+        """Get user growth"""
+        try:
+            plt.clf()
+            
+            plt.plot([x for x in self.bot.ug.keys()], [x for x in self.bot.ug.values()])
+            
+            plt.ylabel("Users"); plt.xlabel("Date")
+            
+            plt.savefig("img/ug.png")
+            
+            return await ctx.send(file=discord.File("img/ug.png"))
+        except Exception:
+            traceback.print_exc()
+        
+        
     @commands.command(name="raise")
     async def raise_(self, ctx):
         """Raise an error"""

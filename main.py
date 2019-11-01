@@ -42,6 +42,8 @@ class Bot(commands.AutoShardedBot):
         self.usage = {}
         self.shop = {}
         self.session = aiohttp.ClientSession(loop=self.loop)
+        
+        self.ug = {}
 
         self.pet_species = {
             "dog": {"bulldog": ("common", 1), "poodle": ("common", 1.5), "beagle": ("common", 1.5), "siberian husky": ("uncommon", 2), "bernese mountain dog": ("uncommon", 2), "skeleton miniature pinscher": ("rare", 2.5)},
