@@ -9,7 +9,7 @@ class Trackers(commands.Cog):
         
         self.tracker.start()
     
-    @tasks.loop(hours=12)
+    @tasks.loop(hours=1)
     async def tracker(self):
         """Handle trackers"""
         users = len(self.bot.users)
