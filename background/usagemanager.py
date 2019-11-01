@@ -18,13 +18,13 @@ class UsageManager(commands.Cog):
         old_usage = await self._bot.db.fetch("SELECT * FROM usage")
 
         if self.loop_index == 0:
-            self._bot.usage = json.loads(old_usage[0]["usage_json"])
+            self._bot.usage = old_usage[0]["usage"]
             
             self.loop_index += 1
 
         else:   
             try:
-                await self._bot.db.execute("UPDATE usage SET usage_json = $1", self._bot.usage)
+                await self._bot.db.execute("UPDATE usage SET usage = $1", self._bot.usage)
             except Exception as e:
                 traceback.print_exc()     
         return
