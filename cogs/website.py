@@ -38,8 +38,11 @@ class Website(commands.Cog):
                 
                 data.append((u.name, balance, pets))
             
+            balances = sorted(data, key=lambda k: k[1], reverse=True)
+            pets = sorted(data, key=lambda k: k[2], reverse=True)
+            
             async with aiohttp.ClientSession() as cs:
-                async with cs.post("http://127.0.0.1:5000/api/lb", headers={"x-token": os.environ.get("API_TOKEN")}, json={"data": data}) as test:
+                async with cs.post("https://sp-webhost.herokuapp.com/api/lb", headers={"x-token": os.environ.get("API_TOKEN")}, json={"data": (balances, pets)}) as test:
                     print(await test.text())
                 
             return await message.channel.send("Request for leaderboard has been sent.")
