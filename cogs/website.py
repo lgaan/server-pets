@@ -36,10 +36,24 @@ class Website(commands.Cog):
                 
                 pets = len(user.pets) if user.pets else 0
                 
-                data.append((u.name, balance, pets))
+                data.append((u.name, balance, num))
             
             balances = sorted(data, key=lambda k: k[1], reverse=True)
-            pets = sorted(data, key=lambda k: k[2], reverse=True)
+            
+            fetch = await self.bot.db.fetch("SELECT * FROM accounts")
+            pets = []
+            
+            for account in fetch:
+                account = await self.accounts.get_account(account["id"])
+
+                if not account.pets:
+                    continue
+                
+                user = self.bot.get_user(account.id)
+                
+                pets.append((user.name, len(account.pets), account.balance))
+            
+            pets = sorted(pets, key=lambda k: k[1], reverse=True) 
             
             async with aiohttp.ClientSession() as cs:
                 async with cs.post("http://127.0.0.1:5000/api/lb", headers={"x-token": os.environ.get("API_TOKEN")}, json={"data": (balances, pets)}) as post:
