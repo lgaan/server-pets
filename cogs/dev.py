@@ -35,7 +35,7 @@ class Dev(commands.Cog):
         try:
             plt.clf()
             
-            plt.plot([x for x in self.bot.ug.keys()], [x for x in self.bot.ug.values()])
+            plt.plot([x.split(" ")[1] for x in self.bot.ug.keys()], [x for x in self.bot.ug.values()])
             
             plt.ylabel("Users"); plt.xlabel("Date")
             plt.xticks(rotation=90)
