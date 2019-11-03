@@ -38,7 +38,7 @@ class Dev(commands.Cog):
             plt.plot([x for x in self.bot.ug.keys()], [x for x in self.bot.ug.values()])
             
             plt.ylabel("Users"); plt.xlabel("Date")
-            
+            plt.xticks(rotation=90)
             plt.savefig("img/ug.png")
             
             return await ctx.send(file=discord.File("img/ug.png"))
