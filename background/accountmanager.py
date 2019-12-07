@@ -80,7 +80,7 @@ class AccountEarnManager(commands.Cog):
 
                         earn *= self._bot.pet_species[pet.type][pet.species][1]
                         
-                        patreon = await self.bot.get_patreon(account.id)
+                        patreon = await self._bot.get_patreon(account.id)
 
                         if patreon:
                             earn *= patreon[1]
