@@ -18,6 +18,7 @@ class Handlers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        print(error)
         if ctx.guild is None:
             return await ctx.send("Commands should be done in guilds")
 

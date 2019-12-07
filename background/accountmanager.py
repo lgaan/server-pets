@@ -54,7 +54,7 @@ class AccountEarnManager(commands.Cog):
 
         if rounded <= level:
             rounded += 5
-        
+
         return rounded
 
     @tasks.loop(minutes=30.0)
@@ -68,15 +68,23 @@ class AccountEarnManager(commands.Cog):
                     await self._bot.db.execute("DELETE FROM accounts WHERE owner_id = $1", account.id)
                     
                     continue
-                                               
+
                 if account.pets:
-                    earning = 0 #sum((pet.earns*pet.level) for pet in account.pets)
+                    earning = 0
 
                     for pet in account.pets:
-                        earn = pet.earns*pet.level
+                        if pet.kenneled:
+                            earn = round(pet.earns*pet.level*0.35)
+                        else:
+                            earn = pet.earns*pet.level
 
                         earn *= self._bot.pet_species[pet.type][pet.species][1]
+                        
+                        patreon = await self.bot.get_patreon(account.id)
 
+                        if patreon:
+                            earn *= patreon[1]
+                        
                         earning += earn / (pet.level * 2)
 
                         if not pet.earned:

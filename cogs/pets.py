@@ -1,9 +1,8 @@
-from PIL import Image
-from io import BytesIO
 import aiohttp
 
 import traceback
 import asyncio
+import asyncpg
 import json
 import random
 import re
@@ -70,7 +69,7 @@ class Pets(commands.Cog):
 
     async def get_image(self, url):
         """Used to check if a url is an image"""
-        async with self.bot.session as cs:
+        async with aiohttp.ClientSession() as cs:
             async with cs.get(url) as resp:
                 bytes = await resp.read()
         
@@ -97,7 +96,7 @@ class Pets(commands.Cog):
                 embeds = []
                 for key, value in self.pet_info.items():
                     embed = discord.Embed(title=f"{ctx.guild}'s adoption centre. | {key}", colour=discord.Colour.blue(),
-                                          timestamp=ctx.message.created_at)
+                                        timestamp=ctx.message.created_at)
 
                     for info_key, info_value in value.items():
                         embed.add_field(name=info_key,
@@ -127,15 +126,15 @@ class Pets(commands.Cog):
                 if account.balance < self.pet_prices[pet.lower()]:
                     self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send(f"You do not have enough cash to buy this pet. You can earn money by "
-                                          f"training your pet or competing in contests.")
+                                            f"training your pet or competing in contests.")
 
                 confirm_embed = discord.Embed(title="Confirm", description="Are you sure you want to adopt this "
-                                                                           "animal?\nPlease react with "
-                                                                           "<:greenTick:596576670815879169> to "
-                                                                           "confirm, or <:redTick:596576672149667840> "
-                                                                           "to cancel.", colour=discord.Colour.blue(
+                                                                            "animal?\nPlease react with "
+                                                                            "<:greenTick:596576670815879169> to "
+                                                                            "confirm, or <:redTick:596576672149667840> "
+                                                                            "to cancel.", colour=discord.Colour.blue(
 
-                ), timestamp=ctx.message.created_at)
+                                            ), timestamp=ctx.message.created_at)
                 confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                 bot_msg = await ctx.send(embed=confirm_embed)
@@ -145,9 +144,9 @@ class Pets(commands.Cog):
 
                 try:
                     reaction, _ = await self.bot.wait_for("reaction_add", timeout=600,
-                                                          check=lambda r, u: r.message.id == bot_msg.id and u == ctx.author and str(r.emoji) in [
-                                                              "<:greenTick:596576670815879169>",
-                                                              "<:redTick:596576672149667840>"])
+                                                            check=lambda r, u: r.message.id == bot_msg.id and u == ctx.author and str(r.emoji) in [
+                                                                "<:greenTick:596576670815879169>",
+                                                                "<:redTick:596576672149667840>"])
                     if str(reaction.emoji) == "<:greenTick:596576670815879169>":
                         await bot_msg.delete()
                     else:
@@ -159,9 +158,9 @@ class Pets(commands.Cog):
                     return await ctx.send("Time ran out.")
 
                 name_message = await ctx.send(embed=discord.Embed(title=f"Your {pet.lower()}",
-                                                                  description=f"Your {pet.lower()} will need a name! Please reply to this message with the name of your pet.",
-                                                                  colour=discord.Colour.blue(),
-                                                                  timestamp=ctx.message.created_at))
+                                                                    description=f"Your {pet.lower()} will need a name! Please reply to this message with the name of your pet.",
+                                                                    colour=discord.Colour.blue(),
+                                                                    timestamp=ctx.message.created_at))
 
                 try:
                     message = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
@@ -175,32 +174,33 @@ class Pets(commands.Cog):
                 if any(word in ["@everyone","@here"] for word in message.content):
                     self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send("That pet name includes a blacklisted word. Please try again with another "
-                                          "name.")
+                                            "name.")
 
                 if account.pets and message.content.lower() in [pet.name for pet in account.pets]:
                     self.adopt_cache.remove(ctx.author.id)
                     return await ctx.send(f"You already own a pet named {message.content.lower()}, please re-use this command with an alternate name.")
 
                 species = await self.get_random_species(pet.lower())
+                attach = False
+                
+                if ctx.channel.is_nsfw():
+                    m = await ctx.send(f"Would you like to add an image? If yes respond with `yes`, if not respond with `no`. Your pet has a species of {species}")
+                    try:
+                        confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
 
-                m = await ctx.send(f"Would you like to add an image? If yes respond with `yes`, if not respond with `no`. Your pet has a species of {species}")
-                try:
-                    confirmation = await self.bot.wait_for("message", timeout=600, check=lambda m: m.author == ctx.author)
+                        if confirmation:
+                            if confirmation.content.lower() == "yes":
+                                attach = True
+                            elif confirmation.content.lower() == "no":
+                                image_url = "None"
+                            else:
+                                self.adopt_cache.remove(ctx.author.id)
+                                return
 
-                    if confirmation:
-                        if confirmation.content.lower() == "yes":
-                            attach = True
-                        elif confirmation.content.lower() == "no":
-                            attach = False
-                            image_url = "None"
-                        else:
-                            self.adopt_cache.remove(ctx.author.id)
-                            return
-
-                        await m.delete()
-                except asyncio.TimeoutError:
-                    self.adopt_cache.remove(ctx.author.id)
-                    return await ctx.send("Time ran out.")
+                            await m.delete()
+                    except asyncio.TimeoutError:
+                        self.adopt_cache.remove(ctx.author.id)
+                        return await ctx.send("Time ran out.")
 
                 if attach:
                     m = await ctx.send("Please supply a URL for your pet's image, or send a file with the image you would like. (Note attachments will be taken if both are supplied)")
@@ -221,12 +221,6 @@ class Pets(commands.Cog):
                                 
                                 i = await self.get_image(f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}")
 
-                                try:
-                                    Image.open(BytesIO(i))
-                                except IOError:
-                                    self.adopt_cache.remove(ctx.author.id)
-                                    return await ctx.send("Not a valid image.")
-
                                 image_url = f"{image_url[0][0]}://{image_url[0][1]}{image_url[0][2]}"
 
                                 await m.delete()
@@ -238,14 +232,18 @@ class Pets(commands.Cog):
                         traceback.print_exc()
 
                 await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2",
-                                          account.balance - self.pet_prices[pet.lower()], ctx.author.id)
+                                            account.balance - self.pet_prices[pet.lower()], ctx.author.id)
                 
-                await self.bot.db.execute("INSERT INTO pets (owner_id, name, type, thirst, hunger, earns, level, age, earned, species, image_url) VALUES ($1,"
-                                          "$2,$3,20,20,$4,$5,$6,0,$7,$8)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species, None if not attach else image_url)
-
+                try:
+                    await self.bot.db.execute("INSERT INTO pets (owner_id, name, type, thirst, hunger, earns, level, age, earned, species, image_url) VALUES ($1,"
+                                                "$2,$3,20,20,$4,$5,$6,0,$7,$8)", ctx.author.id, message.content.lower(), pet.lower(), self.pet_info[f"{pet[0].upper()}{pet[1:]}"]["Earns"], 1, self.baby_names[pet.lower()], species, None if not attach else image_url)
+                except asyncpg.DataError:
+                    self.adopt_cache.remove(ctx.author.id)
+                    return await ctx.send("Not a valid image.")
+                
                 embed = discord.Embed(title="Success!",
-                                      description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]} (With a species of {species})",
-                                      colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                                        description=f"You bought a {pet.lower()} for ${self.pet_prices[pet]} (With a species of {species})",
+                                        colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                 embed.add_field(name="Old balance", value=f"${account.balance}")
                 embed.add_field(name="New balance", value=f"${account.balance - self.pet_prices[pet]}")
 
@@ -314,7 +312,8 @@ class Pets(commands.Cog):
             for key, value in vars(pet).items():
                 key = key.replace("_"," ")
                 if key.lower() == "image url" and value:
-                    embed.set_image(url=value)
+                    if ctx.channel.is_nsfw():
+                        embed.set_image(url=value)
                 elif key.lower() == "json":
                     continue
                 elif key.lower() not in  ["earns", "species"]:
@@ -333,6 +332,13 @@ class Pets(commands.Cog):
     @commands.command(name="feed")
     async def feed_(self, ctx, item, *, pet):
         """Feed a pet a certain amount of food"""
+        maxi = False
+        if item.lower() == "max":
+            maxi = True
+            
+            item = pet.split(" ")[0]
+            pet = ' '.join(pet.split(" ")[1:])
+        
         pet = pet.lower()
         account = await self.manager.get_account(ctx.author.id)
 
@@ -365,32 +371,52 @@ class Pets(commands.Cog):
 
             if pet.hunger < 20:
                 gain = shop[item]["gain"]
-                pet_hunger = pet.hunger + gain
+                
+                if maxi:
+                    needed = (20 - pet.hunger) / gain
+                    
+                    if needed % 1 != 0:
+                        needed = int(needed) + 1
+                        
+                    pet_hunger = pet.hunger + (needed * gain)
+                    
+                    if items[item] < needed:
+                        return await ctx.send("You dont have enough of this item to do this.")
+                else:
+                    pet_hunger = pet.hunger + gain
 
                 if pet_hunger > 20:
                     pet_hunger = 20
 
-                await ctx.send(
-                    f"Your pet has gained {gain} hunger. It's health bar has changed to {pet_hunger}/20")
+                await ctx.send(f"Your pet has gained {gain} hunger. It's health bar has changed to {pet_hunger}/20")
 
-                if (food - 1) <= 0:
+                if not maxi:
+                    needed = 1
+                
+                if (food - needed) <= 0:
                     del items[item]
                 else:
-                    items[item] = items[item] - 1
+                    items[item] = int(items[item] - needed)
 
                 await self.bot.db.execute("UPDATE accounts SET items = $1 WHERE owner_id = $2", json.dumps(items), ctx.author.id)
 
                 return await self.bot.db.execute("UPDATE pets SET hunger = $1 WHERE owner_id = $2 AND name = $3",
-                                                 pet_hunger, ctx.author.id, pet.name)
+                                                    pet_hunger, ctx.author.id, pet.name)
             else:
                 return await ctx.send(f"{pet.name} is on full hunger. You can check all of your pets' hunger and thirst "
-                                      f"bars using `p-pets`")
+                                        f"bars using `p-pets`")
         except Exception:
             traceback.print_exc()
 
     @commands.command(name="water")
     async def water_(self, ctx, *, pet):
         """Give a pet a certain amount of water. Default amount is 1"""
+        maxi = False
+        if pet.split(" ")[0].lower() == "max":
+            maxi = True
+            
+            pet = ' '.join(pet.split(" ")[1:])
+            
         pet = pet.lower()
         account = await self.manager.get_account(ctx.author.id)
 
@@ -407,6 +433,9 @@ class Pets(commands.Cog):
         pet = await self.manager.get_pet_named(ctx.author.id, pet)
         items = account.items
 
+        if pet.thirst >= 20:
+            return await ctx.send(f"{pet.name} is on full thirst.")
+        
         if "water bowls" in items.keys():
             water = items["water bowls"]
         else:
@@ -419,7 +448,10 @@ class Pets(commands.Cog):
             pet_thirst = pet.thirst
             amount_needed = 20 - pet_thirst
 
-            if pet_thirst < 3:
+            if (items["water bowls"] - amount_needed) < 0 and maxi:
+                    return await ctx.send("You dont have enough water to do this. If your pet is below 3 on it's thirst bar, say `p-water <pet>` and you will recieve max thirst.")
+                
+            if pet_thirst < 3 or maxi:
                 pet_thirst = pet.thirst + amount_needed
 
                 await ctx.send(
@@ -434,7 +466,10 @@ class Pets(commands.Cog):
                 await ctx.send(
                     f"Your pet has gained {str(amount)[:4]} thirst. It's thirst bar has changed to {str(pet_thirst)[:4]}/20")
 
-            items["water bowls"] = items["water bowls"] - 1
+            if maxi:
+                items["water bowls"] = items["water bowls"] - amount_needed
+            else:
+                items["water bowls"] = items["water bowls"] - 1
 
             await self.bot.db.execute("UPDATE accounts SET items = $1 WHERE owner_id = $2", json.dumps(items), ctx.author.id)
 
@@ -444,7 +479,49 @@ class Pets(commands.Cog):
 
         except KeyError:
             return await ctx.send(f"Your {pet} is on full thirst. You can check all of your pets' hunger and thirst "
-                                  f"bars using `p-pets`")
+                                    f"bars using `p-pets`")
+    
+    @commands.command(name="pet")
+    @commands.cooldown(1, 3600, commands.BucketType.user)
+    async def pet_(self, ctx, pet_name):
+        """Pet your animals (and earn money)"""
+        account = await self.manager.get_account(ctx.author.id)
+        
+        if not account:
+            return await ctx.send("You do not have an account. Please create one using `p-create`.")
+        
+        pet = await self.manager.get_pet_named(ctx.author.id, pet_name.lower())
+        
+        if not pet:
+            return await ctx.send(f"You don't own a pet named {pet_name}. Adopt one using `p-adopt <pet_type>`.")
+        
+        embed = discord.Embed(title=f"You pet {pet.name}!", description=f"You pet {pet.name} and earned $25", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+        embed.set_image(url="https://media.giphy.com/media/lngmyOFoH7btm/giphy.gif")
+        
+        await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account.balance+25, account.id)
+        
+        return await ctx.send(embed=embed)
+    
+    @commands.command(name="cuddle")
+    @commands.cooldown(1, 3600, commands.BucketType.user)
+    async def cuddle_(self, ctx, pet_name):
+        """Pet your animals (and earn money)"""
+        account = await self.manager.get_account(ctx.author.id)
+        
+        if not account:
+            return await ctx.send("You do not have an account. Please create one using `p-create`.")
+        
+        pet = await self.manager.get_pet_named(ctx.author.id, pet_name.lower())
+        
+        if not pet:
+            return await ctx.send(f"You don't own a pet named {pet_name}. Adopt one using `p-adopt <pet_type>`.")
+        
+        embed = discord.Embed(title=f"You cuddled {pet.name}!", description=f"You cuddled {pet.name} and earned $25", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+        embed.set_image(url="https://media.giphy.com/media/q1pptp9fu8fGo/giphy.gif")
+        
+        await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account.balance+25, account.id)
+        
+        return await ctx.send(embed=embed)
 
 
 def setup(bot):

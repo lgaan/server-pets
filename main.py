@@ -41,7 +41,6 @@ class Bot(commands.AutoShardedBot):
 
         self.usage = {}
         self.shop = {}
-        self.session = aiohttp.ClientSession(loop=self.loop)
         
         self.ug = {}
 
@@ -54,7 +53,27 @@ class Bot(commands.AutoShardedBot):
             "bird": {"sparrow": ("common", 1), "blue tit": ("common", 1.5), "short-eared owl": ("uncommon", 1.5), "dove": ("uncommon", 1.5), "great egret": ("rare", 2.5), "skeleton peregrine falcon": ("rare", 2.5)},
             "horse": {"lipizzan": ("common", 1), "gypsy": ("common", 1), "paso fino": ("uncommon", 1.5), "boulonnais": ("uncommon", 1.5), "rocky mountain": ("rare", 2), "skeleton kathiawari": ("rare", 2.5)}
         }
-
+    
+    async def get_patreon(self, user_id):
+        """Check if someone is a patron"""
+        guild = self.get_guild(605754700503187466)
+        user = guild.get_member(user_id)
+        
+        if not user:
+            return False
+        
+        multiplier = 1
+        
+        if 637269593903333377 in [r.id for r in user.roles]:
+            multiplier += 1
+        if 637269637754781696 in [r.id for r in user.roles]:
+            multiplier += 2
+        
+        if multiplier == 1:
+            return False
+        
+        return (True, multiplier)
+    
     async def get_context(self, message, *, cls=None):
         return await super().get_context(message, cls=BotContext)
     

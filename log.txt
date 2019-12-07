@@ -125,3 +125,18 @@ Traceback (most recent call last):
 discord.ext.commands.errors.CommandInvokeError: Command raised an exception: TypeError: unhashable type: 'dict_keys'
 
 ----
+
+Lgan#4676 | Lgan | pet 
+Ignoring exception in command pet:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Roaming\Python\Python37\site-packages\discord\ext\commands\bot.py", line 891, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Roaming\Python\Python37\site-packages\discord\ext\commands\core.py", line 757, in invoke
+    await self.prepare(ctx)
+  File "C:\Users\Logan\AppData\Roaming\Python\Python37\site-packages\discord\ext\commands\core.py", line 720, in prepare
+    self._prepare_cooldowns(ctx)
+  File "C:\Users\Logan\AppData\Roaming\Python\Python37\site-packages\discord\ext\commands\core.py", line 710, in _prepare_cooldowns
+    raise CommandOnCooldown(bucket, retry_after)
+discord.ext.commands.errors.CommandOnCooldown: You are on cooldown. Try again in 3543.56s
+
+----
