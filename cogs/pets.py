@@ -388,7 +388,7 @@ class Pets(commands.Cog):
                 if pet_hunger > 20:
                     pet_hunger = 20
 
-                await ctx.send(f"Your pet has gained {gain} hunger. It's health bar has changed to {pet_hunger}/20")
+                await ctx.send(f"Your pet has gained {gain if not maxi else 20-pet.hunger} hunger. It's health bar has changed to {pet_hunger}/20")
 
                 if not maxi:
                     needed = 1
