@@ -28,7 +28,8 @@ class Accounts(commands.Cog):
             "badget2p": "<:badget2p:652944772159242251>",
             "badgeadmin": "<:badgeadmin:653200112163618847>",
             "badgecurator": "<:badgecurator:653205137938186250>",
-            "badgebug": "<:badgebug:653240070886785045>"
+            "badgebug": "<:badgebug:653240070886785045>",
+            "badgepetmaster": "<:badgepetmaster:653241266791907338>"
         }
 
     @commands.command(name="create")
