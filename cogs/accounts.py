@@ -120,6 +120,20 @@ class Accounts(commands.Cog):
         except Exception:
             traceback.print_exc()
 
+    @commands.command(name="balance", aliases=["bal"])
+    async def balance_(self, ctx, user: discord.Member = None):
+        """Check your, or a users balance"""
+        user = ctx.author if user is None else user
+
+        account = await self.manager.get_account(user.id)
+
+        if not account:
+            return await ctx.send("The user in question does not have an account.")
+        
+        embed = discord.Embed(title="Balance", description=f"$`{account.balance}`", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+        
+        return await ctx.send(embed=embed)
+    
     @commands.command(name="pets")
     async def pets_(self, ctx, user: discord.Member = None):
         """Find out the hunger and thirst of a users or your animals."""
