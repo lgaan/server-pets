@@ -22,6 +22,12 @@ class Accounts(commands.Cog):
             "horse food": "Horse Food",
             "water bowls": "Water Bowls"
         }
+        
+        self.badges = {
+            "badget1p": "<:badget1p:652944771744268349>",
+            "badget2p": "<:badget2p:652944772159242251>",
+            "badgeadmin": "<:badgeadmin:653200112163618847>"
+        }
 
     @commands.command(name="create")
     async def create_(self, ctx):
@@ -102,6 +108,14 @@ class Accounts(commands.Cog):
                 embed.add_field(name="Currently earning", value=f"${sum((p.earns*p.level*self.bot.pet_species[p.type][p.species][1]/p.level*2) for p in account.pets)}/30 minutes")
             embed.add_field(name="Balance", value=f"${account.balance}")
 
+            if account.badges:
+                string = []
+                for badge in account.badges:
+                    emote = self.badges[badge]
+                    
+                    string.append(emote)
+                    
+                embed.add_field(name="Badges", value=', '.join(string))
             return await ctx.send(embed=embed)
         except Exception:
             traceback.print_exc()

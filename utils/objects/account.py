@@ -14,6 +14,8 @@ class Account:
         self.settings = json.get("settings") if isinstance(json.get("settings"), str) else json.get("settings")
 
         self.pets = json.get("pets")
+        
+        self.badges = json.get("badges")
     
     def owner(self, bot):
         """Get the owner"""
