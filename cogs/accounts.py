@@ -26,7 +26,8 @@ class Accounts(commands.Cog):
         self.badges = {
             "badget1p": "<:badget1p:652944771744268349>",
             "badget2p": "<:badget2p:652944772159242251>",
-            "badgeadmin": "<:badgeadmin:653200112163618847>"
+            "badgeadmin": "<:badgeadmin:653200112163618847>",
+            "badgecurator": "<:badgecurator:653205137938186250>"
         }
 
     @commands.command(name="create")
