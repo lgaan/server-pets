@@ -100,7 +100,7 @@ class AccountEarnManager(commands.Cog):
                         
                         next_level = await self.get_next_level(pet.level) - 5
 
-                        if it pet.level < 20 and pet.level == next_level and pet.age != self.pet_age[pet.type][next_level] and account.settings["dm_notifications"]:
+                        if pet.level < 20 and pet.level == next_level and pet.age != self.pet_age[pet.type][next_level] and account.settings["dm_notifications"]:
                             await self._bot.get_user(account.id).send(f"{pet.name} has grown up! They are now a {self.pet_age[pet.type][next_level]}")
 
                             age = self.pet_age[pet.type][next_level] if next_level in self.pet_age[pet.type].keys() else "elder"
