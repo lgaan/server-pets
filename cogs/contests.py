@@ -11,6 +11,7 @@ from utils.managers.accountmanager import AccountManager
 from utils.objects.account import Account
 from utils.objects.pet import Pet
 
+from utils.checks import has_voted
 
 class Contests(commands.Cog):
     def __init__(self, bot):
@@ -68,6 +69,7 @@ class Contests(commands.Cog):
         return await ctx.paginate(message=None, entries=entries)
 
     @commands.command(name="contests")
+    @has_voted()
     async def contests_(self, ctx):
         """Get a list of global contests"""
         account = await self.accounts.get_account(ctx.author.id)

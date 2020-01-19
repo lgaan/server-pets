@@ -16,7 +16,7 @@ from discord.ext import commands
 from utils.paginator import EmbedPaginator
 from utils.converters import RenameConverter
 from utils.managers.accountmanager import AccountManager
-
+from utils.checks import has_voted
 
 class Pets(commands.Cog):
     def __init__(self, bot):
@@ -84,6 +84,7 @@ class Pets(commands.Cog):
         return rand
     
     @commands.command(name="adopt")
+    @has_voted()
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
         if pet:

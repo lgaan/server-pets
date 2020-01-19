@@ -6,6 +6,8 @@ from discord.ext import commands
 from utils.paginator import SettingsPaginator
 from utils.managers.accountmanager import AccountManager
 
+from utils.checks import has_voted
+
 class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -18,6 +20,7 @@ class Settings(commands.Cog):
         }
     
     @commands.command(name="settings")
+    @has_voted()
     async def settings_(self, ctx):
         """A command for showing the bot settings for your account, or changing them."""
         try:
