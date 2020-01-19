@@ -55,6 +55,10 @@ class Bot(commands.AutoShardedBot):
             "horse": {"lipizzan": ("common", 1), "gypsy": ("common", 1), "paso fino": ("uncommon", 1.5), "boulonnais": ("uncommon", 1.5), "rocky mountain": ("rare", 2), "skeleton kathiawari": ("rare", 2.5)}
         }
     
+    async def has_voted(self, member: discord.Member):
+        """Check if someone has voted"""
+        return await self.dbl.get_user_vote(member.id)
+        
     async def get_patreon(self, user_id):
         """Check if someone is a patron"""
         guild = self.get_guild(605754700503187466)
@@ -164,7 +168,7 @@ class Bot(commands.AutoShardedBot):
         )
         self.db = await asyncpg.create_pool(**credentials)
         await self.load_from_folder("cogs")
-              
+
     async def on_ready(self):
         await self.load_from_folder("background")
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Pets"))

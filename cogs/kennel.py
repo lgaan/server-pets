@@ -9,6 +9,8 @@ from utils.managers.kennelmanager import KennelManager
 from utils.managers.accountmanager import AccountManager
 from utils.converters import KennelDate
 
+from utils.checks import has_voted
+
 class Kennel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -16,6 +18,7 @@ class Kennel(commands.Cog):
         self.accounts = AccountManager(bot)
     
     @commands.group(name="kennel", invoke_without_subcommand=True)
+    @has_voted()
     async def kennel_(self, ctx):
         """Show a list of all your kenneled pets"""
         if ctx.subcommand_passed:

@@ -6,6 +6,7 @@ import discord
 from discord.ext import commands
 
 from utils.managers.accountmanager import AccountManager
+from utils.checks import has_voted
 
 class Accounts(commands.Cog):
     def __init__(self, bot):
@@ -53,8 +54,8 @@ class Accounts(commands.Cog):
             return await ctx.send("You do not have an account!")
 
         confirm_embed = discord.Embed(title="Confirm",
-                                      description="Are you sure?\nPlease react with <:greenTick:596576670815879169> to confirm, or <:redTick:596576672149667840> to cancel.",
-                                      colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                                        description="Are you sure?\nPlease react with <:greenTick:596576670815879169> to confirm, or <:redTick:596576672149667840> to cancel.",
+                                        colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
         confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
         bot_msg = await ctx.send(embed=confirm_embed)
@@ -64,9 +65,9 @@ class Accounts(commands.Cog):
 
         try:
             reaction, _ = await self.bot.wait_for("reaction_add", timeout=600,
-                                                  check=lambda r, u: u == ctx.author and str(r.emoji) in [
-                                                      "<:greenTick:596576670815879169>",
-                                                      "<:redTick:596576672149667840>"])
+                                                    check=lambda r, u: u == ctx.author and str(r.emoji) in [
+                                                        "<:greenTick:596576670815879169>",
+                                                        "<:redTick:596576672149667840>"])
             if str(reaction.emoji) == "<:greenTick:596576670815879169>":
                 await bot_msg.delete()
             else:
@@ -90,7 +91,7 @@ class Accounts(commands.Cog):
                 return await ctx.send("The user in question does not have an account. Use `p-create` to make one.")
 
             embed = discord.Embed(title=f"{user.name}'s account. ({user.id})", colour=discord.Colour.blue(),
-                                  timestamp=ctx.message.created_at)
+                                    timestamp=ctx.message.created_at)
             embed.set_thumbnail(url=user.avatar_url)
 
             if not account.pets:
@@ -124,6 +125,7 @@ class Accounts(commands.Cog):
             traceback.print_exc()
 
     @commands.command(name="balance", aliases=["bal"])
+    @has_voted()
     async def balance_(self, ctx, user: discord.Member = None):
         """Check your, or a users balance"""
         user = ctx.author if user is None else user
@@ -150,7 +152,7 @@ class Accounts(commands.Cog):
 
             if not account.pets:
                 embed = discord.Embed(title=f"{user.name}'s animals.", colour=discord.Colour.blue(),
-                                  timestamp=ctx.message.created_at)
+                                    timestamp=ctx.message.created_at)
                 embed.add_field(name="This user has no pets.", value="** **")
 
                 return await ctx.send(embed=embed)
@@ -159,7 +161,7 @@ class Accounts(commands.Cog):
                 entries = []
                 for l in self.bot.chunk(account.pets, 5):
                     embed = discord.Embed(title=f"{user.name}'s animals.", colour=discord.Colour.blue(),
-                                  timestamp=ctx.message.created_at)
+                                    timestamp=ctx.message.created_at)
                     for pet in l:
                         val = ""
 
@@ -198,7 +200,7 @@ class Accounts(commands.Cog):
             items = account.items
 
             embed = discord.Embed(title=f"{user.name}'s supplies", colour=discord.Colour.blue(),
-                                  timestamp=ctx.message.created_at)
+                                    timestamp=ctx.message.created_at)
 
             for key, value in items.items():
                 if key != "water bowls":
@@ -212,12 +214,12 @@ class Accounts(commands.Cog):
             traceback.print_exc()
 
     @commands.command(name="leaderboard", aliases=["lb"])
+    @has_voted()
     async def leaderboard_(self, ctx, lb_type=None):
         """Get a leaderboard of the people in your server or globally. For server leave `lb_type` empty, for global use `p-lb global`"""
         try:
             accounts, unchunked = await self.manager.get_lb_accounts(ctx, lb_type if lb_type is not None else "server")
 
-            print(unchunked)
             entries = []
             
             for l in accounts:
