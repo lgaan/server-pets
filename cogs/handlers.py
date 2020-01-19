@@ -27,7 +27,7 @@ class Handlers(commands.Cog):
             return
         
         if isinstance(error, NotVoted):
-            embed = discord.Embed(title="Oops!", description="This command is for voters only! You can vote for me [here](https://top.gg/bot/502205162694246412/vote) to use this command.", colour=discord.Colour.blue())
+            embed = discord.Embed(title="Oops!", description="This command is for voters only! You can vote for me [here](https://top.gg/bot/502205162694246412/vote) to use this command. Note that it can take about a minute to update.", colour=discord.Colour.blue())
             return await ctx.send(embed=embed)
         
         await ctx.message.add_reaction("<:redTick:596576672149667840>")

@@ -331,6 +331,7 @@ class Pets(commands.Cog):
             traceback.print_exc()
 
     @commands.command(name="feed")
+    @has_voted()
     async def feed_(self, ctx, item, *, pet):
         """Feed a pet a certain amount of food"""
         maxi = False
@@ -410,6 +411,7 @@ class Pets(commands.Cog):
             traceback.print_exc()
 
     @commands.command(name="water")
+    @has_voted()
     async def water_(self, ctx, *, pet):
         """Give a pet a certain amount of water. Default amount is 1"""
         maxi = False
