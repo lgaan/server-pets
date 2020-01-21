@@ -287,3 +287,33 @@ Traceback (most recent call last):
 utils.checks.NotVoted: You haven't voted
 
 ----
+
+Lgan#0001 | discord.py | claim voter
+Ignoring exception in command claim:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 83, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "C:\Users\Logan\Documents\Python\Discord\Pets\cogs\crates.py", line 24, in claim_
+    voted = await self.bot.has_voted(ctx.author)
+  File "main2.py", line 65, in has_voted
+    return await self.dbl.get_user_vote(member.id)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\dbl\client.py", line 269, in get_user_vote
+    data = await self.http.get_user_vote(self.bot_id, user_id)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\dbl\http.py", line 207, in get_user_vote
+    return await self.request('GET', '/bots/{}/check'.format(bot_id), params={'userId': user_id})
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\dbl\http.py", line 87, in request
+    raise UnauthorizedDetected("DBL token not provided")
+NameError: name 'UnauthorizedDetected' is not defined
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 891, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 797, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 92, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NameError: name 'UnauthorizedDetected' is not defined
+
+----
