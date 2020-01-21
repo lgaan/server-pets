@@ -37,7 +37,7 @@ class Bot(commands.AutoShardedBot):
         self.remove_command("help")
         self.load_extension("jishaku")
 
-        self.dbl = dbl.DBLClient(self, os.environ.get("DBL_TOKEN"))
+        self.dbl = dbl.DBLClient(self, os.environ.get("DBL_TOKEN"), webhook_path="/dblwebhook", webhook_auth="Axc541", webhook_port=5000)
         self.db = None
 
         self.usage = {}

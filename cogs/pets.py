@@ -66,7 +66,7 @@ class Pets(commands.Cog):
         }
 
         self.adopt_cache = []
-
+        
     async def get_image(self, url):
         """Used to check if a url is an image"""
         async with aiohttp.ClientSession() as cs:
