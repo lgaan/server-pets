@@ -56,7 +56,7 @@ class Crates(commands.Cog):
         for key, count in list(collections.Counter(account.keys).items()):
             desc += f"`{count}x {key}`\n"
         
-        embed = discord.Embed(title="Your keys", description=desc, colour=discord.Colour.blue())
+        embed = discord.Embed(title="Your keys", description=desc if desc != "" else "You don't have any keys. Want to get a free key? Simply vote for the bot [here](https://top.gg/bot/502205162694246412/vote)", colour=discord.Colour.blue())
         
         return await ctx.send(embed=embed)
 
@@ -84,7 +84,7 @@ class Crates(commands.Cog):
                 keys = account.keys
                 
                 if "voter" not in account.keys:
-                    return await ctx.send("You don't have any `voter` keys! To get this key, simply vote for the bot using: <https://top.org/bot/502205162694246412/vote>")
+                    return await ctx.send("You don't have any `voter` keys! To get this key, simply vote for the bot using: <https://top.gg/bot/502205162694246412/vote>")
                 
                 else:
                     # They can open the crate
