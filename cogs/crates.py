@@ -32,7 +32,7 @@ class Crates(commands.Cog):
         
         keys = account.keys
         
-        return await ctx.send(keys)
+        return await ctx.send(str(keys))
 
     @commands.Cog.listener()
     async def on_dbl_test(self, payload):
