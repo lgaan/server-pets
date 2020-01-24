@@ -45,9 +45,12 @@ class Handlers(commands.Cog):
         except Exception:
             traceback.print_exc()
         
-        with open("log.txt", mode="a") as log:
-            trace = ''.join(traceback.format_exception(type(error), error, error.__traceback__))
-            log.write(f"\n\n{ctx.author} | {ctx.guild} | {ctx.command} {' '.join(list(ctx.args)[2:])}\nIgnoring exception in command {ctx.command}:\n{trace}\n----")
+        try:
+            with open("log.txt", mode="a") as log:
+                trace = ''.join(traceback.format_exception(type(error), error, error.__traceback__))
+                log.write(f"\n\n{ctx.author} | {ctx.guild} | {ctx.command} {' '.join(list(ctx.args)[2:])}\nIgnoring exception in command {ctx.command}:\n{trace}\n----")
+        except Exception:
+            pass
         
         embed = discord.Embed(title="Oops! An error has occured and the developer has been notified.", description=f"Want to know what went wrong? \n\n**{error.__class__.__name__}: {error}**", timestamp=ctx.message.created_at, colour=discord.Colour.blue())
 

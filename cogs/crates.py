@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+import traceback
 import random
 import collections
 
@@ -58,15 +59,35 @@ class Crates(commands.Cog):
     @commands.command(name="buy-key")
     async def buy_key(self, ctx, key=None):
         """Buy a key. Leave the `key` argument empty to get a list of keys."""
-        if not key:
-            desc = ""
-            for key, value in self.crates.items():
-                price = self.prices[key]
-                desc += f"**{key}**: Costs `${price}`. Possible rewards are {', '.join([f'`${r}`' for r in value])}"
+        try:
+            if not key:
+                desc = ""
+                for key, value in self.crates.items():
+                    if key == "voter":
+                        continue
+                    
+                    price = self.prices[key]
+                    desc += f"**{key}**: Costs `${price}`. Possible rewards are {', '.join([f'`${v}`' for v in value])}\n"
+                    
+                embed = discord.Embed(title="Key shop", description=desc, colour=discord.Colour.blue())
                 
-            embed = discord.Embed(title="Key shop", description=desc, colour=discord.Colour.blue())
+                return await ctx.send(embed=embed)
             
-            return await ctx.send(embed=embed)
+            account = await self.accounts.get_account(ctx.author.id)
+            
+            if not account:
+                return await ctx.send("You need an account to do this! To create one use `p-create`.")
+            
+            if key.lower() in self.crates.keys():
+                await account.add_key(self.bot, key.lower())
+                await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account.balance - self.prices[key.lower()], ctx.author.id)
+                
+                return await ctx.send(f"`1x {key.lower()}` has been added to your account for `${self.prices[key.lower()]}`.")
+            else:
+                keys = ', '.join([f"`{key}`" for key in self.crates.keys()])
+                return await ctx.send(f"That key doesnt exist. Choose from {keys}")
+        except Exception:
+            traceback.print_exc()
         
     @commands.command(name="keys")
     async def keys(self, ctx):
