@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 import random
+import collections
 
 from utils.managers.accountmanager import AccountManager
 
@@ -30,9 +31,13 @@ class Crates(commands.Cog):
         if not account:
             return await ctx.send("You dont have an account, make one using `p-create`.")
         
-        keys = account.keys
+        desc = ""
+        for key, count in list(collections.Counter(account.keys).items()):
+            desc += f"`{count{x {key}`\n"
         
-        return await ctx.send(str(keys))
+        embed = discord.Embed(title="Your keys", description=desc, colour=discord.Colour.blue())
+        
+        return await ctx.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_dbl_test(self, payload):
