@@ -17,10 +17,26 @@ class Crates(commands.Cog):
     @commands.Cog.listener()
     async def on_dbl_vote(self, payload):
         print(payload)
+        account = await self.accounts.get_account(int(payload["user"]))
+        
+        if account:
+            await account.add_key("voter")
     
+    @commands.command(name="keys")
+    async def keys(self, ctx):
+        """Check your keys"""
+        account = await self.accounts.get_account(ctx.author.id)
+        
+        if not account:
+            return await ctx.send("You dont have an account, make one using `p-create`.")
+        
+        keys = account.keys
+        
+        return await ctx.send(keys)
+
     @commands.Cog.listener()
-    async def on_dbl_test(self, payload):
-        print(payload) 
+    async def on_dbl_text(self, payload):
+        print(payload)
         
     @commands.command(name="claim")
     async def claim_(self, ctx, crate):
