@@ -38,7 +38,7 @@ class Account:
 
         return pet_types
 
-    async def add_key(self, key):
+    async def add_key(self, bot, key):
         keys = self.keys
         
         if self.keys:
@@ -46,7 +46,7 @@ class Account:
         else:
             keys = [key]
         
-        return await self._bot.db.execute("UPDATE accounts SET keys = $1 WHERE owner_id = $2", keys, self.id)
+        return await bot.db.execute("UPDATE accounts SET keys = $1 WHERE owner_id = $2", keys, self.id)
     
     def to_json(self):
         json = dict(self.json)
