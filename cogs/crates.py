@@ -18,6 +18,13 @@ class Crates(commands.Cog):
             "rare": [1000, 1000, 10000, 10000],
             "omega": [1000, 10000, 10000]
         }
+        
+        self.prices = {
+            "basic": 1000,
+            "uncommon": 2000,
+            "rare": 4000,
+            "omega": 5000
+        }
     
     @commands.Cog.listener()
     async def on_dbl_vote(self, payload):
@@ -48,6 +55,19 @@ class Crates(commands.Cog):
         
         return await ctx.send(f"Removed `1x {key}` to your inventory!")
     
+    @commands.command(name="buy-key")
+    async def buy_key(self, ctx, key=None):
+        """Buy a key. Leave the `key` argument empty to get a list of keys."""
+        if not key:
+            desc = ""
+            for key, value in self.crates.items():
+                price = self.prices[key]
+                desc += f"**{key}**: Costs `${price}`. Possible rewards are {', '.join([f'`${r}`' for r in value])}"
+                
+            embed = discord.Embed(title="Key shop", description=desc, colour=discord.Colour.blue())
+            
+            return await ctx.send(embed=embed)
+        
     @commands.command(name="keys")
     async def keys(self, ctx):
         """Check your keys"""
