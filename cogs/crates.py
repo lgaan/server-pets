@@ -37,6 +37,10 @@ class Crates(commands.Cog):
     @commands.Cog.listener()
     async def on_dbl_test(self, payload):
         print(payload)
+        account = await self.accounts.get_account(int(payload["user"]))
+        
+        if account:
+            await account.add_key("voter")
         
     @commands.command(name="claim")
     async def claim_(self, ctx, crate):
