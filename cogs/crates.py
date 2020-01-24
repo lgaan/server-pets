@@ -35,27 +35,6 @@ class Crates(commands.Cog):
         if account:
             await account.add_key(self.bot, "voter")
     
-    @commands.command(name="add-key", hidden=True)
-    @commands.is_owner()
-    async def add_key(self, ctx, *, key):
-        account = await self.accounts.get_account(ctx.author.id)
-        
-        await account.add_key(self.bot, key)
-        
-        return await ctx.send(f"Added `1x {key}` to your inventory!")
-
-    @commands.command(name="rem-key", hidden=True)
-    @commands.is_owner()
-    async def rem_key(self, ctx, *, key):
-        account = await self.accounts.get_account(ctx.author.id)
-        
-        suc = await account.use_key(self.bot, key)
-        
-        if not suc:
-            return await ctx.send("Oops, cant do that.")
-        
-        return await ctx.send(f"Removed `1x {key}` to your inventory!")
-    
     @commands.command(name="buy-key")
     async def buy_key(self, ctx, key=None):
         """Buy a key. Leave the `key` argument empty to get a list of keys."""

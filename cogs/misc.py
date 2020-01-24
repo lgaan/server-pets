@@ -124,6 +124,8 @@ class Misc(commands.Cog):
                 cog = self.bot.get_cog(cog)
 
                 for command in set(cog.walk_commands()):
+                    if command.hidden == True:
+                        continue
                     params = await self.get_paramaters(command.clean_params)
                     if len(command.aliases) > 0:
                         to_add = [command.name]
@@ -140,6 +142,10 @@ class Misc(commands.Cog):
 
         if isinstance(fetched_command_or_cog, commands.Command):
             command = fetched_command_or_cog
+            
+            if command.hidden == True:
+                return await ctx.send("Can't find that command.")
+            
             params = await self.get_paramaters(command.clean_params)
 
             embed_basic = discord.Embed(title=f"Server Pets Help | {command.name}", description="Need help? Join the [support server](https://discord.gg/kayUTZm)\n\n", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
