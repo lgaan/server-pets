@@ -12,7 +12,11 @@ class Crates(commands.Cog):
         self.accounts = AccountManager(bot)
         
         self.crates = {
-            "voter": [100, 100, 100, 1000, 1000, 1000, 10000]
+            "voter": [100, 100, 100, 1000, 1000, 1000, 10000],
+            "basic": [100, 100, 100, 1000, 1000, 1000, 10000],
+            "uncommon": [1000, 1000, 1000, 10000],
+            "rare": [1000, 1000, 10000, 10000],
+            "omega": [10000, 10000, 10000, 1000000]
         }
     
     @commands.Cog.listener()
@@ -93,6 +97,20 @@ class Crates(commands.Cog):
                     money += value
                     
                     suc = await account.use_key(self.bot, "voter")
+                    
+                    if not suc:
+                        return await ctx.send("Oops! Something went wrong.")
+            else:
+                keys = account.keys
+                
+                if crate.lower() not in keys:
+                    return await ctx.send(f"You don't have any `{crate.lower()}` keys.")
+                else:
+                    value = random.choice(self.crates[crate.lower()])
+                    rewards.append(f"`${value}`")
+                    money += value
+                    
+                    suc = await account.use_key(self.bot, crate.lower())
                     
                     if not suc:
                         return await ctx.send("Oops! Something went wrong.")
