@@ -30,7 +30,7 @@ class Crates(commands.Cog):
         
         await account.add_key(self.bot, key)
         
-        return await ctx.send(f"Added `1x{key}` to your inventory!")
+        return await ctx.send(f"Added `1x {key}` to your inventory!")
 
     @commands.command(name="rem-key")
     @commands.is_owner()
@@ -42,7 +42,7 @@ class Crates(commands.Cog):
         if not suc:
             return await ctx.send("Oops, cant do that.")
         
-        return await ctx.send(f"Added `1x{key}` to your inventory!")
+        return await ctx.send(f"Removed `1x {key}` to your inventory!")
     
     @commands.command(name="keys")
     async def keys(self, ctx):
