@@ -40,7 +40,11 @@ class Account:
 
     async def add_key(self, key):
         keys = self.keys
-        keys.append(key)
+        
+        if self.keys:
+            keys.append(key)
+        else:
+            keys = [key]
         
         return await self._bot.db.execute("UPDATE accounts SET keys = $1 WHERE owner_id = $2", keys, self.id)
     
