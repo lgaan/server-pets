@@ -28,7 +28,7 @@ class Crates(commands.Cog):
     async def add_key(self, ctx, key):
         account = await self.accounts.get_account(ctx.author.id)
         
-        await account.add_key(key)
+        await account.add_key(self.bot, key)
         
         return await ctx.send(f"Added `1x{key}` to your inventory!")
 
@@ -37,7 +37,7 @@ class Crates(commands.Cog):
     async def rem_key(self, ctx, key):
         account = await self.accounts.get_account(ctx.author.id)
         
-        suc = await account.use_key(key)
+        suc = await account.use_key(self.bot, key)
         
         if not suc:
             return await ctx.send("Oops, cant do that.")
