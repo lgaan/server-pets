@@ -48,6 +48,16 @@ class Account:
         
         return await bot.db.execute("UPDATE accounts SET keys = $1 WHERE owner_id = $2", keys, self.id)
     
+    async def use_key(self, bot, key):
+        keys = self.keys
+        
+        if key not in self.keys:
+            return False
+        
+        keys.remove(key)
+        
+        return await bot.db.execute("UPDATE accounts SET keys = $1 WHERE owner_id = $2", keys, self.id)
+    
     def to_json(self):
         json = dict(self.json)
 

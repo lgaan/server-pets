@@ -23,6 +23,27 @@ class Crates(commands.Cog):
         if account:
             await account.add_key(self.bot, "voter")
     
+    @commands.command(name="add-key")
+    @commands.is_owner()
+    async def add_key(self, ctx, key):
+        account = await self.account.get_account(ctx.author.id)
+        
+        await account.add_key(key)
+        
+        return await ctx.send(f"Added `1x{key}` to your inventory!")
+
+    @commands.command(name="rem-key")
+    @commands.is_owner()
+    async def rem_key(self, ctx, key):
+        account = await self.account.get_account(ctx.author.id)
+        
+        suc = await account.use_key(key)
+        
+        if not suc:
+            return await ctx.send("Oops, cant do that.")
+        
+        return await ctx.send(f"Added `1x{key}` to your inventory!")
+    
     @commands.command(name="keys")
     async def keys(self, ctx):
         """Check your keys"""
