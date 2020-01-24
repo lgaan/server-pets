@@ -20,7 +20,7 @@ class Crates(commands.Cog):
         account = await self.accounts.get_account(int(payload["user"]))
         
         if account:
-            await account.add_key("voter")
+            await account.add_key(self.bot, "voter")
     
     @commands.command(name="keys")
     async def keys(self, ctx):
@@ -40,7 +40,7 @@ class Crates(commands.Cog):
         account = await self.accounts.get_account(int(payload["user"]))
         
         if account:
-            await account.add_key("voter")
+            await account.add_key(self.bot, "voter")
         
     @commands.command(name="claim")
     async def claim_(self, ctx, crate):
