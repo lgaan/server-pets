@@ -25,7 +25,7 @@ class Crates(commands.Cog):
     
     @commands.command(name="add-key")
     @commands.is_owner()
-    async def add_key(self, ctx, key):
+    async def add_key(self, ctx, *, key):
         account = await self.accounts.get_account(ctx.author.id)
         
         await account.add_key(self.bot, key)
@@ -34,7 +34,7 @@ class Crates(commands.Cog):
 
     @commands.command(name="rem-key")
     @commands.is_owner()
-    async def rem_key(self, ctx, key):
+    async def rem_key(self, ctx, *, key):
         account = await self.accounts.get_account(ctx.author.id)
         
         suc = await account.use_key(self.bot, key)
@@ -78,20 +78,29 @@ class Crates(commands.Cog):
 
         if crate.lower() in self.crates.keys():
             rewards = []
+            money = 0
             
             if crate.lower() == "voter":
-                voted = await self.bot.has_voted(ctx.author)
+                keys = account.keys
                 
-                if not voted:
-                    return await ctx.send("You have not voted! In order to open this crate, please vote at <https://top.gg/bot/502205162694246412/vote>")
+                if "voter" not in account.keys:
+                    return await ctx.send("You don't have any `voter` keys! To get this key, simply vote for the bot using: <https://top.org/bot/502205162694246412/vote>")
                 
                 else:
                     # They can open the crate
                     value = random.choice(self.crates["voter"])
                     rewards.append(f"`${value}`")
+                    money += value
+                    
+                    suc = await account.use_key(self.bot, "voter")
+                    
+                    if not suc:
+                        return await ctx.send("Oops! Something went wrong.")
                     
             embed = discord.Embed(title="Crate", description=f"You opened a {crate} crate and got {', '.join(rewards)}", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             embed.set_thumbnail(url="https://images.emojiterra.com/twitter/v12/512px/1f389.png")
+            
+            await self.bot.db.execute("UPDATE accounts SET balance = $1 WHERE owner_id = $2", account.balance + money, ctx.author.id)
             return await ctx.send(embed=embed)
         else:
             crates = ', '.join([f"`{key}`" for key in self.crates.keys()])
