@@ -35,7 +35,7 @@ class Crates(commands.Cog):
         if account:
             await account.add_key(self.bot, "voter")
     
-    @commands.command(name="add-key")
+    @commands.command(name="add-key", hidden=True)
     @commands.is_owner()
     async def add_key(self, ctx, *, key):
         account = await self.accounts.get_account(ctx.author.id)
@@ -44,7 +44,7 @@ class Crates(commands.Cog):
         
         return await ctx.send(f"Added `1x {key}` to your inventory!")
 
-    @commands.command(name="rem-key")
+    @commands.command(name="rem-key", hidden=True)
     @commands.is_owner()
     async def rem_key(self, ctx, *, key):
         account = await self.accounts.get_account(ctx.author.id)
