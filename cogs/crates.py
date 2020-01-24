@@ -26,7 +26,7 @@ class Crates(commands.Cog):
     @commands.command(name="add-key")
     @commands.is_owner()
     async def add_key(self, ctx, key):
-        account = await self.account.get_account(ctx.author.id)
+        account = await self.accounts.get_account(ctx.author.id)
         
         await account.add_key(key)
         
@@ -35,7 +35,7 @@ class Crates(commands.Cog):
     @commands.command(name="rem-key")
     @commands.is_owner()
     async def rem_key(self, ctx, key):
-        account = await self.account.get_account(ctx.author.id)
+        account = await self.accounts.get_account(ctx.author.id)
         
         suc = await account.use_key(key)
         
