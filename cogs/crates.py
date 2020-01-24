@@ -33,7 +33,7 @@ class Crates(commands.Cog):
         
         desc = ""
         for key, count in list(collections.Counter(account.keys).items()):
-            desc += f"`{count{x {key}`\n"
+            desc += f"`{count}x {key}`\n"
         
         embed = discord.Embed(title="Your keys", description=desc, colour=discord.Colour.blue())
         
