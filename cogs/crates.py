@@ -35,7 +35,7 @@ class Crates(commands.Cog):
         return await ctx.send(keys)
 
     @commands.Cog.listener()
-    async def on_dbl_text(self, payload):
+    async def on_dbl_test(self, payload):
         print(payload)
         
     @commands.command(name="claim")
