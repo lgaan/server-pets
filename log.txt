@@ -317,3 +317,55 @@ Traceback (most recent call last):
 discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NameError: name 'UnauthorizedDetected' is not defined
 
 ----
+
+Lgan#0001 | discord.py | keys 
+Ignoring exception in command keys:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 83, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "C:\Users\Logan\Documents\Python\Discord\Pets\cogs\crates.py", line 34, in keys
+    return await ctx.send(keys)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\abc.py", line 856, in send
+    data = await state.http.send_message(channel.id, content, tts=tts, embed=embed, nonce=nonce)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\http.py", line 220, in request
+    raise HTTPException(r, data)
+discord.errors.HTTPException: 400 BAD REQUEST (error code: 50006): Cannot send an empty message
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 891, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 797, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 92, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: HTTPException: 400 BAD REQUEST (error code: 50006): Cannot send an empty message
+
+----
+
+Lgan#0001 | discord.py | keys 
+Ignoring exception in command keys:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 83, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "C:\Users\Logan\Documents\Python\Discord\Pets\cogs\crates.py", line 34, in keys
+    return await ctx.send(keys)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\abc.py", line 856, in send
+    data = await state.http.send_message(channel.id, content, tts=tts, embed=embed, nonce=nonce)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\http.py", line 220, in request
+    raise HTTPException(r, data)
+discord.errors.HTTPException: 400 BAD REQUEST (error code: 50006): Cannot send an empty message
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 891, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 797, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 92, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: HTTPException: 400 BAD REQUEST (error code: 50006): Cannot send an empty message
+
+----

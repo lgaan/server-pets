@@ -16,6 +16,7 @@ class Account:
         self.pets = json.get("pets")
         
         self.badges = json.get("badges")
+        self.keys = json.get("keys")
     
     def owner(self, bot):
         """Get the owner"""
@@ -37,6 +38,12 @@ class Account:
 
         return pet_types
 
+    async def add_key(self, key):
+        keys = self.keys
+        keys.append(key)
+        
+        return await self._bot.db.execute("UPDATE accounts SET keys = $1 WHERE owner_id = $2", keys, self.id)
+    
     def to_json(self):
         json = dict(self.json)
 
