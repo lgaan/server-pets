@@ -80,6 +80,8 @@ class Shopping(commands.Cog):
 
                 try:
                     amount = int(args[1])
+                    if amount < 0:
+                        return await ctx.send("You cant get negative items!")
                 except ValueError:
                     return await ctx.send("Second argument should be an integer. e.g. `p-buy bulk 10 <item>`")
                 
