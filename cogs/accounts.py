@@ -125,7 +125,6 @@ class Accounts(commands.Cog):
             traceback.print_exc()
 
     @commands.command(name="balance", aliases=["bal"])
-    @has_voted()
     async def balance_(self, ctx, user: discord.Member = None):
         """Check your, or a users balance"""
         user = ctx.author if user is None else user
