@@ -30,12 +30,14 @@ class Dev(commands.Cog):
         return await ctx.send(file=discord.File("img/usage.png"))
     
     @commands.command(name="ug")
-    async def user_growth_(self, ctx):
+    async def user_growth_(self, ctx, amount: int=2):
         """Get user growth"""
         try:
             plt.clf()
             
-            plt.plot([x for x in self.bot.ug.keys()], [x for x in self.bot.ug.values()])
+            ug_k = self.bot.ug.keys()[0:amount]
+            ug_v = self.bot.ug.values()[0:amount]
+            plt.plot([x for x in ug_keys], [x for x in ug_values])
             
             plt.ylabel("Users"); plt.xlabel("Date")
             plt.xticks(rotation=90)
