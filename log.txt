@@ -369,3 +369,33 @@ Traceback (most recent call last):
 discord.ext.commands.errors.CommandInvokeError: Command raised an exception: HTTPException: 400 BAD REQUEST (error code: 50006): Cannot send an empty message
 
 ----
+
+Lgan#0494 | Lgan | adopt dog
+Ignoring exception in command adopt:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 892, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 790, in invoke
+    await self.prepare(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 754, in prepare
+    await self._max_concurrency.acquire(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\cooldowns.py", line 267, in acquire
+    raise MaxConcurrencyReached(self.number, self.per)
+discord.ext.commands.errors.MaxConcurrencyReached: Too many people using this command. It can only be used 1 time globally concurrently.
+
+----
+
+Lgan#0494 | Lgan | adopt dog
+Ignoring exception in command adopt:
+Traceback (most recent call last):
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\bot.py", line 892, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 790, in invoke
+    await self.prepare(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\core.py", line 754, in prepare
+    await self._max_concurrency.acquire(ctx)
+  File "C:\Users\Logan\AppData\Local\Programs\Python\Python37\lib\site-packages\discord\ext\commands\cooldowns.py", line 267, in acquire
+    raise MaxConcurrencyReached(self.number, self.per)
+discord.ext.commands.errors.MaxConcurrencyReached: Too many people using this command. It can only be used 1 time per user concurrently.
+
+----
