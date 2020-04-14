@@ -18,7 +18,6 @@ class Kennel(commands.Cog):
         self.accounts = AccountManager(bot)
     
     @commands.group(name="kennel", invoke_without_subcommand=True)
-    @has_voted()
     async def kennel_(self, ctx):
         """Show a list of all your kenneled pets"""
         if ctx.subcommand_passed:
