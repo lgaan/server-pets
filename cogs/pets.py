@@ -81,7 +81,7 @@ class Pets(commands.Cog):
         return rand
     
     @commands.command(name="adopt")
-    @commands.max_concurrency(1, commands.BucketType.user)
+    #@commands.max_concurrency(1, commands.BucketType.user)
     async def adopt_(self, ctx, pet=None):
         """Shows a selection of the pets avaliable for the server. Leave `pet` empty for a list of pets."""
         try:
