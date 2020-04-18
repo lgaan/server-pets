@@ -427,7 +427,7 @@ class Pets(commands.Cog):
             amount_needed = 20 - pet_thirst
 
             if (items["water bowls"] - amount_needed) < 0 and maxi:
-                    return await ctx.send("You dont have enough water to do this. If your pet is below 3 on it's thirst bar, say `p-water <pet>` and you will recieve max thirst.")
+                    return await ctx.send("You dont have enough water to do this. If your pet is below 3 on it's thirst bar, say `p-water <pet>` and you will receive max thirst.")
                 
             if pet_thirst < 3 or maxi:
                 pet_thirst = pet.thirst + amount_needed
