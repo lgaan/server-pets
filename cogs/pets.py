@@ -119,8 +119,8 @@ class Pets(commands.Cog):
 
                 confirm_embed = discord.Embed(title="Confirm", description="Are you sure you want to adopt this "
                                                                             "animal?\nPlease react with "
-                                                                            "<:greenTick:596576670815879169> to "
-                                                                            "confirm, or <:redTick:596576672149667840> "
+                                                                            "\U00002705 to "
+                                                                            "confirm, or \U000023f9 "
                                                                             "to cancel.", colour=discord.Colour.blue(
 
                                             ), timestamp=ctx.message.created_at)
@@ -134,8 +134,8 @@ class Pets(commands.Cog):
                 try:
                     reaction, _ = await self.bot.wait_for("reaction_add", timeout=600,
                                                             check=lambda r, u: r.message.id == bot_msg.id and u == ctx.author and str(r.emoji) in [
-                                                                "<:greenTick:596576670815879169>",
-                                                                "<:redTick:596576672149667840>"])
+                                                                "\U00002705",
+                                                                "\U000023f9"])
                     if str(reaction.emoji) == "<:greenTick:596576670815879169>":
                         await bot_msg.delete()
                     else:
