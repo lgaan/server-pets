@@ -128,8 +128,8 @@ class Pets(commands.Cog):
 
                 bot_msg = await ctx.send(embed=confirm_embed)
 
-                await bot_msg.add_reaction(":greenTick:596576670815879169")
-                await bot_msg.add_reaction(":redTick:596576672149667840")
+                await bot_msg.add_reaction("\U00002705")
+                await bot_msg.add_reaction("\U000023f9")
 
                 try:
                     reaction, _ = await self.bot.wait_for("reaction_add", timeout=600,
