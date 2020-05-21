@@ -136,7 +136,7 @@ class Pets(commands.Cog):
                                                             check=lambda r, u: r.message.id == bot_msg.id and u == ctx.author and str(r.emoji) in [
                                                                 "\U00002705",
                                                                 "\U000023f9"])
-                    if str(reaction.emoji) == "<:greenTick:596576670815879169>":
+                    if str(reaction.emoji) == "\U00002705":
                         await bot_msg.delete()
                     else:
                         await bot_msg.delete()
