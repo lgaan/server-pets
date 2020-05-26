@@ -96,7 +96,7 @@ class Shopping(commands.Cog):
                 if account.balance < (self.shop_items_water[item]*amount):
                     return await ctx.send(f"This item costs ${self.shop_items_water[item]*amount}, you do not have enough cash to buy this item. Please wait until you have more cash.")
 
-                confirm_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                confirm_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                 confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                 confirm_embed.add_field(name="Amount of Items", value=amount)
@@ -105,16 +105,16 @@ class Shopping(commands.Cog):
 
                 await bot_msg.add_reaction("\u2b06")
                 await bot_msg.add_reaction("\u2b07")
-                await bot_msg.add_reaction(":greenTick:596576670815879169")
-                await bot_msg.add_reaction(":redTick:596576672149667840")
+                await bot_msg.add_reaction("\U00002705")
+                await bot_msg.add_reaction("\U000023f9")
 
                 changing = True
                 while changing:
                     try:
-                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
+                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","\U00002705", "\U000023f9"])
                         if str(reaction.emoji) == "\u2b06":
                             amount += 1
-                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                             new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                             new_embed.add_field(name="Amount of Items", value=amount)
@@ -125,15 +125,15 @@ class Shopping(commands.Cog):
                                 amount = 1
                             else:
                                 amount -= 1
-                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                             new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                             new_embed.add_field(name="Amount of Items", value=amount)
                             new_embed.add_field(name="Cost", value=f"${amount*self.shop_items_water[item]}")
                             await bot_msg.edit(embed=new_embed)
-                        if str(reaction.emoji) == "<:greenTick:596576670815879169>":
+                        if str(reaction.emoji) == "\U00002705":
                             changing = False
-                        if str(reaction.emoji) == "<:redTick:596576672149667840>":
+                        if str(reaction.emoji) == "\U000023f9":
                             await bot_msg.delete()
                             changing = True
 
@@ -152,7 +152,7 @@ class Shopping(commands.Cog):
                 if account.balance < (self.bot.shop[item]["price"]*amount):
                     return await ctx.send(f"This item costs ${self.bot.shop[item]['price']*amount}, you do not have enough cash to buy this item. Please wait until you have more cash.")
 
-                confirm_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                confirm_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                 confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
                 confirm_embed.add_field(name="Amount of Items", value=amount)
                 confirm_embed.add_field(name="Cost", value=f"${amount*self.bot.shop[item]['price']}")
@@ -160,16 +160,16 @@ class Shopping(commands.Cog):
 
                 await bot_msg.add_reaction("\u2b06")
                 await bot_msg.add_reaction("\u2b07")
-                await bot_msg.add_reaction(":greenTick:596576670815879169")
-                await bot_msg.add_reaction(":redTick:596576672149667840")
+                await bot_msg.add_reaction("\U00002705")
+                await bot_msg.add_reaction("\U000023f9")
 
                 changing = True
                 while changing:
                     try:
-                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
+                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","\U00002705", "\U000023f9"])
                         if str(reaction.emoji) == "\u2b06":
                             amount += 1
-                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                             new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                             new_embed.add_field(name="Amount of Items", value=amount)
@@ -180,15 +180,15 @@ class Shopping(commands.Cog):
                                 amount = 1
                             else:
                                 amount -= 1
-                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                             new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                             new_embed.add_field(name="Amount of Items", value=amount)
                             new_embed.add_field(name="Cost", value=f"${amount*self.bot.shop[item]['price']}")
                             await bot_msg.edit(embed=new_embed)
-                        if str(reaction.emoji) == "<:greenTick:596576670815879169>":
+                        if str(reaction.emoji) == "\U00002705":
                             changing = False
-                        if str(reaction.emoji) == "<:redTick:596576672149667840>":
+                        if str(reaction.emoji) == "\U000023f9":
                             await bot_msg.delete()
                             changing = True
 
@@ -254,7 +254,7 @@ class Shopping(commands.Cog):
             shop = self.bot.cogs["ShopManager"].valid_items
             amount = 1
 
-            confirm_embed = discord.Embed(title="Confirm", description="Use the up and down arrows to change the amount of items you wish to sell.\nPlease react with <:greenTick:596576670815879169> to confirm, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+            confirm_embed = discord.Embed(title="Confirm", description="Use the up and down arrows to change the amount of items you wish to sell.\nPlease react with \U00002705 to confirm, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
             confirm_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
             confirm_embed.add_field(name="Amount of Items", value=amount)
             confirm_embed.add_field(name="Cost", value=f"${amount*shop[item]['price']/2}" if not is_water else f"${amount*self.shop_items_water[item]/2}")
@@ -264,18 +264,18 @@ class Shopping(commands.Cog):
             await bot_msg.add_reaction("\u2b06")
             await bot_msg.add_reaction("\u2b07")
 
-            await bot_msg.add_reaction(":greenTick:596576670815879169")
-            await bot_msg.add_reaction(":redTick:596576672149667840")
+            await bot_msg.add_reaction("\U00002705")
+            await bot_msg.add_reaction("\U000023f9")
 
             changing = True
 
             if not is_water:
                 while changing:
                     try:
-                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
+                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","\U00002705", "\U000023f9"])
                         if str(reaction.emoji) == "\u2b06":
                             amount += 1
-                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                             new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                             new_embed.add_field(name="Amount of Items", value=amount)
@@ -286,15 +286,15 @@ class Shopping(commands.Cog):
                                 amount = 1
                             else:
                                 amount -= 1
-                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                             new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                             new_embed.add_field(name="Amount of Items", value=amount)
                             new_embed.add_field(name="Cost", value=f"${amount*shop[item]['price']/2}")
                             await bot_msg.edit(embed=new_embed)
-                        if str(reaction.emoji) == "<:greenTick:596576670815879169>":
+                        if str(reaction.emoji) == "\U00002705":
                             changing = False
-                        if str(reaction.emoji) == "<:redTick:596576672149667840>":
+                        if str(reaction.emoji) == "\U000023f9":
                             await bot_msg.delete()
                             changing = True
 
@@ -307,10 +307,10 @@ class Shopping(commands.Cog):
             else:
                 while changing:
                     try:
-                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","<:greenTick:596576670815879169>", "<:redTick:596576672149667840>"])
+                        reaction, _ = await self.bot.wait_for("reaction_add", timeout=600, check=lambda r, u: u == ctx.author and str(r.emoji) in ["\u2b06","\u2b07","\U00002705", "\U000023f9"])
                         if str(reaction.emoji) == "\u2b06":
                             amount += 1
-                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                             new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                             new_embed.add_field(name="Amount of Items", value=amount)
@@ -321,15 +321,15 @@ class Shopping(commands.Cog):
                                 amount = 1
                             else:
                                 amount -= 1
-                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with <:greenTick:596576670815879169> to confirm the order, or <:redTick:596576672149667840> to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
+                            new_embed = discord.Embed(title="Confirm Order", description="Use the up and down arrows to change the amount of items you wish to order.\nPlease react with \U00002705 to confirm the order, or \U000023f9 to cancel.", colour=discord.Colour.blue(), timestamp=ctx.message.created_at)
                             new_embed.set_thumbnail(url=ctx.guild.me.avatar_url)
 
                             new_embed.add_field(name="Amount of Items", value=amount)
                             new_embed.add_field(name="Cost", value=f"${amount*self.shop_items_water[item]/2}")
                             await bot_msg.edit(embed=new_embed)
-                        if str(reaction.emoji) == "<:greenTick:596576670815879169>":
+                        if str(reaction.emoji) == "\U00002705":
                             changing = False
-                        if str(reaction.emoji) == "<:redTick:596576672149667840>":
+                        if str(reaction.emoji) == "\U000023f9":
                             await bot_msg.delete()
                             changing = True
 

@@ -14,9 +14,9 @@ class Settings(commands.Cog):
         self.manager = AccountManager(bot)
 
         self.conversions = {
-            True: "<:greenTick:596576670815879169>",
-            False: "<:redTick:596576672149667840>",
-            **dict.fromkeys(["dm_notifications","dm notifictions","dms","dm"], "dm_notifications")
+            True: "\U00002705",
+            False: "\U000023f9",
+            **dict.fromkeys(["dm_notifications","dm notifications","dms","dm"], "dm_notifications")
         }
     
     @commands.command(name="settings")
