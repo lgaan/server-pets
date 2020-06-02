@@ -11,7 +11,7 @@ class DiscordBotList(commands.Cog):
         self.bot = bot
         self.dblpy = bot.dbl
 
-        self.update_stats.start()
+        #self.update_stats.start()
 
     def cog_unload(self):
         self.update_stats.cancel()
