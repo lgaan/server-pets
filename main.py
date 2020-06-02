@@ -47,6 +47,7 @@ class Bot(commands.AutoShardedBot):
         self.shop = {}
         
         self.ug = {}
+        self.dbl = dbl.DBLClient(self, os.environ.get("DBL_TOKEN"), webhook_path="/dblwebhook", webhook_auth="Axc541", webhook_port=5000)
 
         self.pet_species = {
             "dog": {"bulldog": ("common", 1), "poodle": ("common", 1.5), "beagle": ("common", 1.5), "siberian husky": ("uncommon", 2), "bernese mountain dog": ("uncommon", 2), "skeleton miniature pinscher": ("rare", 2.5)},
