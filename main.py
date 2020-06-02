@@ -2,12 +2,12 @@ import traceback
 import os
 import asyncpg
 import discord
-<<<<<<< HEAD
+
 import json
 from datetime import datetime
-=======
+
 import json 
->>>>>>> bcb6bd5c02e81e4f6f88681faab99f5c15a2cb9a
+
 
 import aiohttp
 
