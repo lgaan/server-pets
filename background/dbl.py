@@ -9,7 +9,7 @@ from discord.ext import commands, tasks
 class DiscordBotList(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.dblpy = bot.dbl
+        #self.dblpy = bot.dbl
 
         #self.update_stats.start()
 
