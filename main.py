@@ -2,8 +2,12 @@ import traceback
 import os
 import asyncpg
 import discord
+<<<<<<< HEAD
 import json
 from datetime import datetime
+=======
+import json 
+>>>>>>> bcb6bd5c02e81e4f6f88681faab99f5c15a2cb9a
 
 import aiohttp
 
@@ -33,11 +37,10 @@ class BotContext(commands.Context):
 
 class Bot(commands.AutoShardedBot):
     def __init__(self):
-        super().__init__(command_prefix="p-", case_insensitive=True)
+        super().__init__(command_prefix="p!", case_insensitive=True)
         self.remove_command("help")
         self.load_extension("jishaku")
 
-        self.dbl = dbl.DBLClient(self, os.environ.get("DBL_TOKEN"), webhook_path="/dblwebhook", webhook_auth="Axc541", webhook_port=5000)
         self.db = None
 
         self.usage = {}

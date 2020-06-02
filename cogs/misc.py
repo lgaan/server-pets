@@ -3,7 +3,6 @@ import traceback
 import os
 import codecs
 import pathlib
-import json
 
 
 import discord

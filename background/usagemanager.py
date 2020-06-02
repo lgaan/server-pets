@@ -8,12 +8,12 @@ class UsageManager(commands.Cog):
     def __init__(self, bot):
         self._bot = bot
         
-        self.managment.start()
+        self.management.start()
 
         self.loop_index = 0
 
     @tasks.loop(minutes=30)
-    async def managment(self):
+    async def management(self):
         """Manage the bot usage"""
         old_usage = await self._bot.db.fetch("SELECT * FROM usage")
 
@@ -29,7 +29,7 @@ class UsageManager(commands.Cog):
                 traceback.print_exc()     
         return
 
-    @managment.before_loop
+    @management.before_loop
     async def before(self):
         await self._bot.wait_until_ready()
 
