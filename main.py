@@ -190,4 +190,4 @@ class Bot(commands.AutoShardedBot):
         await super().logout()
 
 if __name__ == "__main__":
-    Bot().run(os.environ.get("TOKEN"), reconnect=True)
+    Bot().run(os.environ.get("OLD_TOKEN"), reconnect=True)
