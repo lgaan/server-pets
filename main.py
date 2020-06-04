@@ -175,7 +175,7 @@ class Bot(commands.AutoShardedBot):
 
     async def on_ready(self):
         await self.load_from_folder("background")
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p-help | Pets"))
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="p!help | Pets"))
         
         print("Connected")
 
